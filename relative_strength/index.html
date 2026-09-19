@@ -354,10 +354,35 @@
     .rs-theme{ font-size: 12.5px; }
     ol.steps li{ grid-template-columns: 20px 1fr; }
   }
+  .back-btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    margin: 0 0 18px;
+    padding: 7px 14px 7px 11px;
+    border: 1px solid var(--rule-strong, var(--rule));
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--accent);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .back-btn:hover{ border-color: var(--accent); transform: translateX(-2px); }
 </style>
 </head>
 <body>
 <div class="page">
+
+  <a class="back-btn" href="../" aria-label="Back to all projects">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    All projects
+  </a>
 
   <header class="head">
     <div class="eyebrow">Sector Rotation &middot; Relative Strength</div>
@@ -424,7 +449,7 @@
   <div class="foot">
     <span>Source: <code>rs_hist/downloads/{l,m,s}_1d_3y.parquet</code></span>
     <span>14 ticker(s) dropped for insufficient history: <code>AKRO, APLS, ARCH, BLDE, CFLT, CIVI, CMA, CRNX, CTRA, ENDP, EXAS, GTLS, MASI, ZK</code></span>
-    <span>Generated 2026-09-19 15:31 Russia TZ 2 Standard Time &middot; <code>rs_hist/publish_report.py --n 5</code></span>
+    <span>Generated 2026-09-19 15:59 Russia TZ 2 Standard Time &middot; <code>rs_hist/publish_rs_github_pages.py --n 5</code></span>
   </div>
 
 </div>
