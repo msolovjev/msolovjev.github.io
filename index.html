@@ -2,21 +2,43 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Projects</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Petrona:wght@500;600&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-  :root{{color-scheme:light dark;--bg:#f2f2ee;--card:#fdfdfb;--ink:#15181b;--mut:#6b6e70;--acc:#2c4a63;--rule:#e0ded5}}
-  @media (prefers-color-scheme:dark){{:root{{--bg:#101214;--card:#17191c;--ink:#f2f2ef;--mut:#9a9d9e;--acc:#86adc9;--rule:#2a2d30}}}}
-  body{{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}}
-  main{{max-width:760px;margin:0 auto;padding:64px 24px}}
-  h1{{font-family:Georgia,serif;font-size:2rem;margin:0 0 6px}}
-  p.sub{{color:var(--mut);margin:0 0 32px}}
-  .card{{display:block;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:20px 24px;margin:0 0 16px;color:inherit;text-decoration:none}}
-  .card:hover{{border-color:var(--acc)}}
-  .card h2{{margin:0 0 4px;font-size:1.2rem;color:var(--acc)}}
-  .card p{{margin:0 0 10px;color:var(--mut)}}
-  .card a{{color:var(--acc);margin-right:16px;font-size:.9rem}}
-  footer{{color:var(--mut);font-size:.8rem;margin-top:32px}}
-</style></head><body><main>
-<h1>Projects</h1>
-<p class="sub">Add a card here when you publish another project into its own folder.</p>
-<div class="card"><h2>Theme Tracker</h2><p>US equities by sector and theme.</p><a href="themes/">Open</a></div>
-</main></body></html>
+:root{color-scheme:light dark;--ink:#0f172a;--mut:rgba(15,23,42,.64);--glass:rgba(255,255,255,.55);--edge:rgba(255,255,255,.75);--shadow:0 18px 50px -18px rgba(30,41,90,.35);--bg1:#dfe9ff;--bg2:#f3e8ff}
+@media (prefers-color-scheme:dark){:root{--ink:#f1f5f9;--mut:rgba(226,232,240,.66);--glass:rgba(30,36,60,.42);--edge:rgba(255,255,255,.16);--shadow:0 18px 50px -18px rgba(0,0,0,.7);--bg1:#0b1020;--bg2:#1a1038}}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{color:var(--ink);font:16px/1.5 "Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2)) fixed;position:relative;overflow-x:hidden}
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.55;z-index:0;pointer-events:none}
+.b1{width:46vw;height:46vw;left:-12vw;top:-14vw;background:#4f8cff}
+.b2{width:40vw;height:40vw;right:-10vw;top:18vh;background:#ff6fae}
+.b3{width:36vw;height:36vw;left:22vw;bottom:-18vw;background:#22d3b0}
+main{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:72px 24px 56px}
+header{margin:0 0 40px}
+h1{font-family:"Petrona",Georgia,serif;font-weight:600;font-size:clamp(2.2rem,5vw,3.4rem);letter-spacing:-.02em;margin:0 0 6px}
+header p{margin:0;color:var(--mut);font-size:1.05rem}
+.banners{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px}
+.banner{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:260px;padding:28px 30px;border-radius:28px;color:inherit;text-decoration:none;overflow:hidden;
+  background:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.55);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);transition:transform .25s ease,box-shadow .25s ease}
+.banner::before{content:"";position:absolute;width:260px;height:260px;right:-60px;top:-70px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));opacity:.55;filter:blur(38px);transition:opacity .25s ease,transform .4s ease}
+.banner::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,rgba(255,255,255,.35),rgba(255,255,255,0) 40%);pointer-events:none;opacity:.6}
+.banner:hover{transform:translateY(-6px);box-shadow:0 26px 60px -18px rgba(30,41,90,.5),inset 0 1px 0 rgba(255,255,255,.6)}
+.banner:hover::before{opacity:.8;transform:scale(1.12)}
+.icon{position:absolute;top:26px;left:30px;width:56px;height:56px;border-radius:18px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 8px 20px -6px var(--c1)}
+.icon svg{width:28px;height:28px}
+.banner h2{position:relative;z-index:1;margin:0 0 4px;font-family:"Petrona",Georgia,serif;font-weight:600;font-size:2rem;letter-spacing:-.01em}
+.banner p{position:relative;z-index:1;margin:0;color:var(--mut)}
+.tag{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;margin-top:16px;font:500 .8rem "IBM Plex Mono",ui-monospace,monospace;color:var(--ink)}
+.tag i{font-style:normal;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.35);border:1px solid var(--edge)}
+.go{position:absolute;right:26px;bottom:26px;z-index:1;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.4);border:1px solid var(--edge);transition:transform .25s ease,background .25s ease}
+.banner:hover .go{transform:translateX(4px);background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
+footer{margin-top:40px;color:var(--mut);font-size:.8rem;text-align:center}
+</style></head><body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<main><header><h1>Projects</h1><p>Research tools and dashboards &mdash; pick one.</p></header>
+<div class="banners">
+<a class="banner" href="themes/" style="--c1:#4f8cff;--c2:#7b5cff"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><h2>Themes</h2><p>US equities by sector and theme</p><span class="tag"><i>Natives and Fledglings</i></span><span class="go"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></a>
+<a class="banner" href="large_movers/" style="--c1:#ff8a4c;--c2:#ff4f7b"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg></span><h2>Large Movers</h2><p>Signal Screener - last-day movers</p><span class="tag"><i>5% and 20% moves</i></span><span class="go"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></a>
+</div>
+<footer>Updated 2026-09-19 13:17 Russia TZ 2 Standard Time</footer></main></body></html>
