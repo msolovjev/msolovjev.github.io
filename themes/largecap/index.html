@@ -248,6 +248,17 @@
   .theme-group .table-wrap{ margin: 0; border: none; border-top: 1px solid var(--rule); border-radius: 0; }
   .theme-group table{ font-size: 12.5px; }
 
+  .navbtns{ display: flex; flex-wrap: wrap; gap: 10px; }
+  .navbtns a{
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 14px 7px 11px;
+    border: 1px solid var(--rule); border-radius: 999px;
+    background: var(--surface); color: var(--accent);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-decoration: none;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .navbtns a:hover{ border-color: var(--accent); transform: translateX(-2px); }
   footer{
     color: var(--muted);
     font-size: 12px;
@@ -258,9 +269,13 @@
 </head>
 <body>
 <div class="page">
+  <nav class="navbtns">
+    <a href="../../" aria-label="All projects"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>All projects</a>
+    <a href="../" aria-label="Themes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Themes</a>
+  </nav>
   <header>
     <h1>US Equities – Sector/Theme Classification (Natives)</h1>
-    <div class="generated-line">Generated 2026-09-19 13:52 Russia TZ 2 Standard Time &middot; source <code>rs_hist/sector_theme_classification.md</code> &middot; <code>rs_hist/publish_artifacts.py</code></div>
+    <div class="generated-line">Generated 2026-09-19 16:06 Russia TZ 2 Standard Time &middot; source <code>rs_hist/sector_theme_classification.md</code> &middot; <code>rs_hist/publish_artifacts.py</code></div>
     <div class="generated-line" style="margin-top:6px;"><a href="habitat.html" style="color:var(--accent);text-decoration:none;">&rarr; View as interactive habitat cards</a></div>
   </header>
   <div class="card">
