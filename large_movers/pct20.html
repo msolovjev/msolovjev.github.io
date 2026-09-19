@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>20-Day % Change - Last-Day Movers</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --page:        #f2f2ee;
+  --surface:     #fdfdfb;
+  --surface-2:   #f7f6f1;
+  --ink:         #15181b;
+  --ink-2:       #53565a;
+  --muted:       #8b8e8f;
+  --rule:        #e0ded5;
+  --rule-strong: #c7c5ba;
+  --accent:      #2c4a63;
+  --accent-soft: #e6edf1;
+  --pos:         #1baf7a;
+  --pos-bg:      rgba(27,175,122,0.12);
+  --neg:         #e34948;
+  --neg-bg:      rgba(227,73,72,0.10);
+  --shadow: 0 1px 2px rgba(21,24,27,0.04), 0 8px 24px rgba(21,24,27,0.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --page:        #101214;
+    --surface:     #17191c;
+    --surface-2:   #1c1f22;
+    --ink:         #f2f2ef;
+    --ink-2:       #c2c3bd;
+    --muted:       #8c8f90;
+    --rule:        #2a2d30;
+    --rule-strong: #3a3d40;
+    --accent:      #86adc9;
+    --accent-soft: #1d2b34;
+    --pos:         #199e70;
+    --pos-bg:      rgba(25,158,112,0.20);
+    --neg:         #e66767;
+    --neg-bg:      rgba(230,103,103,0.18);
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:        #101214;
+  --surface:     #17191c;
+  --surface-2:   #1c1f22;
+  --ink:         #f2f2ef;
+  --ink-2:       #c2c3bd;
+  --muted:       #8c8f90;
+  --rule:        #2a2d30;
+  --rule-strong: #3a3d40;
+  --accent:      #86adc9;
+  --accent-soft: #1d2b34;
+  --pos:         #199e70;
+  --pos-bg:      rgba(25,158,112,0.20);
+  --neg:         #e66767;
+  --neg-bg:      rgba(230,103,103,0.18);
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+}
+
+*{ box-sizing: border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background: var(--page);
+  color: var(--ink);
+  font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.page{
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.head{ display:flex; flex-direction:column; gap:10px; }
+.eyebrow{
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1{
+  font-family: "Spectral", Georgia, serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1.12;
+  margin: 0;
+  text-wrap: balance;
+  letter-spacing: -0.01em;
+}
+.dateline{
+  display:flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.dateline b{
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 13px;
+}
+.dateline .sep{ color: var(--rule-strong); margin: 0 10px; }
+
+.nav{ display:flex; gap: 8px; flex-wrap: wrap; }
+.nav a{
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--ink-2);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  padding: 7px 14px;
+}
+.nav a.active{ color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.nav a:hover{ border-color: var(--rule-strong); }
+
+.card{
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+.card-head{
+  padding: 22px 26px 14px;
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--rule);
+}
+.card-title{
+  font-family: "Spectral", Georgia, serif;
+  font-size: 19px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+.card-sub{
+  font-size: 13px;
+  color: var(--muted);
+}
+.key{
+  display:flex;
+  gap: 16px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.key span{ display:inline-flex; align-items:center; gap: 6px; white-space: nowrap; }
+.key i{ width: 9px; height: 9px; border-radius: 2px; display:inline-block; }
+.key i.pos{ background: var(--pos); }
+.key i.neg{ background: var(--neg); }
+
+/* ---------- filters ---------- */
+.filters{
+  display:flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 26px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.filters label{ display:flex; align-items:center; gap: 7px; cursor: pointer; user-select:none; }
+.filters input[type="checkbox"]{ width: 15px; height: 15px; accent-color: var(--accent); cursor:pointer; }
+.filters .range-group{ display:flex; align-items:center; gap: 8px; }
+.filters input[type="text"]{
+  width: 92px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12.5px;
+  padding: 6px 9px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.filters input[type="text"]:focus{ outline: 2px solid var(--accent); outline-offset: 1px; }
+.filters select{
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12.5px;
+  padding: 6px 9px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+.filters select:focus{ outline: 2px solid var(--accent); outline-offset: 1px; }
+.filters .hint{ color: var(--muted); font-size: 11.5px; }
+.filters .count{ margin-left: auto; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; color: var(--muted); }
+
+/* ---------- chart (diverging horizontal histogram) ---------- */
+.chart{ padding: 10px 26px 22px; }
+.rs-row{
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 7px 0;
+  border-radius: 6px;
+  outline: none;
+}
+.rs-row:focus-visible{ box-shadow: 0 0 0 2px var(--accent); }
+.rs-label{ display:flex; flex-direction:column; gap: 1px; min-width:0; }
+.rs-theme{
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rs-sector{
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.rs-track{
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 22px;
+}
+.rs-track::before{
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  bottom: -8px;
+  width: 1px;
+  background: var(--rule-strong);
+}
+.rs-half{ display:flex; align-items:center; min-width:0; }
+.rs-half.neg{ justify-content: flex-end; }
+.rs-half.pos{ justify-content: flex-start; }
+.rs-half.neg .rs-value{ order: 1; }
+.rs-half.neg .rs-bar{ order: 2; }
+.rs-half.pos .rs-bar{ order: 1; }
+.rs-half.pos .rs-value{ order: 2; }
+
+.rs-bar{
+  height: 18px;
+  min-width: 3px;
+  transition: filter 0.12s ease, box-shadow 0.12s ease;
+}
+.rs-half.neg .rs-bar{ border-radius: 4px 0 0 4px; margin-left: 6px; background: var(--neg); }
+.rs-half.pos .rs-bar{ border-radius: 0 4px 4px 0; margin-right: 6px; background: var(--pos); }
+.rs-row:hover .rs-bar,
+.rs-row:focus-visible .rs-bar,
+.rs-row.is-active .rs-bar{
+  filter: brightness(1.08);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px currentColor;
+}
+.rs-half.neg .rs-bar{ color: var(--neg); }
+.rs-half.pos .rs-bar{ color: var(--pos); }
+
+.rs-value{
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rs-half.neg .rs-value{ color: var(--neg); }
+.rs-half.pos .rs-value{ color: var(--pos); }
+
+/* ---------- tooltip ---------- */
+.tip{
+  position: fixed;
+  z-index: 20;
+  pointer-events: none;
+  background: var(--ink);
+  color: var(--page);
+  font-size: 12.5px;
+  padding: 9px 12px;
+  border-radius: 7px;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translate(-50%, -100%) translateY(-10px);
+  transition: opacity 0.1s ease;
+  max-width: 220px;
+}
+.tip.show{ opacity: 1; }
+.tip .tip-val{
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.tip .tip-meta{ color: inherit; opacity: 0.68; margin-top: 2px; }
+
+/* ---------- table ---------- */
+.table-wrap{ overflow-x: auto; padding: 4px 26px 24px; }
+table{ width: 100%; border-collapse: collapse; font-size: 13.5px; }
+thead th{
+  text-align: left;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--rule-strong);
+  white-space: nowrap;
+}
+thead th.num, tbody td.num{ text-align: right; }
+thead th.sortable{ cursor: pointer; user-select: none; }
+thead th.sortable:hover{ color: var(--ink-2); }
+thead th .sort-arrow{ color: var(--accent); font-size: 9px; }
+tbody td{
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+}
+tbody tr:nth-child(odd){ background: var(--surface-2); }
+tbody tr:last-child td{ border-bottom: none; }
+td.sym{ font-weight: 600; }
+td.n{ font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap: 6px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 600;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+.pill.pos{ background: var(--pos-bg); color: var(--pos); }
+.pill.neg{ background: var(--neg-bg); color: var(--neg); }
+.pill svg{ width: 9px; height: 9px; }
+
+.foot{
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--rule);
+  padding-top: 18px;
+}
+.foot code{
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  background: none;
+  padding: 0;
+  color: var(--muted);
+}
+code{
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.92em;
+}
+
+@media (max-width: 620px){
+  h1{ font-size: 27px; }
+  .rs-row{ grid-template-columns: 64px 1fr; }
+  .filters{ gap: 12px; }
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="head">
+    <div class="eyebrow">Finviz &middot; Last-Day Movers</div>
+    <h1>20-Day % Change</h1>
+    <div class="dateline">
+      <span>As of <b>Sep 17, 2026</b></span>
+      <span class="sep">&middot;</span>
+      <span><b>1360</b> symbols with a usable 20-day % change</span>
+    </div>
+    <nav class="nav">
+      <a href="index.html">Signals</a>
+      <a href="pct5.html" class="">5-day % change</a>
+      <a href="pct20.html" class="active">20-day % change</a>
+    </nav>
+  </header>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <p class="card-title">20-day % change &mdash; most extreme movers</p>
+        <p class="card-sub">Ranked by absolute value, high to low</p>
+      </div>
+      <div class="key">
+        <span><i class="pos"></i>Up</span>
+        <span><i class="neg"></i>Down</span>
+      </div>
+    </div>
+    <div class="filters">
+      <label for="topN">Show</label>
+      <select id="topN">
+        <option value="10">Top 10</option>
+        <option value="20">Top 20</option>
+        <option value="30" selected>Top 30</option>
+        <option value="50">Top 50</option>
+        <option value="100">Top 100</option>
+        <option value="all">All</option>
+      </select>
+      <span class="hint">by absolute 20-day % change</span>
+      <span class="count" id="rowCount"></span>
+    </div>
+    <div class="chart" id="chart" role="list" aria-label="20-day % change by symbol"></div>
+  </section>
+
+  <div class="foot">
+    <span>Source: <code>finviz/last_day_movers.py</code></span>
+    <span>Generated 2026-09-18 18:18 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
+  </div>
+
+</div>
+
+<div class="tip" id="tip">
+  <div class="tip-val" id="tipVal"></div>
+  <div class="tip-meta" id="tipMeta"></div>
+</div>
+
+<script>
+  const DATA = [{"symbol": "SMTC", "marketCap": 16901270869.0, "value": 54.95}, {"symbol": "CVI", "marketCap": 5449763772.0, "value": 51.27}, {"symbol": "BE", "marketCap": 79219020254.0, "value": 51.0}, {"symbol": "OKTA", "marketCap": 32255335321.0, "value": 48.92}, {"symbol": "TTAN", "marketCap": 5283547047.0, "value": -47.31}, {"symbol": "SMMT", "marketCap": 13920730555.0, "value": 45.01}, {"symbol": "SWKS", "marketCap": 13292765562.0, "value": 44.81}, {"symbol": "SEI", "marketCap": 5306433798.0, "value": 44.78}, {"symbol": "PURR", "marketCap": 3190497652.0, "value": 44.48}, {"symbol": "DELL", "marketCap": 370914083968.0, "value": 39.47}, {"symbol": "TEM", "marketCap": 14052446397.0, "value": 39.22}, {"symbol": "KRMN", "marketCap": 4856035061.0, "value": -38.82}, {"symbol": "CAI", "marketCap": 8684150066.0, "value": 36.87}, {"symbol": "FPS", "marketCap": 11641360715.0, "value": 35.98}, {"symbol": "CRWD", "marketCap": 241300484866.0, "value": 35.57}, {"symbol": "ANF", "marketCap": 5793565492.0, "value": 35.48}, {"symbol": "MXL", "marketCap": 7087672877.0, "value": 34.08}, {"symbol": "DKS", "marketCap": 11014443226.0, "value": -33.71}, {"symbol": "HPE", "marketCap": 81240844475.0, "value": 33.57}, {"symbol": "WGS", "marketCap": 3081563162.0, "value": 33.19}, {"symbol": "DYN", "marketCap": 3264327614.0, "value": -32.79}, {"symbol": "CAVA", "marketCap": 6012015011.0, "value": -31.23}, {"symbol": "CRDO", "marketCap": 32799489210.0, "value": -31.17}, {"symbol": "TXG", "marketCap": 9962714161.0, "value": 31.12}, {"symbol": "NTSK", "marketCap": 7025666327.0, "value": 30.97}, {"symbol": "IOVA", "marketCap": 4541038606.0, "value": 30.81}, {"symbol": "DOCN", "marketCap": 15326494343.0, "value": 30.72}, {"symbol": "COO", "marketCap": 10380577499.0, "value": -30.24}, {"symbol": "GWRE", "marketCap": 11594583323.0, "value": -30.13}, {"symbol": "QRVO", "marketCap": 10302522302.0, "value": 30.1}, {"symbol": "IOND", "marketCap": 3784628279.0, "value": 29.74}, {"symbol": "HPQ", "marketCap": 30660892946.0, "value": 29.67}, {"symbol": "DY", "marketCap": 8697213561.0, "value": -29.61}, {"symbol": "AXON", "marketCap": 36719311580.0, "value": -29.58}, {"symbol": "ENVA", "marketCap": 4424689510.0, "value": -29.45}, {"symbol": "TWST", "marketCap": 10596916640.0, "value": 29.43}, {"symbol": "CASY", "marketCap": 22434082166.0, "value": -29.37}, {"symbol": "BURL", "marketCap": 14985821071.0, "value": -29.34}, {"symbol": "DK", "marketCap": 4951539751.0, "value": 29.18}, {"symbol": "CLMT", "marketCap": 5189951227.0, "value": 29.13}, {"symbol": "NAVN", "marketCap": 5596221495.0, "value": -28.34}, {"symbol": "GME", "marketCap": 11373974820.0, "value": 27.99}, {"symbol": "INTC", "marketCap": 572003073176.0, "value": 27.79}, {"symbol": "RBLX", "marketCap": 33282775091.0, "value": 27.69}, {"symbol": "AGX", "marketCap": 5382619033.0, "value": -27.63}, {"symbol": "DINO", "marketCap": 20779376271.0, "value": 27.62}, {"symbol": "PCG", "marketCap": 35632069044.0, "value": -27.32}, {"symbol": "RUM", "marketCap": 4521788969.0, "value": 27.27}, {"symbol": "BOOT", "marketCap": 3722310176.0, "value": -27.25}, {"symbol": "IONS", "marketCap": 7558893886.0, "value": -27.17}, {"symbol": "PATH", "marketCap": 6978270927.0, "value": -26.93}, {"symbol": "EIX", "marketCap": 21193629893.0, "value": -26.88}, {"symbol": "AAOI", "marketCap": 8412090583.0, "value": -26.67}, {"symbol": "META", "marketCap": 1717044670712.0, "value": 26.52}, {"symbol": "PL", "marketCap": 5934724549.0, "value": -26.0}, {"symbol": "RIOT", "marketCap": 8362645366.0, "value": 25.81}, {"symbol": "RBRK", "marketCap": 21970123809.0, "value": 25.71}, {"symbol": "RVTY", "marketCap": 16274318654.0, "value": 25.45}, {"symbol": "MTZ", "marketCap": 16891744287.0, "value": -25.43}, {"symbol": "FIG", "marketCap": 12072673488.0, "value": -25.4}, {"symbol": "GTLB", "marketCap": 8285018000.0, "value": 25.24}, {"symbol": "ARWR", "marketCap": 9523376165.0, "value": -24.91}, {"symbol": "ERAS", "marketCap": 5291899590.0, "value": -24.8}, {"symbol": "LEGN", "marketCap": 3354925124.0, "value": -24.35}, {"symbol": "BULL", "marketCap": 4353605749.0, "value": -24.34}, {"symbol": "FSLY", "marketCap": 3701335500.0, "value": 24.34}, {"symbol": "KVYO", "marketCap": 4403309813.0, "value": -24.12}, {"symbol": "ZS", "marketCap": 31538039687.0, "value": 24.04}, {"symbol": "NET", "marketCap": 112866587264.0, "value": 24.0}, {"symbol": "CLSK", "marketCap": 3493996278.0, "value": 23.96}, {"symbol": "USAR", "marketCap": 5734920709.0, "value": -23.83}, {"symbol": "AMD", "marketCap": 896620592068.0, "value": 23.74}, {"symbol": "CRWV", "marketCap": 43981238407.0, "value": -23.63}, {"symbol": "BROS", "marketCap": 6927003448.0, "value": -23.61}, {"symbol": "VSEC", "marketCap": 4897056964.0, "value": -23.48}, {"symbol": "BBY", "marketCap": 19605345209.0, "value": 23.29}, {"symbol": "BLLN", "marketCap": 5151644874.0, "value": 23.27}, {"symbol": "VLO", "marketCap": 119799648678.0, "value": 23.14}, {"symbol": "CAR", "marketCap": 3988630884.0, "value": -23.1}, {"symbol": "PINS", "marketCap": 10507428534.0, "value": -23.03}, {"symbol": "AGCO", "marketCap": 8396454148.0, "value": 22.98}, {"symbol": "ILMN", "marketCap": 36694510000.0, "value": 22.58}, {"symbol": "CLF", "marketCap": 7165982990.0, "value": 22.46}, {"symbol": "BRKR", "marketCap": 9525504436.0, "value": 22.33}, {"symbol": "CLX", "marketCap": 10129180979.0, "value": -22.32}, {"symbol": "NTAP", "marketCap": 38170105242.0, "value": 22.31}, {"symbol": "AFRM", "marketCap": 23720714297.0, "value": -22.29}, {"symbol": "LUNR", "marketCap": 3199213850.0, "value": -22.08}, {"symbol": "CRM", "marketCap": 195614755000.0, "value": 22.07}, {"symbol": "MSTR", "marketCap": 55516778762.0, "value": 22.06}, {"symbol": "NIO", "marketCap": 9170991867.0, "value": -21.98}, {"symbol": "VVV", "marketCap": 3412298749.0, "value": -21.84}, {"symbol": "KTB", "marketCap": 3591650084.0, "value": -21.76}, {"symbol": "EAT", "marketCap": 8208495065.0, "value": -21.74}, {"symbol": "CELH", "marketCap": 7191256036.0, "value": -21.6}, {"symbol": "S", "marketCap": 7858949062.0, "value": 21.6}, {"symbol": "BKNG", "marketCap": 126562531420.0, "value": -21.54}, {"symbol": "SAIL", "marketCap": 11221268147.0, "value": 21.48}, {"symbol": "DNLI", "marketCap": 3172970950.0, "value": -21.38}, {"symbol": "MPC", "marketCap": 119263468598.0, "value": 21.37}, {"symbol": "ADPT", "marketCap": 4491026994.0, "value": 21.33}, {"symbol": "MP", "marketCap": 8565350621.0, "value": -20.95}, {"symbol": "PRAX", "marketCap": 8440212372.0, "value": -20.94}, {"symbol": "RELY", "marketCap": 4652815507.0, "value": -20.92}, {"symbol": "HUT", "marketCap": 11286253187.0, "value": 20.82}, {"symbol": "HWM", "marketCap": 90170990321.0, "value": -20.81}, {"symbol": "QCOM", "marketCap": 191090061926.0, "value": 20.79}, {"symbol": "IBP", "marketCap": 5199152813.0, "value": -20.69}, {"symbol": "KTOS", "marketCap": 8851060568.0, "value": -20.69}, {"symbol": "BLDR", "marketCap": 6109563541.0, "value": -20.68}, {"symbol": "PBF", "marketCap": 9210904997.0, "value": 20.66}, {"symbol": "SFM", "marketCap": 6536658513.0, "value": -20.64}, {"symbol": "SRRK", "marketCap": 5801850834.0, "value": -20.63}, {"symbol": "SMR", "marketCap": 3682685469.0, "value": -20.49}, {"symbol": "JOBY", "marketCap": 6012940392.0, "value": -20.39}, {"symbol": "TENB", "marketCap": 3867014803.0, "value": 20.32}, {"symbol": "DOCU", "marketCap": 12933649678.0, "value": 20.28}, {"symbol": "ZG", "marketCap": 6863183596.0, "value": -20.26}, {"symbol": "RHI", "marketCap": 3731088631.0, "value": -20.24}, {"symbol": "BBIO", "marketCap": 13035104766.0, "value": -20.22}, {"symbol": "WSC", "marketCap": 3272308701.0, "value": -20.22}, {"symbol": "AUR", "marketCap": 12756448281.0, "value": 20.19}, {"symbol": "CG", "marketCap": 14212333648.0, "value": -20.17}, {"symbol": "FRPT", "marketCap": 2949804582.0, "value": -20.17}, {"symbol": "ALB", "marketCap": 13168774336.0, "value": -20.14}, {"symbol": "PCOR", "marketCap": 7739085364.0, "value": -20.13}, {"symbol": "CRS", "marketCap": 20206761908.0, "value": -20.03}, {"symbol": "MRVL", "marketCap": 210210468000.0, "value": 20.01}, {"symbol": "PARR", "marketCap": 4369689467.0, "value": 19.98}, {"symbol": "Z", "marketCap": 6736129247.0, "value": -19.9}, {"symbol": "VRNS", "marketCap": 5365707557.0, "value": 19.88}, {"symbol": "ESAB", "marketCap": 4102453782.0, "value": -19.87}, {"symbol": "HEI", "marketCap": 41166941217.0, "value": -19.87}, {"symbol": "KNF", "marketCap": 3068062851.0, "value": -19.87}, {"symbol": "CRK", "marketCap": 3843492973.0, "value": -19.85}, {"symbol": "XE", "marketCap": 6349470438.0, "value": -19.83}, {"symbol": "HLNE", "marketCap": 4826314123.0, "value": -19.64}, {"symbol": "AIR", "marketCap": 4449809585.0, "value": -19.58}, {"symbol": "ADSK", "marketCap": 45494075000.0, "value": -19.53}, {"symbol": "OWL", "marketCap": 15185558252.0, "value": -19.48}, {"symbol": "CIFR", "marketCap": 7159279955.0, "value": 19.46}, {"symbol": "PJT", "marketCap": 6141283390.0, "value": -19.37}, {"symbol": "TXRH", "marketCap": 10930198793.0, "value": -19.29}, {"symbol": "CDNS", "marketCap": 77804030360.0, "value": -19.26}, {"symbol": "UI", "marketCap": 36353345629.0, "value": 19.23}, {"symbol": "RCUS", "marketCap": 3255914424.0, "value": -19.13}, {"symbol": "FRMI", "marketCap": 3160706362.0, "value": -19.12}, {"symbol": "HIMS", "marketCap": 6532775564.0, "value": -19.06}, {"symbol": "FOUR", "marketCap": 3243681730.0, "value": -19.03}, {"symbol": "ELVN", "marketCap": 3673063249.0, "value": -18.97}, {"symbol": "GH", "marketCap": 23965020431.0, "value": 18.9}, {"symbol": "ACMR", "marketCap": 4775497124.0, "value": -18.84}, {"symbol": "QXO", "marketCap": 11925955700.0, "value": -18.83}, {"symbol": "NCLH", "marketCap": 6490620203.0, "value": -18.79}, {"symbol": "SPCX", "marketCap": 2056078883863.0, "value": 18.73}, {"symbol": "FICO", "marketCap": 20426611230.0, "value": -18.72}, {"symbol": "RNG", "marketCap": 6131439945.0, "value": 18.7}, {"symbol": "INSW", "marketCap": 5535619317.0, "value": 18.67}, {"symbol": "ICUI", "marketCap": 3807133983.0, "value": -18.61}, {"symbol": "EFX", "marketCap": 18660126032.0, "value": -18.56}, {"symbol": "DASH", "marketCap": 84020759634.0, "value": -18.54}, {"symbol": "SXI", "marketCap": 3144300669.0, "value": -18.47}, {"symbol": "ONTO", "marketCap": 12516386697.0, "value": -18.46}, {"symbol": "ROAD", "marketCap": 5407551809.0, "value": -18.43}, {"symbol": "SYM", "marketCap": 25752517207.0, "value": 18.39}, {"symbol": "SMCI", "marketCap": 25480402418.0, "value": 18.36}, {"symbol": "SON", "marketCap": 4805325146.0, "value": -18.29}, {"symbol": "BSY", "marketCap": 9555198079.0, "value": -18.27}, {"symbol": "ASO", "marketCap": 3059855094.0, "value": 18.23}, {"symbol": "VRT", "marketCap": 93695572632.0, "value": -18.23}, {"symbol": "WYNN", "marketCap": 8503069049.0, "value": -18.23}, {"symbol": "CVLT", "marketCap": 5921599304.0, "value": 18.18}, {"symbol": "SYK", "marketCap": 106514399144.0, "value": -18.17}, {"symbol": "AON", "marketCap": 62545184215.0, "value": -18.16}, {"symbol": "SE", "marketCap": 61775188889.0, "value": -18.15}, {"symbol": "HRB", "marketCap": 5400280043.0, "value": -18.14}, {"symbol": "CENX", "marketCap": 4041896235.0, "value": -18.12}, {"symbol": "BC", "marketCap": 4353739187.0, "value": -18.09}, {"symbol": "SNPS", "marketCap": 73449535496.0, "value": -18.02}, {"symbol": "AN", "marketCap": 5582978309.0, "value": -17.98}, {"symbol": "VKTX", "marketCap": 3412098407.0, "value": -17.97}, {"symbol": "ACLS", "marketCap": 3262320498.0, "value": -17.92}, {"symbol": "CIEN", "marketCap": 48631815564.0, "value": -17.79}, {"symbol": "CHWY", "marketCap": 8414346958.0, "value": -17.65}, {"symbol": "HCC", "marketCap": 4697801680.0, "value": -17.61}, {"symbol": "TOST", "marketCap": 17464270000.0, "value": -17.61}, {"symbol": "AMLX", "marketCap": 4222925806.0, "value": -17.5}, {"symbol": "WFRD", "marketCap": 5823945750.0, "value": -17.45}, {"symbol": "RUSHB", "marketCap": 6615109331.0, "value": 17.43}, {"symbol": "PSX", "marketCap": 109607055416.0, "value": 17.41}, {"symbol": "HRI", "marketCap": 4597492179.0, "value": -17.4}, {"symbol": "ONDS", "marketCap": 4169830834.0, "value": -17.34}, {"symbol": "HOOD", "marketCap": 104262075788.0, "value": 17.26}, {"symbol": "ACHR", "marketCap": 4105453760.0, "value": -17.24}, {"symbol": "BETA", "marketCap": 4984114283.0, "value": -17.24}, {"symbol": "ETSY", "marketCap": 6675286532.0, "value": -17.24}, {"symbol": "CAKE", "marketCap": 4733480309.0, "value": -17.2}, {"symbol": "LAD", "marketCap": 6974473298.0, "value": -17.19}, {"symbol": "XMTR", "marketCap": 5519686844.0, "value": 17.19}, {"symbol": "USFD", "marketCap": 19861323679.0, "value": -17.18}, {"symbol": "COCO", "marketCap": 3332656562.0, "value": -17.12}, {"symbol": "AMAT", "marketCap": 340008888479.0, "value": -17.1}, {"symbol": "CHTR", "marketCap": 14825181690.0, "value": -17.01}, {"symbol": "OC", "marketCap": 9688206588.0, "value": -17.0}, {"symbol": "FRVO", "marketCap": 4810535408.0, "value": -16.99}, {"symbol": "DFTX", "marketCap": 5131473821.0, "value": -16.94}, {"symbol": "DE", "marketCap": 183994403339.0, "value": 16.91}, {"symbol": "MARA", "marketCap": 4795905772.0, "value": 16.87}, {"symbol": "MMED", "marketCap": 6146089243.0, "value": 16.87}, {"symbol": "YUMC", "marketCap": 14124685819.0, "value": -16.85}, {"symbol": "EXPE", "marketCap": 32202541823.0, "value": -16.8}, {"symbol": "GPI", "marketCap": 2987411529.0, "value": -16.79}, {"symbol": "VIRT", "marketCap": 8882884992.0, "value": -16.72}, {"symbol": "PANW", "marketCap": 292255040000.0, "value": 16.7}, {"symbol": "ALAB", "marketCap": 51764485332.0, "value": 16.67}, {"symbol": "COMP", "marketCap": 7620673302.0, "value": -16.59}, {"symbol": "LW", "marketCap": 6358496759.0, "value": -16.59}, {"symbol": "IMVT", "marketCap": 7630056073.0, "value": -16.56}, {"symbol": "DLTR", "marketCap": 21331688693.0, "value": -16.54}, {"symbol": "ODFL", "marketCap": 35979484266.0, "value": -16.52}, {"symbol": "RCL", "marketCap": 66020546935.0, "value": -16.44}, {"symbol": "LRCX", "marketCap": 348993426900.0, "value": -16.42}, {"symbol": "FTNT", "marketCap": 122676922782.0, "value": 16.41}, {"symbol": "VSXY", "marketCap": 6165760215.0, "value": -16.37}, {"symbol": "KAI", "marketCap": 3146421133.0, "value": -16.33}, {"symbol": "CMCSA", "marketCap": 79826579710.0, "value": -16.23}, {"symbol": "CCL", "marketCap": 29961074478.0, "value": -16.21}, {"symbol": "CW", "marketCap": 20988367147.0, "value": -16.2}, {"symbol": "NVST", "marketCap": 3719906140.0, "value": -16.2}, {"symbol": "DT", "marketCap": 15912457168.0, "value": 16.13}, {"symbol": "MYRG", "marketCap": 4330275503.0, "value": -16.13}, {"symbol": "ADM", "marketCap": 41528047469.0, "value": 16.12}, {"symbol": "DDOG", "marketCap": 83018145549.0, "value": 16.12}, {"symbol": "GMED", "marketCap": 10009225689.0, "value": -16.11}, {"symbol": "INTU", "marketCap": 81726113520.0, "value": -16.05}, {"symbol": "FND", "marketCap": 4987989961.0, "value": -16.03}, {"symbol": "ULS", "marketCap": 13012337250.0, "value": -16.0}, {"symbol": "PFGC", "marketCap": 14231534111.0, "value": -15.98}, {"symbol": "COHR", "marketCap": 59813042896.0, "value": 15.96}, {"symbol": "BSX", "marketCap": 62874822986.0, "value": -15.93}, {"symbol": "LOAR", "marketCap": 5973576911.0, "value": -15.93}, {"symbol": "ABG", "marketCap": 3308358784.0, "value": -15.92}, {"symbol": "NTRA", "marketCap": 52433883279.0, "value": 15.92}, {"symbol": "DPZ", "marketCap": 9724376003.0, "value": -15.9}, {"symbol": "MIAX", "marketCap": 3746958708.0, "value": -15.87}, {"symbol": "BMNR", "marketCap": 15324966540.0, "value": 15.86}, {"symbol": "SYRE", "marketCap": 8086415713.0, "value": -15.86}, {"symbol": "MKSI", "marketCap": 16542635565.0, "value": -15.85}, {"symbol": "TPG", "marketCap": 17240654105.0, "value": -15.8}, {"symbol": "IP", "marketCap": 18291344173.0, "value": -15.78}, {"symbol": "GKOS", "marketCap": 9515288717.0, "value": -15.76}, {"symbol": "ATI", "marketCap": 25552372370.0, "value": -15.7}, {"symbol": "PTC", "marketCap": 14480703062.0, "value": -15.69}, {"symbol": "WULF", "marketCap": 8143168809.0, "value": 15.66}, {"symbol": "VCTR", "marketCap": 6401916254.0, "value": -15.65}, {"symbol": "AEIS", "marketCap": 10348032952.0, "value": -15.62}, {"symbol": "PYPL", "marketCap": 45172611452.0, "value": -15.61}, {"symbol": "H", "marketCap": 14663421212.0, "value": -15.56}, {"symbol": "FFIV", "marketCap": 24196794869.0, "value": 15.53}, {"symbol": "QS", "marketCap": 3120270164.0, "value": -15.52}, {"symbol": "CALM", "marketCap": 3440811739.0, "value": -15.51}, {"symbol": "EWTX", "marketCap": 5015338677.0, "value": 15.5}, {"symbol": "HGTY", "marketCap": 4760892218.0, "value": 15.49}, {"symbol": "WAY", "marketCap": 5035313404.0, "value": 15.49}, {"symbol": "DKNG", "marketCap": 11103194784.0, "value": -15.46}, {"symbol": "SMG", "marketCap": 3090332144.0, "value": -15.43}, {"symbol": "SMCIP", "marketCap": 43169195383.0, "value": 15.42}, {"symbol": "TRU", "marketCap": 13788494000.0, "value": -15.38}, {"symbol": "EXP", "marketCap": 5395482914.0, "value": -15.35}, {"symbol": "AVTR", "marketCap": 10652651730.0, "value": 15.3}, {"symbol": "JBHT", "marketCap": 22125420479.0, "value": -15.23}, {"symbol": "ELF", "marketCap": 5491874188.0, "value": -15.19}, {"symbol": "MC", "marketCap": 4556825139.0, "value": -15.19}, {"symbol": "BWIN", "marketCap": 4456274280.0, "value": 15.18}, {"symbol": "ZM", "marketCap": 26254698316.0, "value": -15.16}, {"symbol": "GPGI", "marketCap": 3469984282.0, "value": -15.13}, {"symbol": "KBH", "marketCap": 2912212080.0, "value": -15.11}, {"symbol": "PII", "marketCap": 3100103988.0, "value": -15.09}, {"symbol": "FROG", "marketCap": 11249395109.0, "value": 15.06}, {"symbol": "SPXC", "marketCap": 9010446214.0, "value": -15.05}, {"symbol": "AMGN", "marketCap": 206180827747.0, "value": -15.04}, {"symbol": "FBIN", "marketCap": 4691299046.0, "value": -14.96}, {"symbol": "HRL", "marketCap": 11529849260.0, "value": -14.95}, {"symbol": "FIS", "marketCap": 18529313598.0, "value": -14.94}, {"symbol": "GEHC", "marketCap": 28966639341.0, "value": -14.81}, {"symbol": "JEF", "marketCap": 9195996781.0, "value": -14.73}, {"symbol": "LUMN", "marketCap": 6632400237.0, "value": 14.69}, {"symbol": "RRR", "marketCap": 5466092637.0, "value": -14.68}, {"symbol": "EPRT", "marketCap": 5752861906.0, "value": -14.65}, {"symbol": "ALGM", "marketCap": 6330213482.0, "value": -14.64}, {"symbol": "SN", "marketCap": 23487161686.0, "value": -14.59}, {"symbol": "MAT", "marketCap": 3738384500.0, "value": -14.57}, {"symbol": "ARQT", "marketCap": 3245366433.0, "value": 14.55}, {"symbol": "NXST", "marketCap": 4889277369.0, "value": -14.55}, {"symbol": "OLED", "marketCap": 3556913692.0, "value": -14.53}, {"symbol": "LIF", "marketCap": 3278362647.0, "value": -14.51}, {"symbol": "PI", "marketCap": 5524696187.0, "value": 14.51}, {"symbol": "THO", "marketCap": 3508927227.0, "value": -14.51}, {"symbol": "WDC", "marketCap": 155423792844.0, "value": -14.45}, {"symbol": "ARE", "marketCap": 9766192954.0, "value": 14.44}, {"symbol": "TNL", "marketCap": 3858314785.0, "value": -14.43}, {"symbol": "BKR", "marketCap": 56071194900.0, "value": -14.4}, {"symbol": "FHI", "marketCap": 4184335449.0, "value": -14.39}, {"symbol": "LVS", "marketCap": 26173604845.0, "value": -14.38}, {"symbol": "DECK", "marketCap": 10726250669.0, "value": -14.37}, {"symbol": "FLY", "marketCap": 3490386848.0, "value": -14.36}, {"symbol": "SARO", "marketCap": 7409286060.0, "value": -14.36}, {"symbol": "CPRT", "marketCap": 27237373800.0, "value": -14.35}, {"symbol": "JLL", "marketCap": 15346099374.0, "value": -14.31}, {"symbol": "CDW", "marketCap": 18247543499.0, "value": 14.28}, {"symbol": "CVNA", "marketCap": 71387084760.0, "value": -14.27}, {"symbol": "SEZL", "marketCap": 3865218107.0, "value": -14.27}, {"symbol": "TTWO", "marketCap": 38824619185.0, "value": -14.27}, {"symbol": "VSNT", "marketCap": 4878549450.0, "value": -14.24}, {"symbol": "ABNB", "marketCap": 99188848223.0, "value": -14.23}, {"symbol": "CNS", "marketCap": 3700807730.0, "value": -14.23}, {"symbol": "MGNI", "marketCap": 3637236622.0, "value": 14.22}, {"symbol": "ADBE", "marketCap": 98739000000.0, "value": -14.21}, {"symbol": "OII", "marketCap": 4518645883.0, "value": -14.21}, {"symbol": "TTMI", "marketCap": 12117226337.0, "value": -14.2}, {"symbol": "LBRT", "marketCap": 3131643273.0, "value": -14.19}, {"symbol": "OKLO", "marketCap": 7022166288.0, "value": -14.18}, {"symbol": "SOFI", "marketCap": 21724212850.0, "value": -14.18}, {"symbol": "QTWO", "marketCap": 3575106438.0, "value": -14.16}, {"symbol": "WT", "marketCap": 3377204954.0, "value": -14.16}, {"symbol": "LMND", "marketCap": 3710006740.0, "value": -14.14}, {"symbol": "MIR", "marketCap": 3970905281.0, "value": 14.13}, {"symbol": "QBTS", "marketCap": 6320783356.0, "value": -14.11}, {"symbol": "TWLO", "marketCap": 36904125366.0, "value": 14.11}, {"symbol": "YUM", "marketCap": 36705195933.0, "value": -14.11}, {"symbol": "MDB", "marketCap": 31046413821.0, "value": -14.07}, {"symbol": "CEG", "marketCap": 91489251405.0, "value": -14.06}, {"symbol": "TEX", "marketCap": 6631114500.0, "value": -14.06}, {"symbol": "CSL", "marketCap": 12505186199.0, "value": -14.05}, {"symbol": "BAX", "marketCap": 11766828937.0, "value": -14.04}, {"symbol": "IRTC", "marketCap": 3606646973.0, "value": -14.01}, {"symbol": "MWA", "marketCap": 3398856032.0, "value": -13.98}, {"symbol": "BX", "marketCap": 92416964036.0, "value": -13.97}, {"symbol": "SNDK", "marketCap": 249734444391.0, "value": 13.97}, {"symbol": "UBER", "marketCap": 143479635700.0, "value": -13.96}, {"symbol": "CCC", "marketCap": 3825520602.0, "value": -13.95}, {"symbol": "HP", "marketCap": 4118483923.0, "value": -13.93}, {"symbol": "LITE", "marketCap": 80956044000.0, "value": 13.91}, {"symbol": "CMG", "marketCap": 41777775270.0, "value": -13.9}, {"symbol": "CPNG", "marketCap": 25983031652.0, "value": -13.9}, {"symbol": "ARES", "marketCap": 40653824118.0, "value": -13.89}, {"symbol": "CMI", "marketCap": 72151334282.0, "value": -13.85}, {"symbol": "MOS", "marketCap": 7888580455.0, "value": 13.81}, {"symbol": "LYFT", "marketCap": 5801129316.0, "value": -13.79}, {"symbol": "TARS", "marketCap": 3629163321.0, "value": 13.77}, {"symbol": "CART", "marketCap": 10480008033.0, "value": -13.76}, {"symbol": "BBWI", "marketCap": 3546961220.0, "value": -13.75}, {"symbol": "LII", "marketCap": 12384817886.0, "value": -13.74}, {"symbol": "DLB", "marketCap": 5345678131.0, "value": -13.73}, {"symbol": "MRCY", "marketCap": 5165693825.0, "value": -13.73}, {"symbol": "GLW", "marketCap": 128717258301.0, "value": -13.72}, {"symbol": "RYTM", "marketCap": 6762651494.0, "value": -13.71}, {"symbol": "U", "marketCap": 18158069376.0, "value": -13.66}, {"symbol": "AYI", "marketCap": 8928276893.0, "value": -13.64}, {"symbol": "NOW", "marketCap": 140029450000.0, "value": 13.61}, {"symbol": "PTRN", "marketCap": 3484118108.0, "value": -13.61}, {"symbol": "CHYM", "marketCap": 11501415672.0, "value": -13.59}, {"symbol": "RKT", "marketCap": 35381372050.0, "value": -13.58}, {"symbol": "MGM", "marketCap": 9718116640.0, "value": -13.54}, {"symbol": "TDW", "marketCap": 4288987112.0, "value": -13.54}, {"symbol": "WMS", "marketCap": 9435470444.0, "value": -13.53}, {"symbol": "TME", "marketCap": 12260716055.0, "value": -13.52}, {"symbol": "LGN", "marketCap": 5949555174.0, "value": -13.51}, {"symbol": "BLTE", "marketCap": 6858346123.0, "value": 13.45}, {"symbol": "STE", "marketCap": 20147910231.0, "value": -13.44}, {"symbol": "EL", "marketCap": 33833592993.0, "value": -13.4}, {"symbol": "IBRX", "marketCap": 8764739994.0, "value": 13.4}, {"symbol": "POOL", "marketCap": 6031292076.0, "value": -13.39}, {"symbol": "HUBS", "marketCap": 11022175738.0, "value": -13.37}, {"symbol": "RRX", "marketCap": 9754043719.0, "value": -13.37}, {"symbol": "CELC", "marketCap": 4090952168.0, "value": -13.36}, {"symbol": "CHDN", "marketCap": 5708798403.0, "value": -13.32}, {"symbol": "BEPC", "marketCap": 11112490609.0, "value": -13.3}, {"symbol": "CRUS", "marketCap": 5997819113.0, "value": 13.28}, {"symbol": "WY", "marketCap": 15388290189.0, "value": -13.26}, {"symbol": "CSW", "marketCap": 4653582822.0, "value": -13.24}, {"symbol": "VIAV", "marketCap": 8642412726.0, "value": -13.24}, {"symbol": "TYL", "marketCap": 13697511846.0, "value": -13.2}, {"symbol": "MDLN", "marketCap": 41794551171.0, "value": -13.15}, {"symbol": "EVR", "marketCap": 10000560591.0, "value": -13.13}, {"symbol": "GIS", "marketCap": 19556746086.0, "value": -13.13}, {"symbol": "EBAY", "marketCap": 49995750000.0, "value": 13.07}, {"symbol": "FWONA", "marketCap": 21429307755.0, "value": -13.05}, {"symbol": "VMC", "marketCap": 31393688991.0, "value": -13.05}, {"symbol": "TGTX", "marketCap": 8600950088.0, "value": 13.01}, {"symbol": "TNGX", "marketCap": 3896585581.0, "value": -13.0}, {"symbol": "FDS", "marketCap": 9911405523.0, "value": -12.99}, {"symbol": "ESTC", "marketCap": 9239232640.0, "value": 12.92}, {"symbol": "BRO", "marketCap": 21630886528.0, "value": -12.91}, {"symbol": "VNO", "marketCap": 6486671247.0, "value": -12.91}, {"symbol": "SITE", "marketCap": 3855644045.0, "value": -12.89}, {"symbol": "ABT", "marketCap": 176291450196.0, "value": -12.88}, {"symbol": "AUGO", "marketCap": 7333232797.0, "value": 12.88}, {"symbol": "CSGP", "marketCap": 11847977473.0, "value": -12.88}, {"symbol": "SLG", "marketCap": 3662231693.0, "value": -12.88}, {"symbol": "TFX", "marketCap": 5269855015.0, "value": -12.88}, {"symbol": "XPO", "marketCap": 20237224611.0, "value": -12.88}, {"symbol": "Q", "marketCap": 24742048338.0, "value": -12.85}, {"symbol": "ORA", "marketCap": 5959668552.0, "value": -12.82}, {"symbol": "PFSI", "marketCap": 3426206173.0, "value": -12.81}, {"symbol": "APG", "marketCap": 16085006254.0, "value": -12.8}, {"symbol": "NOVT", "marketCap": 4997240128.0, "value": -12.8}, {"symbol": "ROP", "marketCap": 36692718758.0, "value": -12.77}, {"symbol": "SLGN", "marketCap": 3951979138.0, "value": -12.76}, {"symbol": "AVAH", "marketCap": 2998338623.0, "value": 12.75}, {"symbol": "CBRS", "marketCap": 47576950491.0, "value": -12.75}, {"symbol": "ECG", "marketCap": 5838128370.0, "value": -12.75}, {"symbol": "FDXF", "marketCap": 18036372384.0, "value": -12.74}, {"symbol": "TPR", "marketCap": 22912097719.0, "value": -12.74}, {"symbol": "CPB", "marketCap": 6250373033.0, "value": -12.7}, {"symbol": "NRG", "marketCap": 21888166542.0, "value": -12.7}, {"symbol": "KMB", "marketCap": 32466365690.0, "value": -12.63}, {"symbol": "MKC", "marketCap": 13171037532.0, "value": -12.61}, {"symbol": "HL", "marketCap": 12632605345.0, "value": -12.59}, {"symbol": "AXTA", "marketCap": 6882883104.0, "value": -12.57}, {"symbol": "MPWR", "marketCap": 58598850345.0, "value": -12.57}, {"symbol": "ARXS", "marketCap": 20840320550.0, "value": -12.55}, {"symbol": "ROL", "marketCap": 15824872338.0, "value": -12.54}, {"symbol": "STLD", "marketCap": 33960300499.0, "value": 12.54}, {"symbol": "CECO", "marketCap": 4149379606.0, "value": -12.53}, {"symbol": "VAC", "marketCap": 3550972837.0, "value": -12.51}, {"symbol": "TPL", "marketCap": 24304609049.0, "value": -12.5}, {"symbol": "ATMU", "marketCap": 3586531389.0, "value": -12.47}, {"symbol": "CYTK", "marketCap": 9687151766.0, "value": -12.47}, {"symbol": "LPX", "marketCap": 4519849222.0, "value": -12.47}, {"symbol": "REYN", "marketCap": 4711178448.0, "value": -12.46}, {"symbol": "HNGE", "marketCap": 7530411064.0, "value": 12.45}, {"symbol": "SFD", "marketCap": 7804470482.0, "value": -12.45}, {"symbol": "UCTT", "marketCap": 3116870676.0, "value": -12.41}, {"symbol": "UFPI", "marketCap": 4348931950.0, "value": -12.41}, {"symbol": "POWL", "marketCap": 6528351143.0, "value": -12.39}, {"symbol": "MTH", "marketCap": 4134318589.0, "value": -12.38}, {"symbol": "MWH", "marketCap": 5225625162.0, "value": -12.37}, {"symbol": "YOU", "marketCap": 5288411125.0, "value": -12.37}, {"symbol": "APA", "marketCap": 15758810920.0, "value": 12.36}, {"symbol": "RL", "marketCap": 19827181672.0, "value": -12.35}, {"symbol": "TMUS", "marketCap": 178582660819.0, "value": -12.33}, {"symbol": "DBX", "marketCap": 8337700988.0, "value": 12.29}, {"symbol": "OMC", "marketCap": 21056052967.0, "value": -12.25}, {"symbol": "FWONK", "marketCap": 23491385045.0, "value": -12.24}, {"symbol": "BDC", "marketCap": 4380665211.0, "value": -12.23}, {"symbol": "TDG", "marketCap": 60114879233.0, "value": -12.23}, {"symbol": "RTX", "marketCap": 259106503184.0, "value": -12.22}, {"symbol": "RVMD", "marketCap": 41178312626.0, "value": -12.2}, {"symbol": "CNX", "marketCap": 4923564239.0, "value": -12.18}, {"symbol": "LECO", "marketCap": 13951293562.0, "value": -12.18}, {"symbol": "DCI", "marketCap": 9930100168.0, "value": -12.16}, {"symbol": "RXO", "marketCap": 3260589551.0, "value": -12.16}, {"symbol": "BRC", "marketCap": 3949148315.0, "value": -12.13}, {"symbol": "AWI", "marketCap": 6690627984.0, "value": -12.11}, {"symbol": "BR", "marketCap": 18558187842.0, "value": -12.09}, {"symbol": "KKR", "marketCap": 87304038553.0, "value": -12.05}, {"symbol": "NKE", "marketCap": 53821332945.0, "value": -12.05}, {"symbol": "CHH", "marketCap": 4399347970.0, "value": -12.04}, {"symbol": "GE", "marketCap": 323392671864.0, "value": -12.04}, {"symbol": "ZETA", "marketCap": 7441147712.0, "value": 12.03}, {"symbol": "LFTO", "marketCap": 2834609762.0, "value": -12.02}, {"symbol": "XYZ", "marketCap": 45750539250.0, "value": -12.02}, {"symbol": "CXW", "marketCap": 3588350248.0, "value": 12.01}, {"symbol": "SWK", "marketCap": 13379319309.0, "value": -12.0}, {"symbol": "WLK", "marketCap": 8855022811.0, "value": -12.0}, {"symbol": "BG", "marketCap": 22654686984.0, "value": 11.95}, {"symbol": "AA", "marketCap": 12240120059.0, "value": -11.94}, {"symbol": "COGT", "marketCap": 5634356166.0, "value": -11.88}, {"symbol": "SNAP", "marketCap": 9453795210.0, "value": 11.88}, {"symbol": "KFY", "marketCap": 4173752102.0, "value": -11.87}, {"symbol": "LOW", "marketCap": 108030951358.0, "value": -11.86}, {"symbol": "GEN", "marketCap": 17376981539.0, "value": 11.85}, {"symbol": "STZ", "marketCap": 20587340219.0, "value": -11.84}, {"symbol": "WH", "marketCap": 5058972187.0, "value": -11.84}, {"symbol": "RAL", "marketCap": 7419518936.0, "value": 11.8}, {"symbol": "EXE", "marketCap": 20400113887.0, "value": -11.79}, {"symbol": "TRI", "marketCap": 41873112000.0, "value": -11.79}, {"symbol": "VCYT", "marketCap": 3283157454.0, "value": -11.79}, {"symbol": "WSM", "marketCap": 25930262728.0, "value": -11.75}, {"symbol": "EMN", "marketCap": 7434532365.0, "value": -11.74}, {"symbol": "IRT", "marketCap": 3527917445.0, "value": -11.73}, {"symbol": "DOW", "marketCap": 20951492323.0, "value": -11.71}, {"symbol": "PH", "marketCap": 117226641910.0, "value": -11.68}, {"symbol": "TOL", "marketCap": 12218692200.0, "value": -11.67}, {"symbol": "ECHO", "marketCap": 26655427366.0, "value": 11.65}, {"symbol": "TSN", "marketCap": 18554011743.0, "value": -11.65}, {"symbol": "BGC", "marketCap": 5707975597.0, "value": 11.64}, {"symbol": "HSY", "marketCap": 33715325245.0, "value": -11.62}, {"symbol": "LTH", "marketCap": 9121716717.0, "value": -11.61}, {"symbol": "SPHR", "marketCap": 5117688998.0, "value": -11.61}, {"symbol": "HD", "marketCap": 298349105759.0, "value": -11.6}, {"symbol": "ESI", "marketCap": 8092975254.0, "value": -11.57}, {"symbol": "UHAL", "marketCap": 12378977762.0, "value": -11.55}, {"symbol": "MUR", "marketCap": 5401166979.0, "value": 11.54}, {"symbol": "FLS", "marketCap": 9366940758.0, "value": -11.53}, {"symbol": "LPLA", "marketCap": 25855818344.0, "value": -11.53}, {"symbol": "BXP", "marketCap": 10157668193.0, "value": -11.52}, {"symbol": "AJG", "marketCap": 61436391500.0, "value": -11.5}, {"symbol": "AR", "marketCap": 10849522310.0, "value": -11.49}, {"symbol": "EPAM", "marketCap": 5905419650.0, "value": 11.47}, {"symbol": "KLAC", "marketCap": 224242624366.0, "value": -11.47}, {"symbol": "RPM", "marketCap": 12517380962.0, "value": -11.45}, {"symbol": "RGTI", "marketCap": 5081629173.0, "value": -11.44}, {"symbol": "UNF", "marketCap": 4710746225.0, "value": -11.43}, {"symbol": "VRSN", "marketCap": 27164046000.0, "value": 11.42}, {"symbol": "PCAR", "marketCap": 61232034982.0, "value": -11.38}, {"symbol": "SNOW", "marketCap": 117687024000.0, "value": 11.35}, {"symbol": "UDR", "marketCap": 10935834117.0, "value": -11.35}, {"symbol": "MCO", "marketCap": 79510924000.0, "value": -11.29}, {"symbol": "TLN", "marketCap": 13910707244.0, "value": -11.29}, {"symbol": "MTCH", "marketCap": 9898238473.0, "value": 11.27}, {"symbol": "INVH", "marketCap": 15991123844.0, "value": -11.26}, {"symbol": "IONQ", "marketCap": 14516188163.0, "value": -11.26}, {"symbol": "PRMB", "marketCap": 7493481651.0, "value": -11.26}, {"symbol": "EQH", "marketCap": 14702943204.0, "value": 11.25}, {"symbol": "BLK", "marketCap": 161905356610.0, "value": -11.22}, {"symbol": "LSCC", "marketCap": 15755418073.0, "value": -11.22}, {"symbol": "VFC", "marketCap": 5077332972.0, "value": -11.2}, {"symbol": "VICI", "marketCap": 26216656751.0, "value": -11.2}, {"symbol": "CARR", "marketCap": 44542404455.0, "value": -11.19}, {"symbol": "DNTH", "marketCap": 5667271179.0, "value": -11.19}, {"symbol": "TJX", "marketCap": 139944199911.0, "value": -11.19}, {"symbol": "AOS", "marketCap": 7680193460.0, "value": -11.17}, {"symbol": "SPGI", "marketCap": 118648893000.0, "value": -11.17}, {"symbol": "CNK", "marketCap": 3993163405.0, "value": -11.1}, {"symbol": "SBUX", "marketCap": 109212000000.0, "value": -11.1}, {"symbol": "BFAM", "marketCap": 3232302437.0, "value": -11.09}, {"symbol": "HQY", "marketCap": 7801293142.0, "value": -11.07}, {"symbol": "WWD", "marketCap": 18847720973.0, "value": -11.07}, {"symbol": "ALSN", "marketCap": 9785497503.0, "value": -11.06}, {"symbol": "CVSA", "marketCap": 4276977733.0, "value": -11.06}, {"symbol": "ALH", "marketCap": 4242159309.0, "value": -11.05}, {"symbol": "MTRN", "marketCap": 5172597243.0, "value": 11.03}, {"symbol": "CORZ", "marketCap": 5528662287.0, "value": -11.01}, {"symbol": "PAY", "marketCap": 4448818030.0, "value": -11.01}, {"symbol": "CDE", "marketCap": 20373671660.0, "value": -11.0}, {"symbol": "RDNT", "marketCap": 6005387682.0, "value": 10.99}, {"symbol": "HHH", "marketCap": 3631038989.0, "value": -10.98}, {"symbol": "IR", "marketCap": 28038390737.0, "value": -10.98}, {"symbol": "AVNT", "marketCap": 3670616391.0, "value": -10.95}, {"symbol": "BNL", "marketCap": 3659533282.0, "value": -10.94}, {"symbol": "ON", "marketCap": 26952527578.0, "value": -10.94}, {"symbol": "RTO", "marketCap": 10872342000.0, "value": -10.94}, {"symbol": "GPN", "marketCap": 22481978414.0, "value": -10.93}, {"symbol": "NNN", "marketCap": 7942121332.0, "value": -10.93}, {"symbol": "DOCS", "marketCap": 4680739435.0, "value": 10.92}, {"symbol": "EQT", "marketCap": 31347734340.0, "value": -10.92}, {"symbol": "APLD", "marketCap": 7681755887.0, "value": -10.91}, {"symbol": "LYV", "marketCap": 39393268715.0, "value": -10.91}, {"symbol": "MGY", "marketCap": 6859621812.0, "value": -10.91}, {"symbol": "BA", "marketCap": 154912523920.0, "value": -10.9}, {"symbol": "BAH", "marketCap": 9379822195.0, "value": 10.89}, {"symbol": "MTN", "marketCap": 4986911964.0, "value": -10.88}, {"symbol": "HII", "marketCap": 10851320947.0, "value": -10.82}, {"symbol": "HASI", "marketCap": 4728645072.0, "value": -10.78}, {"symbol": "MRSH", "marketCap": 82791382885.0, "value": -10.78}, {"symbol": "ORKA", "marketCap": 6450810974.0, "value": -10.77}, {"symbol": "ACAD", "marketCap": 4690156200.0, "value": -10.76}, {"symbol": "JKHY", "marketCap": 10894097031.0, "value": -10.73}, {"symbol": "AGNC", "marketCap": 11789612990.0, "value": -10.72}, {"symbol": "AXTI", "marketCap": 4473404523.0, "value": -10.71}, {"symbol": "A", "marketCap": 44065479880.0, "value": 10.68}, {"symbol": "TMO", "marketCap": 243251193250.0, "value": 10.68}, {"symbol": "PRK", "marketCap": 3271600199.0, "value": -10.67}, {"symbol": "BELFB", "marketCap": 3453988637.0, "value": -10.63}, {"symbol": "GNRC", "marketCap": 11990375786.0, "value": -10.63}, {"symbol": "NPO", "marketCap": 6077558730.0, "value": -10.63}, {"symbol": "CARG", "marketCap": 2987524452.0, "value": -10.6}, {"symbol": "FSLR", "marketCap": 20967355639.0, "value": -10.6}, {"symbol": "LEN", "marketCap": 18339347160.0, "value": -10.6}, {"symbol": "HAL", "marketCap": 28151475101.0, "value": -10.59}, {"symbol": "NOC", "marketCap": 74570317184.0, "value": -10.58}, {"symbol": "RGEN", "marketCap": 8711288674.0, "value": 10.58}, {"symbol": "KGS", "marketCap": 5931773499.0, "value": -10.57}, {"symbol": "KMX", "marketCap": 8263483120.0, "value": -10.57}, {"symbol": "ASTS", "marketCap": 22859698598.0, "value": -10.54}, {"symbol": "GS", "marketCap": 275445968182.0, "value": -10.54}, {"symbol": "NUE", "marketCap": 57320139541.0, "value": 10.54}, {"symbol": "ELAN", "marketCap": 11281460921.0, "value": -10.51}, {"symbol": "MRP", "marketCap": 4729044961.0, "value": -10.51}, {"symbol": "TDS", "marketCap": 4122893510.0, "value": 10.51}, {"symbol": "VRSK", "marketCap": 22760381818.0, "value": -10.51}, {"symbol": "IBKR", "marketCap": 40668296629.0, "value": -10.5}, {"symbol": "UNM", "marketCap": 14997986043.0, "value": 10.49}, {"symbol": "FNF", "marketCap": 11419650574.0, "value": -10.48}, {"symbol": "LDOS", "marketCap": 16322771625.0, "value": -10.48}, {"symbol": "ENS", "marketCap": 6300594633.0, "value": -10.43}, {"symbol": "URI", "marketCap": 61803990665.0, "value": -10.43}, {"symbol": "WST", "marketCap": 25485702511.0, "value": 10.43}, {"symbol": "NLY", "marketCap": 15997589031.0, "value": -10.42}, {"symbol": "AMH", "marketCap": 11197434754.0, "value": -10.4}, {"symbol": "NSC", "marketCap": 71118872185.0, "value": -10.4}, {"symbol": "AMRX", "marketCap": 6368766819.0, "value": 10.39}, {"symbol": "VEEV", "marketCap": 42352116983.0, "value": 10.39}, {"symbol": "BTSG", "marketCap": 11288154949.0, "value": -10.36}, {"symbol": "KR", "marketCap": 37098856162.0, "value": 10.35}, {"symbol": "FCN", "marketCap": 3841736488.0, "value": -10.32}, {"symbol": "CRBG", "marketCap": 15517341491.0, "value": 10.31}, {"symbol": "SKY", "marketCap": 4520992361.0, "value": -10.3}, {"symbol": "FIVE", "marketCap": 13116073298.0, "value": -10.26}, {"symbol": "LINE", "marketCap": 8516354449.0, "value": -10.26}, {"symbol": "MOD", "marketCap": 9846033809.0, "value": -10.26}, {"symbol": "RYAN", "marketCap": 10150730669.0, "value": -10.26}, {"symbol": "FDX", "marketCap": 72203416310.0, "value": -10.25}, {"symbol": "RIVN", "marketCap": 21812020391.0, "value": -10.23}, {"symbol": "IVZ", "marketCap": 13220710912.0, "value": -10.22}, {"symbol": "STEP", "marketCap": 5645254529.0, "value": -10.21}, {"symbol": "SHOO", "marketCap": 3063924968.0, "value": -10.2}, {"symbol": "BWXT", "marketCap": 13367646882.0, "value": -10.17}, {"symbol": "KN", "marketCap": 3005589372.0, "value": 10.17}, {"symbol": "EE", "marketCap": 4085877843.0, "value": -10.15}, {"symbol": "CF", "marketCap": 19855577790.0, "value": 10.14}, {"symbol": "MU", "marketCap": 1126535786328.0, "value": 10.13}, {"symbol": "ESE", "marketCap": 6662649005.0, "value": -10.11}, {"symbol": "UAL", "marketCap": 35119964130.0, "value": -10.1}, {"symbol": "VIK", "marketCap": 37648859924.0, "value": -10.09}, {"symbol": "UNP", "marketCap": 165886671684.0, "value": -10.08}, {"symbol": "ANET", "marketCap": 250807133501.0, "value": 10.07}, {"symbol": "ACM", "marketCap": 8069265848.0, "value": -10.06}, {"symbol": "IDXX", "marketCap": 40187035083.0, "value": -10.06}, {"symbol": "RKLB", "marketCap": 40314730439.0, "value": -10.02}, {"symbol": "PHM", "marketCap": 21868213316.0, "value": -10.0}, {"symbol": "GLPI", "marketCap": 11564071709.0, "value": -9.99}, {"symbol": "LLY", "marketCap": 1081120348441.0, "value": -9.99}, {"symbol": "ERIE", "marketCap": 11141726983.0, "value": -9.98}, {"symbol": "LOPE", "marketCap": 3962993388.0, "value": 9.96}, {"symbol": "TTD", "marketCap": 6648804745.0, "value": 9.95}, {"symbol": "NFLX", "marketCap": 299991033957.0, "value": -9.92}, {"symbol": "PLMR", "marketCap": 3569204168.0, "value": 9.91}, {"symbol": "POST", "marketCap": 3371482548.0, "value": -9.89}, {"symbol": "CBT", "marketCap": 3930549812.0, "value": -9.87}, {"symbol": "PLNT", "marketCap": 3733017973.0, "value": -9.86}, {"symbol": "TROW", "marketCap": 21913937271.0, "value": -9.86}, {"symbol": "ALK", "marketCap": 4445710285.0, "value": -9.85}, {"symbol": "IESC", "marketCap": 12784064540.0, "value": -9.85}, {"symbol": "SYNA", "marketCap": 3650908148.0, "value": -9.84}, {"symbol": "GOLF", "marketCap": 4718251480.0, "value": -9.83}, {"symbol": "GD", "marketCap": 95571623562.0, "value": -9.81}, {"symbol": "LLYVA", "marketCap": 8625504000.0, "value": -9.81}, {"symbol": "RLI", "marketCap": 5421488203.0, "value": -9.81}, {"symbol": "KNSL", "marketCap": 8115440313.0, "value": -9.8}, {"symbol": "LNG", "marketCap": 55988312221.0, "value": -9.8}, {"symbol": "ALNY", "marketCap": 32161690557.0, "value": 9.79}, {"symbol": "LSTR", "marketCap": 5763507973.0, "value": -9.79}, {"symbol": "O", "marketCap": 53816150627.0, "value": -9.79}, {"symbol": "VAL", "marketCap": 5831219072.0, "value": -9.78}, {"symbol": "AAPL", "marketCap": 4883212628000.0, "value": 9.77}, {"symbol": "SSD", "marketCap": 7028872963.0, "value": -9.73}, {"symbol": "BYD", "marketCap": 5314016980.0, "value": -9.72}, {"symbol": "CBRE", "marketCap": 39864383399.0, "value": -9.72}, {"symbol": "RJF", "marketCap": 31520389964.0, "value": -9.72}, {"symbol": "SHW", "marketCap": 76839023745.0, "value": -9.72}, {"symbol": "SNDR", "marketCap": 5640306425.0, "value": -9.71}, {"symbol": "PCTY", "marketCap": 7702279319.0, "value": -9.7}, {"symbol": "EME", "marketCap": 32390782502.0, "value": -9.68}, {"symbol": "OUT", "marketCap": 4900082683.0, "value": -9.66}, {"symbol": "GFF", "marketCap": 4136766412.0, "value": -9.65}, {"symbol": "MTDR", "marketCap": 7061415565.0, "value": -9.64}, {"symbol": "LLYVK", "marketCap": 8927741660.0, "value": -9.63}, {"symbol": "HAS", "marketCap": 12369599756.0, "value": -9.61}, {"symbol": "MNST", "marketCap": 131677796014.0, "value": -9.61}, {"symbol": "MAA", "marketCap": 14025894382.0, "value": -9.6}, {"symbol": "MUSA", "marketCap": 9654516206.0, "value": -9.59}, {"symbol": "MDU", "marketCap": 3916706871.0, "value": -9.57}, {"symbol": "NDAQ", "marketCap": 51406354016.0, "value": -9.57}, {"symbol": "APPF", "marketCap": 7663528729.0, "value": 9.56}, {"symbol": "TREX", "marketCap": 4361867436.0, "value": -9.56}, {"symbol": "EXEL", "marketCap": 14501423524.0, "value": 9.55}, {"symbol": "AXP", "marketCap": 208866578249.0, "value": -9.54}, {"symbol": "ENPH", "marketCap": 4582776393.0, "value": -9.54}, {"symbol": "IDYA", "marketCap": 3730283451.0, "value": -9.54}, {"symbol": "HLT", "marketCap": 68337583948.0, "value": -9.53}, {"symbol": "LEVI", "marketCap": 7658526184.0, "value": -9.53}, {"symbol": "MHO", "marketCap": 3510928100.0, "value": -9.52}, {"symbol": "EQPT", "marketCap": 4513892781.0, "value": -9.51}, {"symbol": "OSIS", "marketCap": 3180900875.0, "value": -9.51}, {"symbol": "RHP", "marketCap": 8324911281.0, "value": -9.5}, {"symbol": "IDCC", "marketCap": 8420758144.0, "value": -9.49}, {"symbol": "MMM", "marketCap": 84397973542.0, "value": -9.49}, {"symbol": "LHX", "marketCap": 46315299292.0, "value": -9.46}, {"symbol": "BCPC", "marketCap": 5248556768.0, "value": -9.42}, {"symbol": "FTV", "marketCap": 16484090698.0, "value": -9.42}, {"symbol": "NXT", "marketCap": 12390232603.0, "value": -9.41}, {"symbol": "PPC", "marketCap": 7128969209.0, "value": -9.41}, {"symbol": "PLUG", "marketCap": 2904070385.0, "value": -9.4}, {"symbol": "HXL", "marketCap": 6605708532.0, "value": -9.38}, {"symbol": "WAT", "marketCap": 41824712093.0, "value": 9.36}, {"symbol": "AMKR", "marketCap": 12040404317.0, "value": -9.32}, {"symbol": "CAG", "marketCap": 7237019387.0, "value": -9.32}, {"symbol": "ITRI", "marketCap": 3982606604.0, "value": -9.32}, {"symbol": "CR", "marketCap": 11365284000.0, "value": -9.29}, {"symbol": "PPG", "marketCap": 23053621500.0, "value": -9.27}, {"symbol": "JOE", "marketCap": 3628746947.0, "value": -9.26}, {"symbol": "KRYS", "marketCap": 10024903762.0, "value": -9.26}, {"symbol": "P", "marketCap": 34580657973.0, "value": -9.24}, {"symbol": "PWR", "marketCap": 92232124898.0, "value": -9.23}, {"symbol": "CAH", "marketCap": 51823686592.0, "value": -9.21}, {"symbol": "PLSE", "marketCap": 3649577800.0, "value": 9.21}, {"symbol": "STWD", "marketCap": 5559937629.0, "value": -9.21}, {"symbol": "FANG", "marketCap": 54643952244.0, "value": -9.2}, {"symbol": "RRC", "marketCap": 9118174675.0, "value": -9.2}, {"symbol": "LKQ", "marketCap": 5884828520.0, "value": -9.18}, {"symbol": "HTFL", "marketCap": 4367680684.0, "value": 9.16}, {"symbol": "IQV", "marketCap": 44112800000.0, "value": 9.14}, {"symbol": "PEGA", "marketCap": 5823223152.0, "value": 9.14}, {"symbol": "WK", "marketCap": 3945195380.0, "value": -9.14}, {"symbol": "CORT", "marketCap": 12375104489.0, "value": -9.12}, {"symbol": "MCD", "marketCap": 175293421852.0, "value": -9.12}, {"symbol": "TSCO", "marketCap": 16925988850.0, "value": -9.11}, {"symbol": "IOT", "marketCap": 22932299984.0, "value": 9.1}, {"symbol": "PTGX", "marketCap": 9211224370.0, "value": -9.1}, {"symbol": "IRM", "marketCap": 33563015025.0, "value": -9.09}, {"symbol": "FRSH", "marketCap": 3243245196.0, "value": -9.08}, {"symbol": "ALGN", "marketCap": 10427229477.0, "value": -9.07}, {"symbol": "LMT", "marketCap": 123255532570.0, "value": -9.06}, {"symbol": "SUI", "marketCap": 13928548438.0, "value": -9.06}, {"symbol": "LEA", "marketCap": 5933769109.0, "value": -9.05}, {"symbol": "DRI", "marketCap": 23697416500.0, "value": -9.04}, {"symbol": "MAC", "marketCap": 6346058813.0, "value": -9.04}, {"symbol": "OSK", "marketCap": 8911361021.0, "value": -9.02}, {"symbol": "CCK", "marketCap": 11922871018.0, "value": -9.01}, {"symbol": "MCHB", "marketCap": 3368571413.0, "value": -8.97}, {"symbol": "PTEN", "marketCap": 4542293849.0, "value": 8.97}, {"symbol": "PAYX", "marketCap": 41073026975.0, "value": -8.96}, {"symbol": "TMDX", "marketCap": 2983102724.0, "value": -8.95}, {"symbol": "ADC", "marketCap": 8426698253.0, "value": -8.93}, {"symbol": "NE", "marketCap": 7026652225.0, "value": -8.93}, {"symbol": "SAIC", "marketCap": 5577413171.0, "value": 8.92}, {"symbol": "CHRW", "marketCap": 17815727051.0, "value": 8.91}, {"symbol": "DAVE", "marketCap": 4576931022.0, "value": 8.91}, {"symbol": "AVT", "marketCap": 7647560183.0, "value": 8.89}, {"symbol": "DD", "marketCap": 17390159106.0, "value": -8.89}, {"symbol": "APD", "marketCap": 62866351974.0, "value": -8.86}, {"symbol": "MOH", "marketCap": 10620873000.0, "value": 8.86}, {"symbol": "BAC", "marketCap": 405929042588.0, "value": -8.85}, {"symbol": "NIQ", "marketCap": 5298882097.0, "value": -8.84}, {"symbol": "GRAL", "marketCap": 3565705460.0, "value": 8.83}, {"symbol": "MATX", "marketCap": 6996063516.0, "value": 8.83}, {"symbol": "SF", "marketCap": 11260199304.0, "value": -8.83}, {"symbol": "FELE", "marketCap": 4250932264.0, "value": -8.82}, {"symbol": "MLM", "marketCap": 29411538396.0, "value": -8.81}, {"symbol": "CDP", "marketCap": 3893381023.0, "value": -8.79}, {"symbol": "COF", "marketCap": 123433149003.0, "value": -8.79}, {"symbol": "UMBF", "marketCap": 10208823282.0, "value": -8.79}, {"symbol": "JBTM", "marketCap": 5705412334.0, "value": -8.75}, {"symbol": "OCTV", "marketCap": 4880198986.0, "value": 8.74}, {"symbol": "CRCL", "marketCap": 22907855432.0, "value": 8.73}, {"symbol": "SKYW", "marketCap": 3751204478.0, "value": -8.73}, {"symbol": "CWST", "marketCap": 5643917480.0, "value": -8.7}, {"symbol": "EXLS", "marketCap": 5298856840.0, "value": -8.7}, {"symbol": "FISV", "marketCap": 25843862641.0, "value": -8.69}, {"symbol": "LAUR", "marketCap": 4921784633.0, "value": -8.66}, {"symbol": "COR", "marketCap": 58339680884.0, "value": -8.65}, {"symbol": "KVUE", "marketCap": 34228183182.0, "value": -8.64}, {"symbol": "SCHW", "marketCap": 180914455720.0, "value": -8.64}, {"symbol": "AAL", "marketCap": 8615538912.0, "value": -8.62}, {"symbol": "SNX", "marketCap": 21275824526.0, "value": 8.62}, {"symbol": "SYF", "marketCap": 27573184882.0, "value": -8.61}, {"symbol": "JBL", "marketCap": 31100808015.0, "value": -8.6}, {"symbol": "UHS", "marketCap": 10593249206.0, "value": 8.6}, {"symbol": "APO", "marketCap": 73386798369.0, "value": -8.58}, {"symbol": "MTSI", "marketCap": 20682393679.0, "value": -8.58}, {"symbol": "WDAY", "marketCap": 46884140000.0, "value": 8.58}, {"symbol": "CNC", "marketCap": 32801268000.0, "value": 8.56}, {"symbol": "TTC", "marketCap": 8665012305.0, "value": -8.54}, {"symbol": "HBAN", "marketCap": 31973064621.0, "value": -8.53}, {"symbol": "VSAT", "marketCap": 10081658955.0, "value": -8.53}, {"symbol": "MCHP", "marketCap": 38917432884.0, "value": -8.52}, {"symbol": "FLR", "marketCap": 7272170518.0, "value": 8.51}, {"symbol": "AQN", "marketCap": 4125847586.0, "value": -8.5}, {"symbol": "SKT", "marketCap": 4096584748.0, "value": -8.5}, {"symbol": "TER", "marketCap": 56221697108.0, "value": -8.5}, {"symbol": "RITM", "marketCap": 5249975383.0, "value": -8.49}, {"symbol": "MAS", "marketCap": 13331842142.0, "value": -8.47}, {"symbol": "RPRX", "marketCap": 33603070362.0, "value": -8.47}, {"symbol": "ENTG", "marketCap": 20930544000.0, "value": -8.46}, {"symbol": "DOV", "marketCap": 25313148289.0, "value": -8.4}, {"symbol": "NESR", "marketCap": 3268101088.0, "value": -8.4}, {"symbol": "AM", "marketCap": 10093942610.0, "value": -8.39}, {"symbol": "PEP", "marketCap": 178527815786.0, "value": -8.39}, {"symbol": "SLM", "marketCap": 4721227585.0, "value": -8.39}, {"symbol": "INGR", "marketCap": 6201081055.0, "value": -8.37}, {"symbol": "ZBH", "marketCap": 17996100957.0, "value": -8.37}, {"symbol": "CVS", "marketCap": 113713255508.0, "value": -8.36}, {"symbol": "NSIT", "marketCap": 4522217552.0, "value": 8.36}, {"symbol": "HCA", "marketCap": 93344621725.0, "value": 8.34}, {"symbol": "ORCL", "marketCap": 437398531080.0, "value": 8.34}, {"symbol": "RSI", "marketCap": 5743343811.0, "value": -8.32}, {"symbol": "SANM", "marketCap": 10471047455.0, "value": 8.32}, {"symbol": "SGI", "marketCap": 14696167498.0, "value": -8.32}, {"symbol": "SPG", "marketCap": 65857293121.0, "value": -8.31}, {"symbol": "MORN", "marketCap": 7560860235.0, "value": -8.3}, {"symbol": "KRC", "marketCap": 3985327474.0, "value": -8.29}, {"symbol": "COST", "marketCap": 396913529580.0, "value": -8.27}, {"symbol": "PACS", "marketCap": 6644553958.0, "value": -8.27}, {"symbol": "SCI", "marketCap": 10646755609.0, "value": -8.27}, {"symbol": "DGX", "marketCap": 27085622544.0, "value": 8.26}, {"symbol": "RF", "marketCap": 24224615503.0, "value": -8.25}, {"symbol": "SFBS", "marketCap": 4450342314.0, "value": -8.25}, {"symbol": "LQDA", "marketCap": 6052591209.0, "value": -8.24}, {"symbol": "WPC", "marketCap": 15133875272.0, "value": -8.24}, {"symbol": "CHE", "marketCap": 6531582310.0, "value": -8.23}, {"symbol": "AIT", "marketCap": 11576687009.0, "value": -8.22}, {"symbol": "ASH", "marketCap": 3178059878.0, "value": -8.22}, {"symbol": "ADT", "marketCap": 5070081181.0, "value": -8.21}, {"symbol": "BMI", "marketCap": 3853801309.0, "value": -8.19}, {"symbol": "CWEN", "marketCap": 5015759526.0, "value": -8.19}, {"symbol": "GVA", "marketCap": 5030292779.0, "value": -8.19}, {"symbol": "LOGI", "marketCap": 14759853263.0, "value": 8.19}, {"symbol": "TKR", "marketCap": 8061994249.0, "value": -8.19}, {"symbol": "JXN", "marketCap": 8671988382.0, "value": -8.18}, {"symbol": "VMRK", "marketCap": 49014000000.0, "value": -8.18}, {"symbol": "ATR", "marketCap": 7917122183.0, "value": -8.15}, {"symbol": "CSX", "marketCap": 87649850698.0, "value": -8.15}, {"symbol": "DORM", "marketCap": 3623096202.0, "value": -8.15}, {"symbol": "DX", "marketCap": 3038803899.0, "value": -8.15}, {"symbol": "REGN", "marketCap": 80549923511.0, "value": -8.13}, {"symbol": "ESS", "marketCap": 17371116377.0, "value": -8.12}, {"symbol": "KNX", "marketCap": 10782585000.0, "value": -8.12}, {"symbol": "APP", "marketCap": 106308583170.0, "value": 8.1}, {"symbol": "MAR", "marketCap": 87424505715.0, "value": -8.09}, {"symbol": "ULTA", "marketCap": 23130081512.0, "value": 8.09}, {"symbol": "FSS", "marketCap": 6944704083.0, "value": -8.07}, {"symbol": "MBX", "marketCap": 2972441125.0, "value": -8.07}, {"symbol": "NEM", "marketCap": 129335457804.0, "value": -8.06}, {"symbol": "PIPR", "marketCap": 5049215616.0, "value": -8.05}, {"symbol": "AROC", "marketCap": 5447757408.0, "value": -8.04}, {"symbol": "TSLA", "marketCap": 1431236984638.0, "value": 8.04}, {"symbol": "FIX", "marketCap": 56139881961.0, "value": -8.03}, {"symbol": "ECL", "marketCap": 75307475910.0, "value": -8.01}, {"symbol": "KEYS", "marketCap": 56549345723.0, "value": 8.01}, {"symbol": "RMBS", "marketCap": 9308717077.0, "value": -8.01}, {"symbol": "ACI", "marketCap": 6064144409.0, "value": 8.0}, {"symbol": "IEP", "marketCap": 4937305321.0, "value": 7.99}, {"symbol": "SIRI", "marketCap": 9171590104.0, "value": -7.99}, {"symbol": "NTNX", "marketCap": 18619676660.0, "value": 7.98}, {"symbol": "NYT", "marketCap": 11179826853.0, "value": 7.97}, {"symbol": "CRGY", "marketCap": 4658692114.0, "value": 7.95}, {"symbol": "WAB", "marketCap": 46910766094.0, "value": -7.95}, {"symbol": "COIN", "marketCap": 49078944416.0, "value": 7.94}, {"symbol": "HNI", "marketCap": 3321084618.0, "value": -7.93}, {"symbol": "AX", "marketCap": 5147835889.0, "value": -7.92}, {"symbol": "CHD", "marketCap": 22445419700.0, "value": -7.92}, {"symbol": "BMY", "marketCap": 127690093147.0, "value": -7.91}, {"symbol": "AVY", "marketCap": 12793227840.0, "value": -7.9}, {"symbol": "COKE", "marketCap": 13010656905.0, "value": 7.86}, {"symbol": "LNC", "marketCap": 7957508521.0, "value": -7.86}, {"symbol": "XEL", "marketCap": 45382805502.0, "value": -7.86}, {"symbol": "M", "marketCap": 5680592051.0, "value": -7.84}, {"symbol": "PKG", "marketCap": 20751884820.0, "value": -7.84}, {"symbol": "VRTX", "marketCap": 129282813505.0, "value": -7.84}, {"symbol": "OTF", "marketCap": 4849892343.0, "value": -7.81}, {"symbol": "AVGO", "marketCap": 1726228097707.0, "value": -7.78}, {"symbol": "EMR", "marketCap": 82144417000.0, "value": -7.77}, {"symbol": "PSA", "marketCap": 52387784272.0, "value": -7.77}, {"symbol": "SOLS", "marketCap": 9239357218.0, "value": 7.77}, {"symbol": "ELS", "marketCap": 11836971436.0, "value": -7.76}, {"symbol": "RYN", "marketCap": 5909686399.0, "value": -7.75}, {"symbol": "BNY", "marketCap": 103356535951.0, "value": -7.73}, {"symbol": "CPT", "marketCap": 10105210069.0, "value": -7.73}, {"symbol": "FOXA", "marketCap": 26742205745.0, "value": -7.73}, {"symbol": "UNH", "marketCap": 336234631471.0, "value": -7.7}, {"symbol": "ZWS", "marketCap": 7584965156.0, "value": -7.69}, {"symbol": "GGG", "marketCap": 12308490624.0, "value": -7.66}, {"symbol": "HUBB", "marketCap": 23471133830.0, "value": -7.66}, {"symbol": "WTS", "marketCap": 11625647163.0, "value": -7.65}, {"symbol": "FTAI", "marketCap": 19721815614.0, "value": -7.64}, {"symbol": "RLAY", "marketCap": 4209710732.0, "value": -7.61}, {"symbol": "FLG", "marketCap": 5201113235.0, "value": -7.59}, {"symbol": "ALLY", "marketCap": 12161903726.0, "value": -7.57}, {"symbol": "PTCT", "marketCap": 5581858438.0, "value": -7.56}, {"symbol": "ARW", "marketCap": 10926849047.0, "value": 7.54}, {"symbol": "KIM", "marketCap": 15092760893.0, "value": -7.54}, {"symbol": "TFSL", "marketCap": 4660958588.0, "value": -7.54}, {"symbol": "TRMB", "marketCap": 13358873492.0, "value": -7.53}, {"symbol": "MCHPP", "marketCap": 33612237973.0, "value": -7.52}, {"symbol": "MTB", "marketCap": 32692231310.0, "value": -7.52}, {"symbol": "AHR", "marketCap": 12207245220.0, "value": -7.5}, {"symbol": "IT", "marketCap": 11648460113.0, "value": -7.5}, {"symbol": "WHD", "marketCap": 5364403894.0, "value": -7.5}, {"symbol": "NAN", "marketCap": 3091179055.0, "value": -7.48}, {"symbol": "SAIA", "marketCap": 9030969504.0, "value": -7.48}, {"symbol": "THC", "marketCap": 21128990790.0, "value": -7.47}, {"symbol": "ALLE", "marketCap": 12924315920.0, "value": -7.46}, {"symbol": "PSN", "marketCap": 4932273095.0, "value": -7.46}, {"symbol": "SNEX", "marketCap": 8106047676.0, "value": -7.46}, {"symbol": "CLDX", "marketCap": 2975876615.0, "value": -7.45}, {"symbol": "OGS", "marketCap": 4692220556.0, "value": -7.45}, {"symbol": "TRGP", "marketCap": 61718608619.0, "value": -7.43}, {"symbol": "TPC", "marketCap": 4506224709.0, "value": -7.42}, {"symbol": "LRN", "marketCap": 3326242195.0, "value": -7.41}, {"symbol": "XYL", "marketCap": 24978419148.0, "value": -7.4}, {"symbol": "DHI", "marketCap": 38587586795.0, "value": -7.36}, {"symbol": "LFUS", "marketCap": 10244838590.0, "value": -7.36}, {"symbol": "NHI", "marketCap": 3352769329.0, "value": -7.36}, {"symbol": "KYMR", "marketCap": 9771029121.0, "value": -7.33}, {"symbol": "AAON", "marketCap": 6313475138.0, "value": -7.3}, {"symbol": "MLI", "marketCap": 13297425047.0, "value": -7.3}, {"symbol": "PODD", "marketCap": 9811538533.0, "value": -7.3}, {"symbol": "LIN", "marketCap": 210264576848.0, "value": -7.28}, {"symbol": "ZTS", "marketCap": 29911190431.0, "value": -7.28}, {"symbol": "BWA", "marketCap": 12841163620.0, "value": -7.27}, {"symbol": "HSIC", "marketCap": 9478528397.0, "value": -7.25}, {"symbol": "OSCR", "marketCap": 9950714800.0, "value": -7.25}, {"symbol": "BOX", "marketCap": 4637386127.0, "value": 7.24}, {"symbol": "SNA", "marketCap": 19260077350.0, "value": -7.24}, {"symbol": "MSGE", "marketCap": 3624527029.0, "value": -7.22}, {"symbol": "SM", "marketCap": 8764922406.0, "value": 7.22}, {"symbol": "ORLY", "marketCap": 68098319471.0, "value": -7.21}, {"symbol": "SYY", "marketCap": 38679194675.0, "value": -7.2}, {"symbol": "VTRS", "marketCap": 19485844008.0, "value": 7.2}, {"symbol": "PVH", "marketCap": 3328037239.0, "value": -7.19}, {"symbol": "SITM", "marketCap": 18176287355.0, "value": -7.19}, {"symbol": "VTR", "marketCap": 44562214938.0, "value": -7.19}, {"symbol": "MMSI", "marketCap": 5110614848.0, "value": -7.17}, {"symbol": "WCC", "marketCap": 16428819740.0, "value": -7.16}, {"symbol": "FOX", "marketCap": 23991566878.0, "value": -7.15}, {"symbol": "GDDY", "marketCap": 12205672473.0, "value": 7.15}, {"symbol": "MHK", "marketCap": 8548553899.0, "value": -7.15}, {"symbol": "CRL", "marketCap": 13271406416.0, "value": -7.13}, {"symbol": "DUOL", "marketCap": 6781669692.0, "value": 7.13}, {"symbol": "EPR", "marketCap": 4336831074.0, "value": -7.13}, {"symbol": "MSA", "marketCap": 6865199419.0, "value": -7.13}, {"symbol": "MSI", "marketCap": 75676171908.0, "value": -7.11}, {"symbol": "NMIH", "marketCap": 3221956648.0, "value": -7.1}, {"symbol": "PLTR", "marketCap": 416972223388.0, "value": 7.1}, {"symbol": "APLE", "marketCap": 3651018925.0, "value": -7.09}, {"symbol": "SUN", "marketCap": 16033671958.0, "value": 7.09}, {"symbol": "BPOP", "marketCap": 10185426610.0, "value": -7.06}, {"symbol": "HON", "marketCap": 65051937053.0, "value": -7.06}, {"symbol": "TW", "marketCap": 23983216290.0, "value": -7.05}, {"symbol": "F", "marketCap": 52112273478.0, "value": -7.04}, {"symbol": "PK", "marketCap": 3007994650.0, "value": -7.04}, {"symbol": "SOLV", "marketCap": 14865638254.0, "value": -7.04}, {"symbol": "OXY", "marketCap": 58973606702.0, "value": -7.03}, {"symbol": "LFST", "marketCap": 4775016067.0, "value": -7.01}, {"symbol": "USLM", "marketCap": 3292563422.0, "value": -7.01}, {"symbol": "GEO", "marketCap": 4210510492.0, "value": 6.99}, {"symbol": "IPAR", "marketCap": 3538688672.0, "value": -6.98}, {"symbol": "IPGP", "marketCap": 3269204668.0, "value": -6.97}, {"symbol": "VNOM", "marketCap": 15398685063.0, "value": -6.96}, {"symbol": "CVX", "marketCap": 416532099985.0, "value": 6.95}, {"symbol": "PECO", "marketCap": 4797936000.0, "value": -6.95}, {"symbol": "SXT", "marketCap": 5479323474.0, "value": -6.94}, {"symbol": "AZZ", "marketCap": 3964093497.0, "value": -6.92}, {"symbol": "GAP", "marketCap": 7269535485.0, "value": 6.92}, {"symbol": "FCFS", "marketCap": 9519242664.0, "value": 6.91}, {"symbol": "ICE", "marketCap": 85764235779.0, "value": -6.9}, {"symbol": "CTSH", "marketCap": 27283405739.0, "value": 6.89}, {"symbol": "CHRD", "marketCap": 7938849142.0, "value": -6.87}, {"symbol": "SCCO", "marketCap": 162344263353.0, "value": 6.87}, {"symbol": "MS", "marketCap": 317662738220.0, "value": -6.86}, {"symbol": "SIGI", "marketCap": 5142602043.0, "value": -6.84}, {"symbol": "TDY", "marketCap": 27778020515.0, "value": -6.83}, {"symbol": "DVA", "marketCap": 11699644000.0, "value": 6.82}, {"symbol": "EQIX", "marketCap": 100403374089.0, "value": -6.79}, {"symbol": "TKO", "marketCap": 35409524257.0, "value": -6.77}, {"symbol": "AMTM", "marketCap": 4903576113.0, "value": -6.76}, {"symbol": "QLYS", "marketCap": 6020222074.0, "value": -6.76}, {"symbol": "SRE", "marketCap": 53106516763.0, "value": -6.76}, {"symbol": "DTE", "marketCap": 26778853600.0, "value": -6.75}, {"symbol": "OMF", "marketCap": 6939876617.0, "value": -6.75}, {"symbol": "DHR", "marketCap": 150646396442.0, "value": 6.74}, {"symbol": "EXC", "marketCap": 43504343439.0, "value": -6.74}, {"symbol": "SBAC", "marketCap": 18992954333.0, "value": -6.74}, {"symbol": "VST", "marketCap": 47448747517.0, "value": 6.74}, {"symbol": "GBCI", "marketCap": 5769691637.0, "value": -6.72}, {"symbol": "PFG", "marketCap": 24603834821.0, "value": 6.71}, {"symbol": "CMS", "marketCap": 20515721407.0, "value": -6.69}, {"symbol": "ROK", "marketCap": 45388645429.0, "value": -6.69}, {"symbol": "AXSM", "marketCap": 10979805165.0, "value": -6.68}, {"symbol": "NWS", "marketCap": 17643726525.0, "value": -6.68}, {"symbol": "NTRS", "marketCap": 32260570293.0, "value": -6.67}, {"symbol": "CRC", "marketCap": 4872659330.0, "value": 6.66}, {"symbol": "OPCH", "marketCap": 3582114086.0, "value": 6.66}, {"symbol": "GNTX", "marketCap": 4692971198.0, "value": -6.65}, {"symbol": "AZO", "marketCap": 46352253944.0, "value": -6.64}, {"symbol": "OKE", "marketCap": 58246157231.0, "value": -6.64}, {"symbol": "CE", "marketCap": 4954066520.0, "value": 6.63}, {"symbol": "CON", "marketCap": 4472047002.0, "value": 6.63}, {"symbol": "TFC", "marketCap": 59187788809.0, "value": -6.63}, {"symbol": "CUZ", "marketCap": 4652477169.0, "value": -6.6}, {"symbol": "RUSHA", "marketCap": 5683601082.0, "value": -6.6}, {"symbol": "DDS", "marketCap": 9820183135.0, "value": 6.59}, {"symbol": "WMB", "marketCap": 87750034441.0, "value": -6.57}, {"symbol": "BEN", "marketCap": 16647139956.0, "value": -6.56}, {"symbol": "CMC", "marketCap": 7204962939.0, "value": -6.56}, {"symbol": "STT", "marketCap": 50111095971.0, "value": -6.56}, {"symbol": "ITW", "marketCap": 76223872000.0, "value": -6.55}, {"symbol": "SWX", "marketCap": 6191947056.0, "value": -6.55}, {"symbol": "DAL", "marketCap": 52400652514.0, "value": -6.54}, {"symbol": "AMG", "marketCap": 9042959971.0, "value": -6.52}, {"symbol": "BILL", "marketCap": 3942772016.0, "value": -6.52}, {"symbol": "RDDT", "marketCap": 29196170393.0, "value": 6.52}, {"symbol": "SEIC", "marketCap": 12539604135.0, "value": -6.51}, {"symbol": "BOKF", "marketCap": 8009376905.0, "value": -6.5}, {"symbol": "MEDP", "marketCap": 17080886173.0, "value": 6.5}, {"symbol": "UTHR", "marketCap": 21326324330.0, "value": -6.49}, {"symbol": "BCO", "marketCap": 4347153972.0, "value": -6.48}, {"symbol": "PNFP", "marketCap": 14479613165.0, "value": -6.48}, {"symbol": "UPS", "marketCap": 84737845567.0, "value": -6.48}, {"symbol": "KHC", "marketCap": 28714722300.0, "value": -6.47}, {"symbol": "SOMN", "marketCap": 52974214584.0, "value": -6.47}, {"symbol": "VZ", "marketCap": 198411289772.0, "value": -6.46}, {"symbol": "GPC", "marketCap": 17756336830.0, "value": -6.44}, {"symbol": "VSH", "marketCap": 4886660261.0, "value": -6.43}, {"symbol": "BALL", "marketCap": 15981465179.0, "value": -6.42}, {"symbol": "FAF", "marketCap": 7185798000.0, "value": -6.42}, {"symbol": "ATO", "marketCap": 27061826877.0, "value": -6.41}, {"symbol": "BJ", "marketCap": 11757371531.0, "value": 6.41}, {"symbol": "HST", "marketCap": 14918583788.0, "value": -6.41}, {"symbol": "AUB", "marketCap": 5504086092.0, "value": -6.39}, {"symbol": "DLR", "marketCap": 67553064218.0, "value": -6.39}, {"symbol": "MMS", "marketCap": 2949836367.0, "value": -6.39}, {"symbol": "PNC", "marketCap": 92271680740.0, "value": -6.39}, {"symbol": "NOV", "marketCap": 7190163781.0, "value": -6.38}, {"symbol": "SO", "marketCap": 98896704187.0, "value": -6.36}, {"symbol": "AD", "marketCap": 3107080000.0, "value": 6.35}, {"symbol": "WM", "marketCap": 84919490841.0, "value": -6.34}, {"symbol": "DG", "marketCap": 27422666997.0, "value": 6.33}, {"symbol": "CQP", "marketCap": 32068822890.0, "value": -6.32}, {"symbol": "ZBRA", "marketCap": 16262093162.0, "value": -6.32}, {"symbol": "ZION", "marketCap": 9530024315.0, "value": -6.32}, {"symbol": "TXT", "marketCap": 13851826295.0, "value": -6.31}, {"symbol": "EXR", "marketCap": 29178438655.0, "value": -6.3}, {"symbol": "USAC", "marketCap": 3814908840.0, "value": -6.3}, {"symbol": "HR", "marketCap": 6256349219.0, "value": -6.27}, {"symbol": "VNT", "marketCap": 4263532000.0, "value": -6.27}, {"symbol": "KEY", "marketCap": 22244294708.0, "value": -6.26}, {"symbol": "ACIW", "marketCap": 5085115489.0, "value": -6.25}, {"symbol": "RDN", "marketCap": 4621285038.0, "value": -6.25}, {"symbol": "IEX", "marketCap": 16333011558.0, "value": -6.23}, {"symbol": "MRK", "marketCap": 360552463177.0, "value": -6.23}, {"symbol": "EBC", "marketCap": 4866153500.0, "value": -6.22}, {"symbol": "MCY", "marketCap": 5508398955.0, "value": -6.21}, {"symbol": "D", "marketCap": 55973031394.0, "value": -6.2}, {"symbol": "GEV", "marketCap": 247599676912.0, "value": -6.19}, {"symbol": "MTG", "marketCap": 6071695264.0, "value": -6.17}, {"symbol": "BIO", "marketCap": 10113179930.0, "value": 6.15}, {"symbol": "AMZN", "marketCap": 2725162123966.0, "value": -6.12}, {"symbol": "PDI", "marketCap": 3519943200.0, "value": -6.1}, {"symbol": "ARMK", "marketCap": 14868452482.0, "value": -6.08}, {"symbol": "IDA", "marketCap": 7610277598.0, "value": -6.08}, {"symbol": "C", "marketCap": 220910037137.0, "value": -6.07}, {"symbol": "NEU", "marketCap": 8134772891.0, "value": -6.06}, {"symbol": "BDX", "marketCap": 48966975036.0, "value": -6.05}, {"symbol": "PEG", "marketCap": 34924291502.0, "value": -6.05}, {"symbol": "DTM", "marketCap": 12800879342.0, "value": -6.04}, {"symbol": "TNET", "marketCap": 3066895546.0, "value": -6.04}, {"symbol": "PLD", "marketCap": 127250760720.0, "value": -6.01}, {"symbol": "ELV", "marketCap": 89084482600.0, "value": 6.0}, {"symbol": "HALO", "marketCap": 12433138410.0, "value": 6.0}, {"symbol": "NFG", "marketCap": 7606934498.0, "value": -6.0}, {"symbol": "MO", "marketCap": 115679859193.0, "value": 5.98}, {"symbol": "FRT", "marketCap": 9655989350.0, "value": -5.97}, {"symbol": "DOC", "marketCap": 14124965921.0, "value": -5.96}, {"symbol": "J", "marketCap": 16707261720.0, "value": -5.96}, {"symbol": "DKL", "marketCap": 3041289698.0, "value": 5.91}, {"symbol": "ENSG", "marketCap": 10177861449.0, "value": -5.91}, {"symbol": "BRX", "marketCap": 8566340701.0, "value": -5.9}, {"symbol": "MA", "marketCap": 494271088446.0, "value": -5.9}, {"symbol": "ROST", "marketCap": 73435880927.0, "value": -5.9}, {"symbol": "GEF", "marketCap": 3780492965.0, "value": -5.87}, {"symbol": "FA", "marketCap": 3527820813.0, "value": -5.86}, {"symbol": "ORI", "marketCap": 9676800517.0, "value": -5.86}, {"symbol": "PPL", "marketCap": 25048455033.0, "value": -5.86}, {"symbol": "INGM", "marketCap": 6142526504.0, "value": 5.84}, {"symbol": "WSBC", "marketCap": 3724025670.0, "value": -5.84}, {"symbol": "CURB", "marketCap": 3300440937.0, "value": -5.83}, {"symbol": "DIS", "marketCap": 178107753941.0, "value": -5.83}, {"symbol": "NVDA", "marketCap": 5300556410000.0, "value": 5.83}, {"symbol": "PSMT", "marketCap": 5155559139.0, "value": -5.83}, {"symbol": "PAYC", "marketCap": 10065168597.0, "value": 5.81}, {"symbol": "TVTX", "marketCap": 6042606662.0, "value": -5.81}, {"symbol": "ADI", "marketCap": 178969408843.0, "value": -5.79}, {"symbol": "BATRK", "marketCap": 3227003540.0, "value": -5.79}, {"symbol": "FG", "marketCap": 3016747215.0, "value": 5.79}, {"symbol": "SSNC", "marketCap": 18567076559.0, "value": -5.79}, {"symbol": "KBR", "marketCap": 4573738151.0, "value": -5.78}, {"symbol": "RMD", "marketCap": 32721471832.0, "value": -5.77}, {"symbol": "GFS", "marketCap": 26003577830.0, "value": -5.74}, {"symbol": "TRV", "marketCap": 77929885470.0, "value": 5.74}, {"symbol": "FCX", "marketCap": 101598239752.0, "value": 5.73}, {"symbol": "POR", "marketCap": 5553437483.0, "value": -5.71}, {"symbol": "FAST", "marketCap": 56147056247.0, "value": -5.7}, {"symbol": "KNTK", "marketCap": 8831800826.0, "value": -5.69}, {"symbol": "VLTO", "marketCap": 23038471008.0, "value": -5.69}, {"symbol": "EOG", "marketCap": 76022636124.0, "value": -5.64}, {"symbol": "PCVX", "marketCap": 8824152985.0, "value": -5.64}, {"symbol": "FTDR", "marketCap": 5411569972.0, "value": -5.63}, {"symbol": "GWW", "marketCap": 59096609909.0, "value": -5.63}, {"symbol": "THG", "marketCap": 7895136910.0, "value": 5.61}, {"symbol": "LNT", "marketCap": 17079083123.0, "value": -5.6}, {"symbol": "LH", "marketCap": 25961732000.0, "value": -5.58}, {"symbol": "DAN", "marketCap": 3241285338.0, "value": -5.57}, {"symbol": "CGON", "marketCap": 6554955731.0, "value": -5.56}, {"symbol": "GILD", "marketCap": 186960438271.0, "value": 5.56}, {"symbol": "PAGP", "marketCap": 5483923276.0, "value": 5.56}, {"symbol": "TXN", "marketCap": 240238936279.0, "value": -5.56}, {"symbol": "AEE", "marketCap": 28430417661.0, "value": -5.55}, {"symbol": "DVN", "marketCap": 53355500000.0, "value": 5.55}, {"symbol": "URBN", "marketCap": 6514456765.0, "value": 5.55}, {"symbol": "NEE", "marketCap": 167962965389.0, "value": -5.48}, {"symbol": "ADP", "marketCap": 107390049380.0, "value": -5.47}, {"symbol": "WES", "marketCap": 19470852695.0, "value": -5.47}, {"symbol": "OTIS", "marketCap": 26205277297.0, "value": -5.46}, {"symbol": "PLXS", "marketCap": 6543090305.0, "value": 5.46}, {"symbol": "RS", "marketCap": 20032020473.0, "value": 5.45}, {"symbol": "CPAY", "marketCap": 26253334064.0, "value": -5.43}, {"symbol": "USB", "marketCap": 93342862130.0, "value": -5.43}, {"symbol": "TCBI", "marketCap": 4115283770.0, "value": -5.42}, {"symbol": "AWR", "marketCap": 3369820923.0, "value": -5.41}, {"symbol": "CPK", "marketCap": 3135044473.0, "value": -5.4}, {"symbol": "PFE", "marketCap": 155943069395.0, "value": -5.37}, {"symbol": "NBIX", "marketCap": 15224506084.0, "value": -5.36}, {"symbol": "MDLZ", "marketCap": 77535714463.0, "value": -5.35}, {"symbol": "ALL", "marketCap": 63156330172.0, "value": -5.34}, {"symbol": "BMRN", "marketCap": 12561001222.0, "value": -5.34}, {"symbol": "FFIN", "marketCap": 4675343278.0, "value": -5.33}, {"symbol": "CFG", "marketCap": 28168303581.0, "value": -5.32}, {"symbol": "FORM", "marketCap": 8946385427.0, "value": -5.32}, {"symbol": "CNM", "marketCap": 8122666292.0, "value": -5.3}, {"symbol": "OZK", "marketCap": 5372834909.0, "value": -5.3}, {"symbol": "AME", "marketCap": 53874099728.0, "value": -5.29}, {"symbol": "ITT", "marketCap": 18128532000.0, "value": -5.29}, {"symbol": "CGNX", "marketCap": 10298663607.0, "value": 5.28}, {"symbol": "HTGC", "marketCap": 3266011800.0, "value": 5.28}, {"symbol": "R", "marketCap": 9076703656.0, "value": -5.27}, {"symbol": "AVA", "marketCap": 3038133908.0, "value": -5.26}, {"symbol": "REG", "marketCap": 13360475109.0, "value": -5.26}, {"symbol": "ETR", "marketCap": 47586753524.0, "value": -5.25}, {"symbol": "DIOD", "marketCap": 4204981184.0, "value": -5.24}, {"symbol": "INSM", "marketCap": 26907876892.0, "value": -5.24}, {"symbol": "PM", "marketCap": 293985666864.0, "value": 5.23}, {"symbol": "PRIM", "marketCap": 4081567033.0, "value": -5.22}, {"symbol": "CL", "marketCap": 69601159700.0, "value": -5.21}, {"symbol": "CTRE", "marketCap": 8910616534.0, "value": -5.21}, {"symbol": "MSM", "marketCap": 6747908187.0, "value": 5.21}, {"symbol": "CNO", "marketCap": 5070171131.0, "value": 5.19}, {"symbol": "EXPO", "marketCap": 3198900532.0, "value": -5.19}, {"symbol": "HIG", "marketCap": 35784900184.0, "value": -5.18}, {"symbol": "ES", "marketCap": 25617650020.0, "value": -5.17}, {"symbol": "STRL", "marketCap": 15383883358.0, "value": -5.17}, {"symbol": "VLY", "marketCap": 7457407525.0, "value": -5.14}, {"symbol": "LAMR", "marketCap": 14807467172.0, "value": -5.11}, {"symbol": "REXR", "marketCap": 8616261111.0, "value": 5.11}, {"symbol": "VG", "marketCap": 35763828234.0, "value": 5.1}, {"symbol": "PAA", "marketCap": 17949610742.0, "value": 5.09}, {"symbol": "EW", "marketCap": 50705908000.0, "value": -5.06}, {"symbol": "SR", "marketCap": 4665034946.0, "value": -5.06}, {"symbol": "AKAM", "marketCap": 14979582156.0, "value": -5.04}, {"symbol": "DXCM", "marketCap": 33407748525.0, "value": -5.03}, {"symbol": "BKU", "marketCap": 3153451663.0, "value": -5.01}, {"symbol": "CNP", "marketCap": 25182876610.0, "value": -5.0}, {"symbol": "PB", "marketCap": 8421988112.0, "value": -5.0}, {"symbol": "DAR", "marketCap": 10400790194.0, "value": -4.99}, {"symbol": "MCK", "marketCap": 101231331530.0, "value": 4.98}, {"symbol": "W", "marketCap": 14025530368.0, "value": -4.94}, {"symbol": "MANH", "marketCap": 12173495104.0, "value": 4.92}, {"symbol": "SBRA", "marketCap": 5081154217.0, "value": -4.91}, {"symbol": "RBC", "marketCap": 15667527166.0, "value": -4.87}, {"symbol": "OTTR", "marketCap": 3652535532.0, "value": -4.85}, {"symbol": "PSKY", "marketCap": 11550431795.0, "value": 4.84}, {"symbol": "ABCB", "marketCap": 5544400086.0, "value": -4.81}, {"symbol": "COLD", "marketCap": 4178007864.0, "value": -4.8}, {"symbol": "KO", "marketCap": 378968537323.0, "value": -4.79}, {"symbol": "BANF", "marketCap": 3617408880.0, "value": -4.77}, {"symbol": "CVBF", "marketCap": 3959942288.0, "value": 4.73}, {"symbol": "QNT", "marketCap": 14007993154.0, "value": -4.72}, {"symbol": "EWBC", "marketCap": 17251162789.0, "value": -4.71}, {"symbol": "OHI", "marketCap": 14174948140.0, "value": 4.71}, {"symbol": "MSCI", "marketCap": 39729823000.0, "value": -4.7}, {"symbol": "GATX", "marketCap": 6245982000.0, "value": 4.67}, {"symbol": "AEP", "marketCap": 65469225552.0, "value": -4.64}, {"symbol": "WEC", "marketCap": 33709118671.0, "value": -4.64}, {"symbol": "DUK", "marketCap": 91400589574.0, "value": -4.62}, {"symbol": "OPLN", "marketCap": 4152206458.0, "value": -4.62}, {"symbol": "WSO", "marketCap": 12579237777.0, "value": -4.61}, {"symbol": "BKH", "marketCap": 5349157841.0, "value": -4.6}, {"symbol": "CTAS", "marketCap": 79160252213.0, "value": -4.6}, {"symbol": "MIDD", "marketCap": 5059702518.0, "value": -4.58}, {"symbol": "PRU", "marketCap": 40233900000.0, "value": -4.56}, {"symbol": "GM", "marketCap": 73240880127.0, "value": 4.54}, {"symbol": "PNW", "marketCap": 11417385429.0, "value": -4.52}, {"symbol": "RGLD", "marketCap": 21155274975.0, "value": 4.44}, {"symbol": "WELL", "marketCap": 165324476860.0, "value": -4.44}, {"symbol": "FITB", "marketCap": 48097047132.0, "value": -4.43}, {"symbol": "MBGL", "marketCap": 5806505897.0, "value": -4.43}, {"symbol": "CHEF", "marketCap": 4481551708.0, "value": 4.42}, {"symbol": "NIC", "marketCap": 3480938122.0, "value": -4.41}, {"symbol": "GNW", "marketCap": 3776621115.0, "value": 4.39}, {"symbol": "SBCF", "marketCap": 3220326295.0, "value": -4.38}, {"symbol": "GBDC", "marketCap": 3253434410.0, "value": -4.36}, {"symbol": "SSB", "marketCap": 9978679549.0, "value": -4.36}, {"symbol": "WTFC", "marketCap": 9947182174.0, "value": -4.33}, {"symbol": "WEX", "marketCap": 6594621320.0, "value": -4.32}, {"symbol": "MIRM", "marketCap": 6251347844.0, "value": -4.31}, {"symbol": "CAT", "marketCap": 369776270958.0, "value": -4.3}, {"symbol": "EVRG", "marketCap": 18394648982.0, "value": -4.3}, {"symbol": "FE", "marketCap": 26131379329.0, "value": -4.29}, {"symbol": "HLI", "marketCap": 9201955455.0, "value": 4.29}, {"symbol": "FHN", "marketCap": 11318536305.0, "value": -4.27}, {"symbol": "ASB", "marketCap": 5581451672.0, "value": -4.26}, {"symbol": "CFR", "marketCap": 9824479933.0, "value": -4.26}, {"symbol": "MET", "marketCap": 61342587763.0, "value": 4.26}, {"symbol": "IFF", "marketCap": 21219546673.0, "value": 4.25}, {"symbol": "KMI", "marketCap": 70133131793.0, "value": -4.25}, {"symbol": "PRI", "marketCap": 8857721330.0, "value": -4.24}, {"symbol": "TRNO", "marketCap": 7171880953.0, "value": -4.24}, {"symbol": "AB", "marketCap": 3331162088.0, "value": -4.22}, {"symbol": "NWE", "marketCap": 4181368265.0, "value": -4.22}, {"symbol": "CNA", "marketCap": 12930665344.0, "value": -4.21}, {"symbol": "KRG", "marketCap": 5070780874.0, "value": -4.19}, {"symbol": "MSGS", "marketCap": 9447704651.0, "value": -4.15}, {"symbol": "COLB", "marketCap": 8379565178.0, "value": -4.1}, {"symbol": "TGT", "marketCap": 71656224169.0, "value": 4.09}, {"symbol": "WFC", "marketCap": 261606182557.0, "value": 4.08}, {"symbol": "WRB", "marketCap": 25830011468.0, "value": 4.07}, {"symbol": "PGR", "marketCap": 124146127766.0, "value": -4.06}, {"symbol": "COP", "marketCap": 159489563712.0, "value": 4.05}, {"symbol": "FTS", "marketCap": 27557946000.0, "value": -4.05}, {"symbol": "MSFT", "marketCap": 3660719671608.0, "value": 4.02}, {"symbol": "WTRG", "marketCap": 11609382731.0, "value": 4.02}, {"symbol": "PG", "marketCap": 339413715421.0, "value": 4.01}, {"symbol": "CACI", "marketCap": 13944403715.0, "value": -4.0}, {"symbol": "CLH", "marketCap": 16569917147.0, "value": -3.99}, {"symbol": "AVAV", "marketCap": 8194838198.0, "value": -3.96}, {"symbol": "SHC", "marketCap": 5406425491.0, "value": -3.95}, {"symbol": "HESM", "marketCap": 5112215590.0, "value": 3.94}, {"symbol": "RNST", "marketCap": 3671717359.0, "value": -3.94}, {"symbol": "TTEK", "marketCap": 9222720297.0, "value": -3.94}, {"symbol": "WMG", "marketCap": 14233816814.0, "value": 3.94}, {"symbol": "ISRG", "marketCap": 137451652635.0, "value": -3.87}, {"symbol": "JNJ", "marketCap": 644684023176.0, "value": -3.86}, {"symbol": "FHB", "marketCap": 3112608984.0, "value": -3.84}, {"symbol": "IBM", "marketCap": 216766280451.0, "value": 3.84}, {"symbol": "NWSA", "marketCap": 15996221242.0, "value": 3.82}, {"symbol": "AMP", "marketCap": 48281925875.0, "value": -3.81}, {"symbol": "MAIN", "marketCap": 5258915847.0, "value": -3.8}, {"symbol": "FNB", "marketCap": 6301067350.0, "value": -3.79}, {"symbol": "VMI", "marketCap": 9132549174.0, "value": -3.76}, {"symbol": "XOM", "marketCap": 668638003816.0, "value": -3.76}, {"symbol": "HIW", "marketCap": 3384194553.0, "value": -3.75}, {"symbol": "PPLC", "marketCap": 34120383091.0, "value": -3.75}, {"symbol": "JPM", "marketCap": 923905775796.0, "value": -3.73}, {"symbol": "NJR", "marketCap": 5359029568.0, "value": -3.69}, {"symbol": "RSG", "marketCap": 66840168838.0, "value": -3.69}, {"symbol": "EHC", "marketCap": 12057909859.0, "value": 3.68}, {"symbol": "FFBC", "marketCap": 3343260739.0, "value": -3.63}, {"symbol": "ROKU", "marketCap": 22710773798.0, "value": -3.63}, {"symbol": "ET", "marketCap": 72378501943.0, "value": -3.62}, {"symbol": "UCB", "marketCap": 4140562773.0, "value": -3.62}, {"symbol": "KEX", "marketCap": 7249440000.0, "value": -3.61}, {"symbol": "CUBE", "marketCap": 8995232007.0, "value": -3.6}, {"symbol": "LUV", "marketCap": 19822716305.0, "value": -3.59}, {"symbol": "GXO", "marketCap": 5267462713.0, "value": 3.53}, {"symbol": "STAG", "marketCap": 7216815754.0, "value": 3.53}, {"symbol": "SJM", "marketCap": 13093851656.0, "value": 3.52}, {"symbol": "NI", "marketCap": 19443764255.0, "value": -3.47}, {"symbol": "APH", "marketCap": 193479764072.0, "value": 3.46}, {"symbol": "AIZ", "marketCap": 13844934778.0, "value": 3.44}, {"symbol": "CTVA", "marketCap": 53649230360.0, "value": 3.44}, {"symbol": "ACT", "marketCap": 6643210983.0, "value": -3.43}, {"symbol": "CRVL", "marketCap": 3538180633.0, "value": -3.41}, {"symbol": "HONA", "marketCap": 52300369152.0, "value": -3.36}, {"symbol": "OBDC", "marketCap": 5503471070.0, "value": 3.36}, {"symbol": "CSQ", "marketCap": 3234951984.0, "value": -3.35}, {"symbol": "CCI", "marketCap": 30913592198.0, "value": 3.34}, {"symbol": "OGE", "marketCap": 9429402845.0, "value": -3.34}, {"symbol": "IRDM", "marketCap": 4950998896.0, "value": -3.32}, {"symbol": "L", "marketCap": 21925895109.0, "value": -3.32}, {"symbol": "BTU", "marketCap": 3216941000.0, "value": 3.28}, {"symbol": "CBSH", "marketCap": 8172765502.0, "value": -3.27}, {"symbol": "PFS", "marketCap": 2977548369.0, "value": -3.22}, {"symbol": "MDGL", "marketCap": 12299250435.0, "value": -3.2}, {"symbol": "SFNC", "marketCap": 3273237321.0, "value": 3.2}, {"symbol": "ONB", "marketCap": 9587204200.0, "value": -3.17}, {"symbol": "PBLS", "marketCap": 4909788728.0, "value": -3.17}, {"symbol": "FSK", "marketCap": 3154424296.0, "value": 3.16}, {"symbol": "LGND", "marketCap": 5604896470.0, "value": -3.16}, {"symbol": "OLLI", "marketCap": 4615269701.0, "value": -3.16}, {"symbol": "FULT", "marketCap": 4417762988.0, "value": -3.15}, {"symbol": "GLXY", "marketCap": 9119442470.0, "value": 3.1}, {"symbol": "STRC", "marketCap": 37834709701.0, "value": 3.1}, {"symbol": "CBC", "marketCap": 7549201792.0, "value": 3.09}, {"symbol": "FIBK", "marketCap": 3515786952.0, "value": -3.05}, {"symbol": "STRD", "marketCap": 27702676647.0, "value": 3.02}, {"symbol": "BIIB", "marketCap": 32290158723.0, "value": -2.99}, {"symbol": "MPLX", "marketCap": 59635142324.0, "value": -2.93}, {"symbol": "AWK", "marketCap": 26999320446.0, "value": -2.9}, {"symbol": "CBU", "marketCap": 3234562760.0, "value": -2.9}, {"symbol": "BFH", "marketCap": 4110861676.0, "value": -2.89}, {"symbol": "PAG", "marketCap": 13958941857.0, "value": -2.85}, {"symbol": "IBOC", "marketCap": 4345942998.0, "value": -2.82}, {"symbol": "SOJD", "marketCap": 19932859015.0, "value": -2.79}, {"symbol": "MDT", "marketCap": 117757434153.0, "value": -2.77}, {"symbol": "PR", "marketCap": 19267999452.0, "value": 2.75}, {"symbol": "GL", "marketCap": 13111284153.0, "value": 2.74}, {"symbol": "HUM", "marketCap": 46055000929.0, "value": 2.73}, {"symbol": "RGA", "marketCap": 15874181745.0, "value": 2.73}, {"symbol": "HOMB", "marketCap": 5907465574.0, "value": -2.71}, {"symbol": "CACC", "marketCap": 6033504513.0, "value": 2.7}, {"symbol": "WMT", "marketCap": 852163683746.0, "value": -2.69}, {"symbol": "UBSI", "marketCap": 6361127066.0, "value": -2.67}, {"symbol": "TXNM", "marketCap": 6427489807.0, "value": 2.66}, {"symbol": "AFL", "marketCap": 57930218084.0, "value": 2.64}, {"symbol": "EXPD", "marketCap": 24392090265.0, "value": 2.6}, {"symbol": "WBD", "marketCap": 70249478726.0, "value": -2.59}, {"symbol": "VOYA", "marketCap": 8974021350.0, "value": 2.58}, {"symbol": "WSFS", "marketCap": 3999117106.0, "value": -2.56}, {"symbol": "KNSA", "marketCap": 6168968588.0, "value": -2.55}, {"symbol": "NATL", "marketCap": 3369700190.0, "value": -2.54}, {"symbol": "PEN", "marketCap": 12536471340.0, "value": -2.52}, {"symbol": "FR", "marketCap": 8187705145.0, "value": -2.5}, {"symbol": "INDB", "marketCap": 3846370839.0, "value": -2.48}, {"symbol": "HWC", "marketCap": 5940517445.0, "value": -2.47}, {"symbol": "INCY", "marketCap": 25951392420.0, "value": -2.43}, {"symbol": "UGI", "marketCap": 8113272127.0, "value": -2.43}, {"symbol": "WAL", "marketCap": 8532778573.0, "value": -2.41}, {"symbol": "CSCO", "marketCap": 430491060663.0, "value": -2.4}, {"symbol": "MRNA", "marketCap": 62061218945.0, "value": -2.4}, {"symbol": "NNI", "marketCap": 4512502721.0, "value": 2.4}, {"symbol": "T", "marketCap": 173502404658.0, "value": 2.38}, {"symbol": "AIG", "marketCap": 39352939899.0, "value": 2.34}, {"symbol": "ARCC", "marketCap": 13935028364.0, "value": 2.34}, {"symbol": "CROX", "marketCap": 5805908857.0, "value": -2.32}, {"symbol": "AMT", "marketCap": 80785823322.0, "value": 2.24}, {"symbol": "AFG", "marketCap": 11759507701.0, "value": -2.12}, {"symbol": "HAE", "marketCap": 4962363353.0, "value": -2.03}, {"symbol": "BSM", "marketCap": 3141735134.0, "value": 2.0}, {"symbol": "CINF", "marketCap": 25813472389.0, "value": 1.9}, {"symbol": "NDSN", "marketCap": 17281842289.0, "value": 1.87}, {"symbol": "GSAT", "marketCap": 10686517971.0, "value": 1.85}, {"symbol": "CATY", "marketCap": 4099564239.0, "value": -1.84}, {"symbol": "ED", "marketCap": 39085339079.0, "value": -1.82}, {"symbol": "ARLP", "marketCap": 3372147174.0, "value": 1.79}, {"symbol": "CME", "marketCap": 97823538499.0, "value": 1.78}, {"symbol": "V", "marketCap": 658392499084.0, "value": 1.73}, {"symbol": "TBB", "marketCap": 138860486022.0, "value": -1.48}, {"symbol": "KDP", "marketCap": 42240040220.0, "value": 1.39}, {"symbol": "VICR", "marketCap": 9866379581.0, "value": -1.37}, {"symbol": "CI", "marketCap": 72615927958.0, "value": 1.34}, {"symbol": "SLAB", "marketCap": 7345312053.0, "value": 1.3}, {"symbol": "EPD", "marketCap": 83852498472.0, "value": 1.29}, {"symbol": "ITGR", "marketCap": 4295915026.0, "value": 1.19}, {"symbol": "ATKR", "marketCap": 3190155073.0, "value": 1.1}, {"symbol": "ABBV", "marketCap": 466253895647.0, "value": -1.08}, {"symbol": "CNR", "marketCap": 4558097480.0, "value": 1.03}, {"symbol": "AES", "marketCap": 10601698042.0, "value": 1.02}, {"symbol": "EGP", "marketCap": 10801983919.0, "value": -0.98}, {"symbol": "MKTX", "marketCap": 5746999100.0, "value": 0.98}, {"symbol": "LNTH", "marketCap": 6584676585.0, "value": 0.83}, {"symbol": "OGN", "marketCap": 3596436185.0, "value": -0.69}, {"symbol": "SATA", "marketCap": 9327189626.0, "value": 0.59}, {"symbol": "TECH", "marketCap": 11352856340.0, "value": 0.46}, {"symbol": "ACA", "marketCap": 7146513914.0, "value": 0.38}, {"symbol": "LXP", "marketCap": 3585780796.0, "value": 0.36}, {"symbol": "CZR", "marketCap": 6047439243.0, "value": 0.29}, {"symbol": "GBTG", "marketCap": 4944264638.0, "value": 0.21}]; // already sorted by |value| descending
+
+  const maxAbs = Math.max(...DATA.map(d => Math.abs(d.value))) * 1.08;
+  const fmtPct = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2) + "%";
+  function fmtCap(v){
+    if (v == null || isNaN(v)) return "n/a mkt cap";
+    const a = Math.abs(v);
+    if (a >= 1e12) return (v/1e12).toFixed(2) + "T mkt cap";
+    if (a >= 1e9)  return (v/1e9).toFixed(2) + "B mkt cap";
+    if (a >= 1e6)  return (v/1e6).toFixed(2) + "M mkt cap";
+    if (a >= 1e3)  return (v/1e3).toFixed(2) + "K mkt cap";
+    return v.toFixed(0) + " mkt cap";
+  }
+
+  const chart = document.getElementById("chart");
+  const tip = document.getElementById("tip");
+  const tipVal = document.getElementById("tipVal");
+  const tipMeta = document.getElementById("tipMeta");
+  const topN = document.getElementById("topN");
+  const rowCount = document.getElementById("rowCount");
+
+  function showTip(el, d){
+    const r = el.getBoundingClientRect();
+    tip.style.left = (r.left + r.width / 2) + "px";
+    tip.style.top = r.top + "px";
+    tipVal.textContent = fmtPct(d.value);
+    tipMeta.textContent = d.symbol + " — " + fmtCap(d.marketCap);
+    tip.classList.add("show");
+  }
+  function hideTip(){ tip.classList.remove("show"); }
+
+  function render(){
+    const n = topN.value === "all" ? DATA.length : parseInt(topN.value, 10);
+    const shown = DATA.slice(0, n).sort((a, b) => b.value - a.value);
+    const maxAbs = Math.max(...shown.map(d => Math.abs(d.value))) * 1.08;
+
+    chart.innerHTML = "";
+    shown.forEach(d => {
+      const pct = (Math.abs(d.value) / maxAbs * 100).toFixed(2);
+      const isPos = d.value >= 0;
+
+      const row = document.createElement("div");
+      row.className = "rs-row";
+      row.setAttribute("role", "listitem");
+      row.tabIndex = 0;
+
+      const label = document.createElement("div");
+      label.className = "rs-label";
+      const symEl = document.createElement("span");
+      symEl.className = "rs-theme";
+      symEl.textContent = d.symbol;
+      label.append(symEl);
+
+      const track = document.createElement("div");
+      track.className = "rs-track";
+      const negHalf = document.createElement("div");
+      negHalf.className = "rs-half neg";
+      const posHalf = document.createElement("div");
+      posHalf.className = "rs-half pos";
+
+      const bar = document.createElement("div");
+      bar.className = "rs-bar";
+      bar.style.width = pct + "%";
+      const val = document.createElement("span");
+      val.className = "rs-value";
+      val.textContent = fmtPct(d.value);
+
+      if (isPos){
+        posHalf.append(bar, val);
+      } else {
+        negHalf.append(val, bar);
+      }
+      track.append(negHalf, posHalf);
+      row.append(label, track);
+      chart.appendChild(row);
+
+      const onEnter = () => { row.classList.add("is-active"); showTip(bar, d); };
+      const onLeave = () => { row.classList.remove("is-active"); hideTip(); };
+      row.addEventListener("pointerenter", onEnter);
+      row.addEventListener("pointerleave", onLeave);
+      row.addEventListener("focus", onEnter);
+      row.addEventListener("blur", onLeave);
+    });
+
+    rowCount.textContent = shown.length + " / " + DATA.length + " shown";
+  }
+
+  topN.addEventListener("change", render);
+  render();
+</script>
+</body>
+</html>
