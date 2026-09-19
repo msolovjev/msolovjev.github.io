@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Theme Tracker</title>
+<style>
+  :root{color-scheme:light dark;--bg:#f2f2ee;--card:#fdfdfb;--ink:#15181b;--mut:#6b6e70;--acc:#2c4a63;--rule:#e0ded5}
+  @media (prefers-color-scheme:dark){:root{--bg:#101214;--card:#17191c;--ink:#f2f2ef;--mut:#9a9d9e;--acc:#86adc9;--rule:#2a2d30}}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:760px;margin:0 auto;padding:64px 24px}
+  h1{font-family:Georgia,serif;font-size:2rem;margin:0 0 6px}
+  p.sub{color:var(--mut);margin:0 0 32px}
+  .card{display:block;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:20px 24px;margin:0 0 16px;color:inherit;text-decoration:none}
+  .card:hover{border-color:var(--acc)}
+  .card h2{margin:0 0 4px;font-size:1.2rem;color:var(--acc)}
+  .card p{margin:0 0 10px;color:var(--mut)}
+  .card a.v{color:var(--acc);margin-right:16px;font-size:.9rem}
+  footer{color:var(--mut);font-size:.8rem;margin-top:32px}
+</style></head><body><main>
+<h1>Theme Tracker</h1>
+<p class="sub">US equities by sector and theme &mdash; research snapshot; not investment advice.</p>
+<div class="card"><h2>Large-Cap Natives</h2><p>Established core-business leaders by sector and theme.</p><a class="v" href="largecap/">Table view</a><a class="v" href="largecap/habitat.html">Card view</a></div>
+<div class="card"><h2>Small-Cap Fledglings</h2><p>Small-cap rising stars by sector and theme.</p><a class="v" href="smallcap/">Table view</a><a class="v" href="smallcap/habitat.html">Card view</a></div>
+<footer>Built 2026-09-19 12:10 Russia TZ 2 Standard Time</footer>
+</main></body></html>

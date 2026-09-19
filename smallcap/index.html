@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Small-Cap Rising Stars – Table 2 (Fledglings)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --page:        #f2f2ee;
+    --surface:     #fdfdfb;
+    --surface-2:   #f7f6f1;
+    --ink:         #15181b;
+    --ink-2:       #53565a;
+    --muted:       #8b8e8f;
+    --rule:        #e0ded5;
+    --rule-strong: #c7c5ba;
+    --accent:      #2c4a63;
+    --accent-soft: #e6edf1;
+    --shadow: 0 1px 2px rgba(21,24,27,0.04), 0 8px 24px rgba(21,24,27,0.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --page:        #101214;
+      --surface:     #17191c;
+      --surface-2:   #1c1f22;
+      --ink:         #f2f2ef;
+      --ink-2:       #c2c3bd;
+      --muted:       #8c8f90;
+      --rule:        #2a2d30;
+      --rule-strong: #3a3d40;
+      --accent:      #86adc9;
+      --accent-soft: #1d2b34;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page:        #101214;
+    --surface:     #17191c;
+    --surface-2:   #1c1f22;
+    --ink:         #f2f2ef;
+    --ink-2:       #c2c3bd;
+    --muted:       #8c8f90;
+    --rule:        #2a2d30;
+    --rule-strong: #3a3d40;
+    --accent:      #86adc9;
+    --accent-soft: #1d2b34;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--page);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .page{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  header h1{
+    font-family: "Spectral", Georgia, serif;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 1.25;
+    margin: 0 0 8px;
+  }
+  .generated-line{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .generated-line code{
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 32px clamp(16px, 4vw, 40px);
+  }
+  .md-content h1,
+  .md-content h2,
+  .md-content h3{
+    font-family: "Spectral", Georgia, serif;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .md-content h1{ font-size: 26px; margin: 0 0 12px; }
+  .md-content h2{ font-size: 20px; margin: 36px 0 12px; border-bottom: 1px solid var(--rule); padding-bottom: 8px; }
+  .md-content h3{ font-size: 16px; margin: 24px 0 8px; }
+  .md-content p{ color: var(--ink-2); line-height: 1.6; margin: 0 0 14px; }
+  .md-content em{ color: var(--muted); }
+  .md-content ul, .md-content ol{ color: var(--ink-2); line-height: 1.6; }
+  .md-content code{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.85em;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  .table-wrap{
+    overflow-x: auto;
+    margin: 0 0 24px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+  }
+  .md-content table{
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+    background: var(--surface);
+  }
+  .md-content th, .md-content td{
+    border-bottom: 1px solid var(--rule);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+    white-space: normal;
+  }
+  .md-content th{
+    background: var(--surface-2);
+    color: var(--ink);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+  }
+  .md-content tr:last-child td{ border-bottom: none; }
+  .md-content tr:hover td{ background: var(--accent-soft); }
+
+  .sector-groups{ margin: 0 0 24px; }
+  .group-controls{
+    display: flex;
+    gap: 14px;
+    margin: 0 0 12px;
+  }
+  .group-controls button{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 5px 12px;
+    cursor: pointer;
+  }
+  .group-controls button:hover{ border-color: var(--accent); }
+  .sector-group{
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    margin: 0 0 10px;
+    overflow: hidden;
+  }
+  .sector-header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border: none;
+    cursor: pointer;
+    font-family: "Public Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    text-align: left;
+  }
+  .sector-header .chevron{
+    display: inline-block;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+    font-size: 11px;
+  }
+  .sector-group[data-open="false"] .sector-header .chevron{ transform: rotate(-90deg); }
+  .sector-header .sector-name{ flex: 1; }
+  .sector-header .sector-count{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 1px 8px;
+  }
+  .sector-group .sector-body{ display: block; padding: 8px; }
+  .sector-group[data-open="false"] .sector-body{ display: none; }
+
+  .theme-group{
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    margin: 0 0 6px;
+    overflow: hidden;
+  }
+  .theme-group:last-child{ margin-bottom: 0; }
+  .theme-header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 12px;
+    background: var(--surface);
+    border: none;
+    cursor: pointer;
+    font-family: "Public Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-align: left;
+  }
+  .theme-header .chevron{
+    display: inline-block;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+    font-size: 10px;
+  }
+  .theme-group[data-open="false"] .theme-header .chevron{ transform: rotate(-90deg); }
+  .theme-header .theme-name{ flex: 1; }
+  .theme-header .theme-count{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 1px 7px;
+  }
+  .theme-group .theme-body{ display: block; }
+  .theme-group[data-open="false"] .theme-body{ display: none; }
+  .theme-group .table-wrap{ margin: 0; border: none; border-top: 1px solid var(--rule); border-radius: 0; }
+  .theme-group table{ font-size: 12.5px; }
+
+  footer{
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+    padding-top: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Small-Cap Rising Stars – Table 2 (Fledglings)</h1>
+    <div class="generated-line">Generated 2026-09-19 12:10 Russia TZ 2 Standard Time &middot; source <code>rs_hist/table2_smallcap_report.md</code> &middot; <code>rs_hist/publish_artifacts.py</code></div>
+    <div class="generated-line" style="margin-top:6px;"><a href="habitat.html" style="color:var(--accent);text-decoration:none;">&rarr; View as interactive habitat cards</a></div>
+  </header>
+  <div class="card">
+    <div class="md-content">
+<h1>Small-Cap Rising Stars - Table 2 (Fledgling)</h1>
+<p>Compiled from the Theme Tracker project. 92 rows across 8 sectors and 37 themes.</p>
+<div class="sector-groups" id="table2_smallcap_report-table0">
+  <div class="group-controls"><button type="button" class="expand-all">Expand all</button><button type="button" class="collapse-all">Collapse all</button></div>
+  <div class="sector-group" data-open="true">
+    <button type="button" class="sector-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="sector-name">Commodities</span><span class="sector-count">16</span></button>
+    <div class="sector-body">
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Oil</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>VTLE</td><td>Vital Energy</td><td>~$0.7B</td><td>Pure-play Permian Basin crude producer; small-cap shale E&P. Differentiation: micro-cap scale makes it a high-beta, narrative-sensitive Permian proxy relative to larger, steadier peers.</td></tr>
+<tr><td>REI</td><td>Ring Energy</td><td>~$0.15B</td><td>Micro-cap Permian Basin crude producer. Differentiation: smallest-scale name in the theme, trading as a leveraged, speculative proxy on Permian shale economics.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Natural Gas</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>NFE</td><td>New Fortress Energy</td><td>~$1.5B</td><td>Vertically integrated LNG infrastructure/logistics player. Differentiation: floating/modular LNG infrastructure model targets smaller, faster-to-market international gas-delivery projects.</td></tr>
+<tr><td>PHX</td><td>PHX Minerals</td><td>~$0.1B</td><td>Micro-cap Oklahoma natural-gas royalty/minerals company. Differentiation: royalty-only model gives pure commodity-price exposure without the operating-cost risk producers carry.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Silver</span><span class="theme-count">1</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>SVM</td><td>Silvercorp Metals</td><td>~$1B</td><td>Small-cap primary silver producer with operations concentrated in China. Differentiation: China-based operations give it a cost structure and regulatory environment distinct from the Americas-concentrated peer group.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Rare Earths</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>NB</td><td>NioCorp Developments</td><td>~$0.4B</td><td>Niobium mining with an associated rare-earth/scandium byproduct stream. Differentiation: niobium-primary focus with rare earths as a byproduct diversifies its critical-minerals exposure.</td></tr>
+<tr><td>CRML</td><td>Critical Metals Corp</td><td>~$0.3B</td><td>Rare-earth and critical-mineral project development. Differentiation: early-stage, multi-project critical-minerals portfolio gives optionality across several development-stage assets.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Uranium</span><span class="theme-count">4</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>NNE</td><td>NANO Nuclear Energy</td><td>~$1.5B</td><td>Micro modular reactor developer, an early-stage pure-play in the SMR/micro-reactor space. Differentiation: micro-reactor focus targets niche remote/military power applications.</td></tr>
+<tr><td>URG</td><td>Ur-Energy</td><td>~$0.5B</td><td>US uranium mining via in-situ recovery (Wyoming). Differentiation: in-situ-recovery mining method has lower capex/environmental footprint than conventional mining.</td></tr>
+<tr><td>EU</td><td>enCore Energy</td><td>~$0.4B</td><td>US-focused in-situ-recovery uranium developer/producer. Differentiation: multiple licensed ISR properties across Texas/New Mexico give it a multi-site domestic production pipeline.</td></tr>
+<tr><td>UROY</td><td>Uranium Royalty Corp</td><td>~$0.4B</td><td>Pure-play uranium royalty and streaming company. Differentiation: royalty-only model gives a structurally different, higher-margin risk profile than operating uranium miners.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Lithium</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>LAC</td><td>Lithium Americas Corp</td><td>~$1B</td><td>Development-stage US lithium company building the Thacker Pass project in Nevada, backed by a US government loan and GM investment. Differentiation: domestic US supply-chain narrative.</td></tr>
+<tr><td>PLL</td><td>Piedmont Lithium</td><td>~$0.3B</td><td>Micro-cap US lithium developer targeting North Carolina hard-rock lithium resources. Differentiation: hard-rock resource base and domestic-US location give a distinct supply-chain-security narrative.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Biofuels</span><span class="theme-count">3</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>REX</td><td>REX American Resources</td><td>~$0.4B</td><td>Pure-play ethanol producer/investor; core business is corn ethanol manufacturing. Differentiation: asset-light, minority-stake investment structure diversifies plant-level operating risk.</td></tr>
+<tr><td>GPRE</td><td>Green Plains</td><td>~$0.3B</td><td>Pure-play US corn ethanol producer; entire revenue base is biofuel production. Differentiation: pivot toward high-protein/low-carbon ethanol co-products targets higher-margin output streams.</td></tr>
+<tr><td>AMTX</td><td>Aemetis</td><td>~$0.1B</td><td>Pure-play renewable fuels developer; small-cap but narrative-relevant for SAF/advanced biofuels optionality. Differentiation: diversified multi-fuel pathway gives exposure to several distinct biofuel-policy tailwinds.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sector-group" data-open="true">
+    <button type="button" class="sector-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="sector-name">Consumer</span><span class="sector-count">12</span></button>
+    <div class="sector-body">
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">EV</span><span class="theme-count">5</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>PSNY</td><td>Polestar Automotive</td><td>~$1.5B</td><td>Premium EV manufacturing (Volvo/Geely-backed). Differentiation: Volvo/Geely design and engineering backing gives it European premium-brand positioning.</td></tr>
+<tr><td>EVGO</td><td>EVgo</td><td>~$1B</td><td>DC fast-charging network infrastructure for EVs. Differentiation: pure-play charging-infrastructure focus captures EV-adoption growth without the capital intensity of building cars.</td></tr>
+<tr><td>SLDP</td><td>Solid Power</td><td>~$0.5B</td><td>Solid-state battery technology development for EV OEM partners. Differentiation: partnership-based development model with multiple automakers diversifies its commercialization path.</td></tr>
+<tr><td>CHPT</td><td>ChargePoint Holdings</td><td>~$0.3B</td><td>EV charging network hardware and software. Differentiation: combines charging hardware sales with network-management software.</td></tr>
+<tr><td>BLNK</td><td>Blink Charging</td><td>~$0.1B</td><td>EV charging equipment and network operation. Differentiation: micro-cap scale and owned-and-operated charging station model gives direct exposure to charging-utilization economics.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Gaming & Wagering</span><span class="theme-count">1</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>GAN</td><td>GAN Limited</td><td>~$0.1B</td><td>Micro-cap B2B iGaming platform/software provider licensing its technology to casino operators launching online betting. Differentiation: platform-as-a-service model lets land-based casinos launch iGaming without building proprietary technology, a distinct business model from consumer-facing operators.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">AgTech & Food Innovation</span><span class="theme-count">3</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>AVO</td><td>Mission Produce</td><td>~$0.7B</td><td>Global avocado grower, packer, and distributor, a vertically integrated agri-food processing pure-play. Differentiation: vertically integrated farm-to-retail avocado supply chain gives it sourcing/logistics control smaller regional distributors lack.</td></tr>
+<tr><td>BYND</td><td>Beyond Meat</td><td>~$0.3B</td><td>Pure-play plant-based/alternative-protein food maker. Differentiation: broadest retail and foodservice distribution of any US plant-based-meat brand, though facing intensifying competition and demand softening.</td></tr>
+<tr><td>LOCL</td><td>Local Bounti Corp</td><td>~$0.1B</td><td>Controlled-environment agriculture (indoor vertical/greenhouse farming) company. Differentiation: hybrid greenhouse-plus-vertical-farming technology targets lower per-unit production costs than pure vertical-farming competitors.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Health & Wellness Food</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>USNA</td><td>USANA Health Sciences</td><td>~$0.4B</td><td>Direct-sales maker of nutritional supplements and health products. Differentiation: direct-sales/network-marketing distribution model gives it a distinct go-to-market versus retail-shelf supplement brands.</td></tr>
+<tr><td>NATR</td><td>Nature's Sunshine Products</td><td>~$0.3B</td><td>Direct-sales maker of herbal and nutritional supplements. Differentiation: long-standing herbal-supplement specialization and direct-sales network gives it brand loyalty in a niche distinct from mass-market vitamin brands.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Smart Home Automation/Security/Voice</span><span class="theme-count">1</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>SMRT</td><td>SmartRent, Inc.</td><td>~$0.3B</td><td>Smart-home automation hardware/software sold to multifamily-housing landlords. Differentiation: purpose-built for the multifamily-rental market, rather than owner-occupied homes, gives it a distinct B2B distribution channel apartment-focused competitors don't share.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sector-group" data-open="true">
+    <button type="button" class="sector-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="sector-name">Digital Infrastructure</span><span class="sector-count">8</span></button>
+    <div class="sector-body">
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Optics</span><span class="theme-count">1</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>POET</td><td>POET Technologies</td><td>~$1.5B</td><td>Micro-cap developer of photonic integration technology aiming to combine electronics and optics on a single chip. Differentiation: novel wafer-scale photonic integration approach targets a step-change in cost/density.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Networking</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>EXTR</td><td>Extreme Networks</td><td>~$1.5B</td><td>Core business is enterprise networking hardware and cloud-managed networking software. Differentiation: its cloud-managed networking software targets mid-market enterprises priced out of Cisco/Arista's high-end enterprise stack.</td></tr>
+<tr><td>RBBN</td><td>Ribbon Communications</td><td>~$1B</td><td>Core business is telecom networking software for voice/IP communications infrastructure. Differentiation: its focus on carrier-grade voice/IP communications software is a narrower, more defensible niche than general-purpose networking-hardware competitors occupy.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Edge Computing</span><span class="theme-count">1</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>FSLY</td><td>Fastly</td><td>~$1B</td><td>Core business is edge cloud computing and content-delivery infrastructure, a smaller pure-play edge name. Differentiation: its real-time configuration deployment, versus longer cache-purge cycles at legacy CDNs, targets developers needing instant edge-code updates.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Biometrics</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>IDN</td><td>Intellicheck, Inc.</td><td>~$0.1B</td><td>Micro-cap identity-verification/age-verification technology using ID-document and biometric scanning. Differentiation: focus on ID-document authentication (versus pure facial/fingerprint biometrics) gives it a niche in retail age-verification and fraud-prevention use cases.</td></tr>
+<tr><td>AWRE</td><td>Aware, Inc.</td><td>~$0.1B</td><td>Micro-cap biometric software provider (fingerprint/face recognition algorithms) licensed to government and enterprise customers. Differentiation: software-only, hardware-agnostic biometric algorithm licensing lets it embed into third-party hardware rather than compete as a device maker.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Connected Devices/Sensors</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>DGII</td><td>Digi International</td><td>~$0.8B</td><td>IoT connectivity hardware and cellular-router/gateway maker for industrial and enterprise connected-device deployments. Differentiation: broad multi-protocol (cellular, satellite, wired) connectivity portfolio lets it serve customers regardless of which network technology they standardize on.</td></tr>
+<tr><td>KORE</td><td>KORE Group Holdings</td><td>~$0.1B</td><td>IoT connectivity-management platform and managed services for enterprise connected-device deployments. Differentiation: carrier-agnostic connectivity-management software lets enterprises manage devices across multiple cellular networks from one platform.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sector-group" data-open="true">
+    <button type="button" class="sector-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="sector-name">Healthcare</span><span class="sector-count">10</span></button>
+    <div class="sector-body">
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Remote Care Platforms</span><span class="theme-count">7</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>EVH</td><td>Evolent Health</td><td>~$1.5B</td><td>Value-based-care technology infrastructure connecting health plans and specialty providers. Differentiation: focuses on the payer-provider technology layer rather than direct-to-consumer telehealth.</td></tr>
+<tr><td>GDRX</td><td>GoodRx Holdings</td><td>~$1.5B</td><td>Digital platform connecting consumers to prescription savings and increasingly telehealth/virtual-care services. Differentiation: prescription-discount-comparison origin gives it an existing large consumer user base.</td></tr>
+<tr><td>TDOC</td><td>Teladoc Health</td><td>~$1.3B</td><td>Largest legacy enterprise telehealth platform serving health systems, employers, and payers, though the stock has fallen sharply from its pandemic-era peak. Differentiation: broadest enterprise health-system/employer contract base of any telehealth platform.</td></tr>
+<tr><td>PGNY</td><td>Progyny</td><td>~$1B</td><td>Digital fertility-benefits platform connecting patients to virtual/in-person fertility care. Differentiation: narrow vertical specialization in fertility benefits targets a specific high-value care category.</td></tr>
+<tr><td>ACCD</td><td>Accolade</td><td>~$0.5B</td><td>Personalized-healthcare navigation platform for employers and health plans. Differentiation: care-navigation, rather than direct care delivery, is a distinct service layer from platforms that deliver the virtual visit itself.</td></tr>
+<tr><td>LFMD</td><td>LifeMD</td><td>~$0.4B</td><td>Direct-to-consumer telehealth for weight management, primary care, and chronic conditions. Differentiation: micro-cap direct-to-consumer model competing head-on with Hims & Hers, at a much smaller operating scale.</td></tr>
+<tr><td>AMWL</td><td>American Well (Amwell)</td><td>~$0.2B</td><td>Enterprise-grade telehealth software platform serving hospitals and health systems. Differentiation: white-label software model lets hospitals brand the telehealth experience as their own.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Longevity</span><span class="theme-count">3</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>PNTG</td><td>Pennant Group</td><td>~$1.5B</td><td>Home health, hospice, and senior-living services. Differentiation: multi-service model diversifies revenue across several aging-related care categories.</td></tr>
+<tr><td>BIOA</td><td>BioAge Labs</td><td>~$0.3B</td><td>Clinical-stage biotech developing therapeutics targeting metabolic and aging-related pathways. Differentiation: dedicated longevity/healthy-aging drug-development focus makes it one of few pure-play aging-biology biotechs.</td></tr>
+<tr><td>LGVN</td><td>Longeveron</td><td>~$0.1B</td><td>Clinical-stage biotech developing cellular therapies for aging-related and frailty conditions, small and early-stage. Differentiation: cell-therapy approach is a distinct, less-crowded technology approach.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sector-group" data-open="true">
+    <button type="button" class="sector-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="sector-name">Intelligence</span><span class="sector-count">14</span></button>
+    <div class="sector-body">
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Agentic AI</span><span class="theme-count">1</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>BBAI</td><td>BigBear.ai</td><td>~$1B</td><td>Small-cap pure-play building decision-intelligence agents for defense and national security clients. Differentiation: micro-cap narrative-significance stock, moves heavily on defense agentic-AI contract headlines.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Spatial Computing</span><span class="theme-count">3</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>MTTR</td><td>Matterport</td><td>~$1.2B</td><td>3D spatial-data capture platform (digital twins of physical spaces) for real estate, retail, and facilities. Differentiation: largest proprietary library of captured 3D spatial data.</td></tr>
+<tr><td>VUZI</td><td>Vuzix</td><td>~$150M</td><td>Micro-cap pure-play smart-glasses/waveguide-optics maker for enterprise and defense AR applications. Differentiation: one of few independent waveguide-display makers.</td></tr>
+<tr><td>KOPN</td><td>Kopin Corp</td><td>~$150M</td><td>Micro-cap supplier of micro-display and optical modules used inside AR/VR/defense headsets across multiple OEMs. Differentiation: long-standing defense/military-display relationships give it a niche, high-margin component supply role.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Robotics</span><span class="theme-count">1</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>RR</td><td>Richtech Robotics</td><td>~$400M</td><td>Micro-cap pure-play building service robots (food service, hospitality), narrative-significant despite small revenue base. Differentiation: narrow focus on human-facing service-industry deployment, rather than industrial/warehouse robotics, gives it a distinct commercial niche from larger diversified robotics peers, though at much smaller scale and revenue.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Drones</span><span class="theme-count">4</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>ONDS</td><td>Ondas Holdings</td><td>~$1B</td><td>Small-cap building autonomous drone systems (American Robotics) and private wireless networks supporting drone operations. Differentiation: pairs drone hardware with its own dedicated wireless spectrum/network layer.</td></tr>
+<tr><td>RCAT</td><td>Red Cat Holdings</td><td>~$500M</td><td>Micro-cap maker of small military/reconnaissance drones, notably selected for US Army short-range reconnaissance programs. Differentiation: domestic manufacturing positions it favorably amid US restrictions on foreign-made components.</td></tr>
+<tr><td>UMAC</td><td>Unusual Machines</td><td>~$150M</td><td>Micro-cap domestic drone-components maker positioned around US "Blue UAS"/non-China-supply-chain policy tailwinds. Differentiation: pure-play domestic component sourcing narrative.</td></tr>
+<tr><td>DPRO</td><td>Draganfly</td><td>~$50M</td><td>Micro-cap drone maker for public-safety and defense-adjacent applications, narrative-significant on defense/public-safety contract headlines despite small scale. Differentiation: its focus on public-safety/first-responder drone applications, rather than pure military use, gives it a distinct civilian-agency customer base other small defense-drone makers don't prioritize.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">eVTOL</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>EH</td><td>EHang Holdings</td><td>~$700M</td><td>Chinese ADR pure-play in autonomous (pilotless) eVTOL aircraft, already operating limited commercial passenger flights in China. Differentiation: furthest ahead globally on actual autonomous commercial passenger operations.</td></tr>
+<tr><td>EVTL</td><td>Vertical Aerospace</td><td>~$500M</td><td>UK-based eVTOL developer (VX4/"Valo") pursuing certification with established airline partnership commitments. Differentiation: compressed valuation and airline-partnership-first commercialization strategy.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Perception</span><span class="theme-count">3</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>OUST</td><td>Ouster</td><td>~$1.5B</td><td>Digital lidar sensor maker serving robotics, industrial, and autonomous vehicle perception applications. Differentiation: single sensor architecture serves multiple end markets, diversifying revenue versus vertically-dependent lidar peers.</td></tr>
+<tr><td>LAZR</td><td>Luminar Technologies</td><td>~$500M</td><td>Automotive-grade lidar sensor maker with OEM design wins for production vehicle perception systems. Differentiation: long-range detection performance specifically engineered for highway-speed automotive use cases.</td></tr>
+<tr><td>INVZ</td><td>Innoviz Technologies</td><td>~$300M</td><td>Micro-cap automotive lidar maker with OEM partnerships (BMW, Volkswagen group). Differentiation: solid-state lidar design targets long-term automotive reliability/cost requirements better than mechanical lidar competitors.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sector-group" data-open="true">
+    <button type="button" class="sector-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="sector-name">Semiconductors</span><span class="sector-count">9</span></button>
+    <div class="sector-body">
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Memory</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>PENG</td><td>Penguin Solutions</td><td>~$1.5B</td><td>Core business includes memory modules and high-performance computing hardware tied to the AI memory cycle. Differentiation: its memory-module-plus-HPC-hardware combination lets it serve AI infrastructure builders with integrated systems rather than components alone.</td></tr>
+<tr><td>NLST</td><td>Netlist</td><td>~$0.3B</td><td>Core business is memory module technology and IP; high narrative significance from ongoing patent-licensing litigation against Samsung, Micron, and SK Hynix. Differentiation: its patent-licensing litigation against Samsung, Micron, and SK Hynix gives it outsized narrative significance relative to its small operating scale.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Semi Equipment</span><span class="theme-count">4</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>KLIC</td><td>Kulicke & Soffa Industries</td><td>~$1.5B</td><td>Core business is wire-bonding and advanced packaging assembly equipment. Differentiation: its focus on wire-bonding and packaging-assembly equipment gives it exposure to the back-end packaging step distinct from front-end fabrication-tool makers.</td></tr>
+<tr><td>VECO</td><td>Veeco Instruments</td><td>~$1.5B</td><td>Core business is deposition and lithography equipment, including tools for compound-semiconductor and power-device fabrication. Differentiation: its compound-semiconductor and power-device-specific deposition/lithography tools target a growing niche adjacent to, but distinct from, leading-edge logic equipment demand.</td></tr>
+<tr><td>COHU</td><td>Cohu</td><td>~$0.6B</td><td>Core business is semiconductor test handling equipment. Differentiation: its focus on test-handling equipment, a narrow back-end niche, gives it demand tied to chip test volumes rather than fabrication-technology transitions.</td></tr>
+<tr><td>PDFS</td><td>PDF Solutions</td><td>~$0.6B</td><td>Core business is yield-analytics software used across chip fabs, a small-cap but relevant fab-productivity narrative name. Differentiation: its yield-analytics software is a data-layer product distinct from the physical equipment the rest of this theme sells, giving it a software-margin profile within a hardware-heavy group.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Power Semis</span><span class="theme-count">3</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>WOLF</td><td>Wolfspeed</td><td>~$1.8B</td><td>Core business is SiC wafers and power devices, a distressed but high-narrative-significance pure-play SiC name. Differentiation: its vertically integrated silicon-carbide wafer-to-device manufacturing, despite financial distress, gives it a technology position few pure-play SiC competitors can match.</td></tr>
+<tr><td>DIOD</td><td>Diodes Incorporated</td><td>~$1.5B</td><td>Core business is discrete and power-management semiconductors. Differentiation: its broad discrete/power-management catalog targets cost-sensitive design wins larger power-semiconductor vendors deprioritize.</td></tr>
+<tr><td>AOSL</td><td>Alpha and Omega Semiconductor</td><td>~$0.4B</td><td>Core business is power MOSFETs and power ICs for consumer and computing applications. Differentiation: its focus on power MOSFETs for consumer/computing applications gives it a narrow, high-volume niche distinct from automotive/industrial-focused power-semiconductor peers.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sector-group" data-open="true">
+    <button type="button" class="sector-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="sector-name">Software</span><span class="sector-count">2</span></button>
+    <div class="sector-body">
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Infrastructure Software</span><span class="theme-count">1</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>FSLY</td><td>Fastly</td><td>~$1.2B</td><td>Edge-cloud/CDN platform for developers. Differentiation: real-time configuration deployment targets developers needing instant edge-code updates.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Gaming</span><span class="theme-count">1</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>SKLZ</td><td>Skillz Inc</td><td>~$0.1B</td><td>Micro-cap mobile skill-based competitive-gaming platform. Differentiation: skill-based wagering format occupies a narrower regulatory niche distinct from both traditional gambling and standard mobile gaming.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sector-group" data-open="true">
+    <button type="button" class="sector-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="sector-name">Strategic Resources</span><span class="sector-count">21</span></button>
+    <div class="sector-body">
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Nuclear</span><span class="theme-count">4</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>NNE</td><td>NANO Nuclear Energy</td><td>~$1.5B</td><td>Micro modular reactor development, an early-stage pure-play in the SMR space. Differentiation: micro-reactor focus targets niche remote/military power applications.</td></tr>
+<tr><td>URG</td><td>Ur-Energy</td><td>~$0.5B</td><td>US uranium mining (in-situ recovery). Differentiation: in-situ-recovery mining method has lower capex/environmental footprint than conventional mining peers.</td></tr>
+<tr><td>UROY</td><td>Uranium Royalty Corp</td><td>~$0.5B</td><td>Uranium royalty and streaming, a financial pure-play on uranium prices. Differentiation: royalty-only model gives a structurally different, higher-margin risk profile.</td></tr>
+<tr><td>EU</td><td>enCore Energy</td><td>~$0.4B</td><td>US in-situ recovery uranium mining. Differentiation: multiple licensed ISR properties across Texas/New Mexico give it a multi-site domestic production pipeline.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Solar</span><span class="theme-count">4</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>ARRY</td><td>Array Technologies</td><td>~$1.5B</td><td>Solar tracker systems for utility-scale projects. Differentiation: single-axis tracker specialization at utility scale gives it manufacturing focus and cost efficiency.</td></tr>
+<tr><td>SHLS</td><td>Shoals Technologies Group</td><td>~$1B</td><td>Electrical balance-of-system components for solar projects. Differentiation: specialized focus on the wiring/electrical-connection layer is a niche most solar-equipment makers treat as secondary.</td></tr>
+<tr><td>CSIQ</td><td>Canadian Solar</td><td>~$1B</td><td>Solar module manufacturing and utility-scale project development. Differentiation: combines panel manufacturing with its own project-development pipeline, capturing value at both stages.</td></tr>
+<tr><td>JKS</td><td>JinkoSolar (ADR)</td><td>~$0.7B</td><td>Solar module manufacturing, one of the world's largest panel producers. Differentiation: massive global manufacturing scale gives cost advantages, though it shares tariff/trade-policy exposure.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Battery</span><span class="theme-count">3</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>PLL</td><td>Piedmont Lithium</td><td>~$0.4B</td><td>Lithium mining and development in the US. Differentiation: domestic US hard-rock lithium resource gives it a supply-chain-security narrative versus foreign brine-based producers.</td></tr>
+<tr><td>STEM</td><td>Stem Inc</td><td>~$0.3B</td><td>AI-driven battery-storage software and systems for commercial/grid customers. Differentiation: software-and-analytics-first positioning targets optimization of existing storage assets.</td></tr>
+<tr><td>ABAT</td><td>American Battery Technology Company</td><td>~$0.2B</td><td>Battery recycling and lithium extraction technology. Differentiation: recycling-focused business model captures value from end-of-life batteries.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Fuel Cell</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>BLDP</td><td>Ballard Power Systems</td><td>~$0.6B</td><td>Fuel-cell systems for transportation and stationary power applications. Differentiation: long-standing focus on heavy-transportation fuel cells differentiates it from stationary-power-focused competitors.</td></tr>
+<tr><td>FCEL</td><td>FuelCell Energy</td><td>~$0.4B</td><td>Stationary fuel-cell power plants. Differentiation: carbonate fuel-cell technology and long operating track record give it project-financing credibility.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Space</span><span class="theme-count">5</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>LUNR</td><td>Intuitive Machines</td><td>~$1.5B</td><td>Lunar landers and space-infrastructure services under NASA's CLPS program. Differentiation: among the first companies to achieve a commercial lunar landing.</td></tr>
+<tr><td>SPIR</td><td>Spire Global</td><td>~$0.35B</td><td>Satellite-based data collection (weather, maritime, aviation tracking). Differentiation: small-satellite constellation purpose-built for multi-domain data collection diversifies revenue.</td></tr>
+<tr><td>SPCE</td><td>Virgin Galactic</td><td>~$0.33B</td><td>Commercial suborbital space tourism, the original pure-play space-tourism name. Differentiation: first-mover brand recognition in commercial space tourism.</td></tr>
+<tr><td>RDW</td><td>Redwire</td><td>~$0.3B</td><td>Space infrastructure and in-space manufacturing components. Differentiation: focus on in-space manufacturing/infrastructure components targets a specialized supplier niche.</td></tr>
+<tr><td>BKSY</td><td>BlackSky Technology</td><td>~$0.27B</td><td>Satellite Earth-imaging and geospatial intelligence. Differentiation: smaller, more specialized geospatial-intelligence focus targets defense/intelligence-community customers specifically.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Quantum</span><span class="theme-count">2</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>LAES</td><td>SEALSQ Corp</td><td>~$0.5B</td><td>Quantum-resistant semiconductor chips for post-quantum cybersecurity. Differentiation: focuses on defending against future quantum-computing threats rather than building quantum computers.</td></tr>
+<tr><td>ARQQ</td><td>Arqit Quantum</td><td>~$0.3B</td><td>Quantum-encryption software for post-quantum cryptography. Differentiation: software-only post-quantum encryption approach lets it deploy across existing infrastructure.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+      <div class="theme-group" data-open="true">
+        <button type="button" class="theme-header" aria-expanded="true"><span class="chevron">&#9662;</span><span class="theme-name">Environmental Services</span><span class="theme-count">1</span></button>
+        <div class="theme-body"><div class="table-wrap"><table>
+<thead><tr><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Reasoning</th></tr></thead>
+<tbody>
+<tr><td>MEG</td><td>Montrose Environmental Group</td><td>~$0.6B</td><td>Environmental testing, measurement, and consulting services for industrial/regulatory compliance and emerging contaminants (PFAS). Differentiation: specialized PFAS/emerging-contaminant testing capability positions it directly on a fast-growing regulatory-driven niche larger diversified environmental firms are slower to build.</td></tr>
+</tbody>
+</table></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+  <footer>Published via <code>rs_hist/publish_artifacts.py</code></footer>
+</div>
+<script>
+(function(){
+  function setOpen(group, open){
+    group.setAttribute('data-open', open ? 'true' : 'false');
+    var header = group.firstElementChild; // .sector-header or .theme-header
+    if(header) header.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  document.querySelectorAll('.sector-header, .theme-header').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var group = btn.parentElement;
+      setOpen(group, group.getAttribute('data-open') !== 'true');
+    });
+  });
+  document.querySelectorAll('.expand-all').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var container = btn.closest('.sector-groups');
+      container.querySelectorAll('.sector-group, .theme-group').forEach(function(g){ setOpen(g, true); });
+    });
+  });
+  document.querySelectorAll('.collapse-all').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var container = btn.closest('.sector-groups');
+      container.querySelectorAll('.sector-group, .theme-group').forEach(function(g){ setOpen(g, false); });
+    });
+  });
+})();
+</script>
+</body>
+</html>
