@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Theme Relative Strength</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --page:        #f2f2ee;
+    --surface:     #fdfdfb;
+    --surface-2:   #f7f6f1;
+    --ink:         #15181b;
+    --ink-2:       #53565a;
+    --muted:       #8b8e8f;
+    --rule:        #e0ded5;
+    --rule-strong: #c7c5ba;
+    --accent:      #2c4a63;
+    --accent-soft: #e6edf1;
+    --pos:         #1baf7a;
+    --pos-bg:      rgba(27,175,122,0.12);
+    --neg:         #e34948;
+    --neg-bg:      rgba(227,73,72,0.10);
+    --shadow: 0 1px 2px rgba(21,24,27,0.04), 0 8px 24px rgba(21,24,27,0.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --page:        #101214;
+      --surface:     #17191c;
+      --surface-2:   #1c1f22;
+      --ink:         #f2f2ef;
+      --ink-2:       #c2c3bd;
+      --muted:       #8c8f90;
+      --rule:        #2a2d30;
+      --rule-strong: #3a3d40;
+      --accent:      #86adc9;
+      --accent-soft: #1d2b34;
+      --pos:         #199e70;
+      --pos-bg:      rgba(25,158,112,0.20);
+      --neg:         #e66767;
+      --neg-bg:      rgba(230,103,103,0.18);
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page:        #101214;
+    --surface:     #17191c;
+    --surface-2:   #1c1f22;
+    --ink:         #f2f2ef;
+    --ink-2:       #c2c3bd;
+    --muted:       #8c8f90;
+    --rule:        #2a2d30;
+    --rule-strong: #3a3d40;
+    --accent:      #86adc9;
+    --accent-soft: #1d2b34;
+    --pos:         #199e70;
+    --pos-bg:      rgba(25,158,112,0.20);
+    --neg:         #e66767;
+    --neg-bg:      rgba(230,103,103,0.18);
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--page);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .page{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* ---------- header ---------- */
+  .head{ display:flex; flex-direction:column; gap:10px; }
+  .eyebrow{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h1{
+    font-family: "Spectral", Georgia, serif;
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 1.12;
+    margin: 0;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .dateline{
+    display:flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 0;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .dateline b{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 13px;
+  }
+  .dateline .sep{ color: var(--rule-strong); margin: 0 10px; }
+
+  /* ---------- card shell ---------- */
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+  .card-head{
+    padding: 22px 26px 14px;
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--rule);
+  }
+  .card-title{
+    font-family: "Spectral", Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .card-sub{
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .key{
+    display:flex;
+    gap: 16px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+  }
+  .key span{ display:inline-flex; align-items:center; gap: 6px; white-space: nowrap; }
+  .key i{ width: 9px; height: 9px; border-radius: 2px; display:inline-block; }
+  .key i.pos{ background: var(--pos); }
+  .key i.neg{ background: var(--neg); }
+
+  /* ---------- chart ---------- */
+  .chart{ padding: 10px 26px 22px; }
+  .rs-row{
+    display: grid;
+    grid-template-columns: 190px 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 7px 0;
+    border-radius: 6px;
+    outline: none;
+  }
+  .rs-row:focus-visible{ box-shadow: 0 0 0 2px var(--accent); }
+  .rs-label{ display:flex; flex-direction:column; gap: 1px; min-width:0; }
+  .rs-theme{
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rs-sector{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .rs-track{
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 22px;
+  }
+  .rs-track::before{
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -8px;
+    bottom: -8px;
+    width: 1px;
+    background: var(--rule-strong);
+  }
+  .rs-half{ display:flex; align-items:center; min-width:0; }
+  .rs-half.neg{ justify-content: flex-end; }
+  .rs-half.pos{ justify-content: flex-start; }
+  .rs-half.neg .rs-value{ order: 1; }
+  .rs-half.neg .rs-bar{ order: 2; }
+  .rs-half.pos .rs-bar{ order: 1; }
+  .rs-half.pos .rs-value{ order: 2; }
+
+  .rs-bar{
+    height: 18px;
+    min-width: 3px;
+    transition: filter 0.12s ease, box-shadow 0.12s ease;
+  }
+  .rs-half.neg .rs-bar{ border-radius: 4px 0 0 4px; margin-left: 6px; background: var(--neg); }
+  .rs-half.pos .rs-bar{ border-radius: 0 4px 4px 0; margin-right: 6px; background: var(--pos); }
+  .rs-row:hover .rs-bar,
+  .rs-row:focus-visible .rs-bar,
+  .rs-row.is-active .rs-bar{
+    filter: brightness(1.08);
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px currentColor;
+  }
+  .rs-half.neg .rs-bar{ color: var(--neg); }
+  .rs-half.pos .rs-bar{ color: var(--pos); }
+
+  .rs-value{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .rs-half.neg .rs-value{ color: var(--neg); }
+  .rs-half.pos .rs-value{ color: var(--pos); }
+
+  /* ---------- tooltip ---------- */
+  .tip{
+    position: fixed;
+    z-index: 20;
+    pointer-events: none;
+    background: var(--ink);
+    color: var(--page);
+    font-size: 12.5px;
+    padding: 9px 12px;
+    border-radius: 7px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translate(-50%, -100%) translateY(-10px);
+    transition: opacity 0.1s ease;
+    max-width: 220px;
+  }
+  .tip.show{ opacity: 1; }
+  .tip .tip-val{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 700;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+  .tip .tip-meta{ color: inherit; opacity: 0.68; margin-top: 2px; }
+
+  /* ---------- table ---------- */
+  .table-wrap{ overflow-x: auto; padding: 4px 26px 24px; }
+  table{ width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead th{
+    text-align: left;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule-strong);
+    white-space: nowrap;
+  }
+  thead th.num, tbody td.num{ text-align: right; }
+  tbody td{
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: middle;
+  }
+  tbody tr:nth-child(odd){ background: var(--surface-2); }
+  tbody tr:last-child td{ border-bottom: none; }
+  td.rank{ font-family:"IBM Plex Mono",monospace; color: var(--muted); font-size: 12px; }
+  td.theme{ font-weight: 600; }
+  td.sector{ color: var(--ink-2); }
+  td.n{ font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap: 6px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 600;
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+  .pill.pos{ background: var(--pos-bg); color: var(--pos); }
+  .pill.neg{ background: var(--neg-bg); color: var(--neg); }
+  .pill svg{ width: 9px; height: 9px; }
+
+  /* ---------- method ---------- */
+  .method{ padding: 22px 26px 26px; }
+  .method h2{
+    font-family: "Spectral", Georgia, serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .method p.lede{ color: var(--ink-2); font-size: 13.5px; margin: 0 0 18px; max-width: 62ch; }
+  ol.steps{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  ol.steps li{
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 12px;
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+  ol.steps b{ color: var(--ink); font-weight: 600; }
+  ol.steps .n{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 12px;
+    padding-top: 1px;
+  }
+  code{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+
+  .foot{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+    padding-top: 18px;
+  }
+  .foot code{ background: none; padding: 0; color: var(--muted); }
+
+  @media (max-width: 620px){
+    h1{ font-size: 30px; }
+    .rs-row{ grid-template-columns: 118px 1fr; }
+    .rs-theme{ font-size: 12.5px; }
+    ol.steps li{ grid-template-columns: 20px 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="head">
+    <div class="eyebrow">Sector Rotation &middot; Relative Strength</div>
+    <h1>Theme Relative Strength</h1>
+    <div class="dateline">
+      <span>As of <b>Sep&nbsp;18,&nbsp;2026</b></span>
+      <span class="sep">&middot;</span>
+      <span><b>5-day</b> lookback</span>
+      <span class="sep">&middot;</span>
+      <span><b>156</b> of <b>156</b> tickers &middot; <b>29</b> themes &middot; <b>6</b> sectors</span>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <p class="card-title">RS score by theme</p>
+        <p class="card-sub">Liquidity-weighted 5-day % change, ranked high to low</p>
+      </div>
+      <div class="key">
+        <span><i class="pos"></i>Outperforming</span>
+        <span><i class="neg"></i>Lagging</span>
+      </div>
+    </div>
+    <div class="chart" id="chart" role="list" aria-label="Relative strength score by theme"></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <p class="card-title">Full results</p>
+        <p class="card-sub">Every theme behind the chart above, with ticker coverage</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Theme</th>
+            <th>Sector</th>
+            <th class="num">Tickers</th>
+            <th class="num">5-day RS</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card method">
+    <h2>How the score is built</h2>
+    <p class="lede">Each theme's score is a liquidity-weighted average of its constituents' 5-day return &mdash; tickers that trade more dollar volume per unit of volatility carry more weight.</p>
+    <ol class="steps">
+      <li><span class="n">01</span><span><b>Universe.</b> Themes and their tickers are parsed from <code>themes.md</code>; only those symbols are scanned out of the large/mid/small-cap daily parquet files, in lazy mode, to keep memory low.</span></li>
+      <li><span class="n">02</span><span><b>Dollar volume.</b> <code>close &times; volume</code> per bar, then a 20-day rolling mean per ticker.</span></li>
+      <li><span class="n">03</span><span><b>ATR20.</b> True range &mdash; <code>max(high&minus;low, |high&minus;prev_close|, |low&minus;prev_close|)</code> &mdash; rolled over 20 days per ticker.</span></li>
+      <li><span class="n">04</span><span><b>Liquidity weight.</b> 20-day dollar volume divided by ATR20, then normalized within each theme so its members' weights sum to 1.</span></li>
+      <li><span class="n">05</span><span><b>5-day return.</b> Percent change of adjusted close vs. adjusted close 5 trading days prior, per ticker.</span></li>
+      <li><span class="n">06</span><span><b>Theme score.</b> Weighted sum of member returns &mdash; the number plotted above.</span></li>
+    </ol>
+  </section>
+
+  <div class="foot">
+    <span>Source: <code>rs_hist/downloads/{l,m,s}_1d_3y.parquet</code></span>
+    <span>All universe tickers had usable data</span>
+    <span>Generated 2026-09-19 13:50 Russia TZ 2 Standard Time &middot; <code>rs_hist/publish_report.py --n 5</code></span>
+  </div>
+
+</div>
+
+<div class="tip" id="tip">
+  <div class="tip-val" id="tipVal"></div>
+  <div class="tip-meta" id="tipMeta"></div>
+</div>
+
+<script>
+  const DATA = [{"sector": "Software", "theme": "Gaming", "score": 6.7108734607066705, "n": 3}, {"sector": "Semiconductors", "theme": "Memory", "score": 6.288300660373006, "n": 5}, {"sector": "Frontier Tech", "theme": "AV (Autonomous Vehicles)", "score": 6.2592388315719605, "n": 4}, {"sector": "Semiconductors", "theme": "Chips", "score": 4.935923165981049, "n": 8}, {"sector": "Healthcare", "theme": "Biotech", "score": 4.193278933358769, "n": 8}, {"sector": "Infrastructure", "theme": "Data Center", "score": 3.6534882399315576, "n": 8}, {"sector": "Frontier Tech", "theme": "Space", "score": 2.511586151034824, "n": 9}, {"sector": "Semiconductors", "theme": "Power Semis", "score": 2.291784222547334, "n": 6}, {"sector": "Semiconductors", "theme": "Semi Equipment", "score": 1.9539382272165646, "n": 7}, {"sector": "Strategic Energy & Materials", "theme": "Fuel Cell", "score": 1.8741936000078825, "n": 2}, {"sector": "Healthcare", "theme": "Pharma", "score": 1.5492647346875288, "n": 8}, {"sector": "Software", "theme": "Cloud", "score": 1.3486060663310537, "n": 7}, {"sector": "Strategic Energy & Materials", "theme": "Nuclear", "score": 0.31814629446503045, "n": 10}, {"sector": "Healthcare", "theme": "MedTech", "score": -0.13681443888845288, "n": 8}, {"sector": "Software", "theme": "Enterprise Software", "score": -0.14810011015607416, "n": 5}, {"sector": "Software", "theme": "FinTech", "score": -0.15753401670274023, "n": 9}, {"sector": "Infrastructure", "theme": "Photonics", "score": -0.5502770091599054, "n": 4}, {"sector": "Strategic Energy & Materials", "theme": "Solar", "score": -0.9135915260685263, "n": 4}, {"sector": "Frontier Tech", "theme": "Quantum", "score": -1.3188597000197089, "n": 3}, {"sector": "Strategic Energy & Materials", "theme": "Rare Earth", "score": -2.371643304200024, "n": 2}, {"sector": "Infrastructure", "theme": "Networking", "score": -2.8970501045264365, "n": 6}, {"sector": "Strategic Energy & Materials", "theme": "Battery", "score": -2.9785336718600077, "n": 3}, {"sector": "Frontier Tech", "theme": "Drones", "score": -3.5171798887744217, "n": 2}, {"sector": "Infrastructure", "theme": "Fiber Optics", "score": -4.3668480497672, "n": 3}, {"sector": "Frontier Tech", "theme": "EV (Electric Vehicles)", "score": -4.584715571705837, "n": 7}, {"sector": "Software", "theme": "Cybersecurity", "score": -5.224088492257624, "n": 8}, {"sector": "Infrastructure", "theme": "Edge Computing", "score": -6.447746059596781, "n": 3}, {"sector": "Software", "theme": "AI Software", "score": -10.348310303622528, "n": 4}, {"sector": "Frontier Tech", "theme": "Robotics", "score": -14.701898445923632, "n": 3}].sort((a,b) => b.score - a.score);
+
+  const maxAbs = Math.max(...DATA.map(d => Math.abs(d.score))) * 1.08;
+  const fmt = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2) + "%";
+
+  const chart = document.getElementById("chart");
+  const tbody = document.getElementById("tbody");
+  const tip = document.getElementById("tip");
+  const tipVal = document.getElementById("tipVal");
+  const tipMeta = document.getElementById("tipMeta");
+
+  const upArrow = '<svg viewBox="0 0 10 10"><polygon points="5,1 9,8 1,8" fill="currentColor"/></svg>';
+  const downArrow = '<svg viewBox="0 0 10 10"><polygon points="1,2 9,2 5,9" fill="currentColor"/></svg>';
+
+  function showTip(el, d){
+    const r = el.getBoundingClientRect();
+    tip.style.left = (r.left + r.width / 2) + "px";
+    tip.style.top = r.top + "px";
+    tipVal.textContent = fmt(d.score);
+    tipMeta.textContent = d.theme + " — " + d.sector + " · " + d.n + " tickers";
+    tip.classList.add("show");
+  }
+  function hideTip(){ tip.classList.remove("show"); }
+
+  DATA.forEach((d, i) => {
+    const pct = (Math.abs(d.score) / maxAbs * 100).toFixed(2);
+    const isPos = d.score >= 0;
+
+    // -- chart row --
+    const row = document.createElement("div");
+    row.className = "rs-row";
+    row.setAttribute("role", "listitem");
+    row.tabIndex = 0;
+
+    const label = document.createElement("div");
+    label.className = "rs-label";
+    const themeEl = document.createElement("span");
+    themeEl.className = "rs-theme";
+    themeEl.textContent = d.theme;
+    const sectorEl = document.createElement("span");
+    sectorEl.className = "rs-sector";
+    sectorEl.textContent = d.sector;
+    label.append(themeEl, sectorEl);
+
+    const track = document.createElement("div");
+    track.className = "rs-track";
+    const negHalf = document.createElement("div");
+    negHalf.className = "rs-half neg";
+    const posHalf = document.createElement("div");
+    posHalf.className = "rs-half pos";
+
+    const bar = document.createElement("div");
+    bar.className = "rs-bar";
+    bar.style.width = pct + "%";
+    const val = document.createElement("span");
+    val.className = "rs-value";
+    val.textContent = fmt(d.score);
+
+    if (isPos){
+      posHalf.append(bar, val);
+    } else {
+      negHalf.append(val, bar);
+    }
+    track.append(negHalf, posHalf);
+    row.append(label, track);
+    chart.appendChild(row);
+
+    const onEnter = () => { row.classList.add("is-active"); showTip(bar, d); };
+    const onLeave = () => { row.classList.remove("is-active"); hideTip(); };
+    row.addEventListener("pointerenter", onEnter);
+    row.addEventListener("pointerleave", onLeave);
+    row.addEventListener("focus", onEnter);
+    row.addEventListener("blur", onLeave);
+
+    // -- table row --
+    const tr = document.createElement("tr");
+    const tdRank = document.createElement("td");
+    tdRank.className = "rank";
+    tdRank.textContent = String(i + 1).padStart(2, "0");
+    const tdTheme = document.createElement("td");
+    tdTheme.className = "theme";
+    tdTheme.textContent = d.theme;
+    const tdSector = document.createElement("td");
+    tdSector.className = "sector";
+    tdSector.textContent = d.sector;
+    const tdN = document.createElement("td");
+    tdN.className = "num n";
+    tdN.textContent = d.n;
+    const tdScore = document.createElement("td");
+    tdScore.className = "num";
+    const pill = document.createElement("span");
+    pill.className = "pill " + (isPos ? "pos" : "neg");
+    pill.innerHTML = (isPos ? upArrow : downArrow);
+    const pillText = document.createElement("span");
+    pillText.textContent = fmt(d.score);
+    pill.appendChild(pillText);
+    tdScore.appendChild(pill);
+
+    tr.append(tdRank, tdTheme, tdSector, tdN, tdScore);
+    tbody.appendChild(tr);
+  });
+</script>
+</body>
+</html>
