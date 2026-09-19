@@ -113,6 +113,27 @@ h1{
 }
 .dateline .sep{ color: var(--rule-strong); margin: 0 10px; }
 
+.back-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  margin: 0 0 18px;
+  padding: 7px 14px 7px 11px;
+  border: 1px solid var(--rule-strong, var(--rule));
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--accent);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  transition: border-color .15s ease, transform .15s ease;
+}
+.back-btn:hover{ border-color: var(--accent); transform: translateX(-2px); }
+
 .nav{ display:flex; gap: 8px; flex-wrap: wrap; }
 .nav a{
   font-family: "IBM Plex Mono", ui-monospace, monospace;
@@ -384,6 +405,11 @@ code{
 <body>
 <div class="page">
 
+  <a class="back-btn" href="../" aria-label="Back to all projects">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    All projects
+  </a>
+
   <header class="head">
     <div class="eyebrow">Finviz &middot; Last-Day Movers</div>
     <h1>5-Day % Change</h1>
@@ -428,7 +454,7 @@ code{
 
   <div class="foot">
     <span>Source: <code>finviz/last_day_movers.py</code></span>
-    <span>Generated 2026-09-18 18:18 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
+    <span>Generated 2026-09-19 16:12 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
   </div>
 
 </div>
