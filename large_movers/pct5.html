@@ -78,6 +78,19 @@ body{
   flex-direction: column;
   gap: 40px;
 }
+.page-wide{ max-width: 1560px; }
+
+.overview-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 24px;
+}
+.overview-grid .card{ min-width: 0; }
+.overview-grid .rs-row{ grid-template-columns: 64px 1fr; }
+@media (max-width: 1300px){
+  .overview-grid{ grid-template-columns: 1fr; }
+}
 
 .head{ display:flex; flex-direction:column; gap:10px; }
 .eyebrow{
@@ -461,7 +474,7 @@ code{
 
   <div class="foot">
     <span>Source: <code>finviz/last_day_movers.py</code></span>
-    <span>Generated 2026-09-22 11:46 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
+    <span>Generated 2026-09-22 11:55 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
   </div>
 
 </div>

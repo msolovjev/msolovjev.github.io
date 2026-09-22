@@ -78,6 +78,19 @@ body{
   flex-direction: column;
   gap: 40px;
 }
+.page-wide{ max-width: 1560px; }
+
+.overview-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 24px;
+}
+.overview-grid .card{ min-width: 0; }
+.overview-grid .rs-row{ grid-template-columns: 64px 1fr; }
+@media (max-width: 1300px){
+  .overview-grid{ grid-template-columns: 1fr; }
+}
 
 .head{ display:flex; flex-direction:column; gap:10px; }
 .eyebrow{
@@ -403,7 +416,7 @@ code{
 </style>
 </head>
 <body>
-<div class="page">
+<div class="page page-wide">
 
   <a class="back-btn" href="../" aria-label="Back to all projects">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -425,6 +438,8 @@ code{
       <a href="all.html" class="active">Overview</a>
     </nav>
   </header>
+
+  <div class="overview-grid">
 
   <section class="card">
     <div class="card-head">
@@ -532,9 +547,11 @@ code{
     <div class="chart" id="chart20" role="list" aria-label="20-day % change by symbol"></div>
   </section>
 
+  </div>
+
   <div class="foot">
     <span>Source: <code>finviz/last_day_movers.py</code></span>
-    <span>Generated 2026-09-22 11:46 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
+    <span>Generated 2026-09-22 11:55 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
   </div>
 
 </div>
