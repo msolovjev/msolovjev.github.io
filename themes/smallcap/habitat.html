@@ -505,8 +505,7 @@
   const DATA = JSON.parse(document.getElementById('data-blob').textContent);
 
   const SECTOR_ORDER = ["Commodities", "Consumer", "Digital Infrastructure", "Healthcare", "Intelligence", "Semiconductors", "Software", "Strategic Resources"];
-  const SECTOR_COLOR = {};
-  SECTOR_ORDER.forEach((s,i)=>{ SECTOR_COLOR[s] = `hsl(${Math.round(i*137.5)%360} 52% 46%)`; });
+  const SECTOR_COLOR = {"Commodities": "#b23838", "Consumer": "#38b25c", "Digital Infrastructure": "#7f38b2", "Healthcare": "#b2a338", "Intelligence": "#389eb2", "Semiconductors": "#b2387a", "Software": "#57b238", "Strategic Resources": "#3e38b2", "Finance": "#b26138", "Digital Assets & Blockchain": "#38b285", "Aerospace & Defense": "#a838b2", "Real Estate & REITs": "#99b238", "Transportation & Logistics": "#3875b2", "Telecommunications": "#b23852"};
 
   const state = { table: 2, sector: null, theme: "", query: "", sort: "share" };
 
