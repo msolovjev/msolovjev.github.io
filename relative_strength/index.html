@@ -151,6 +151,46 @@
   .key i.pos{ background: var(--pos); }
   .key i.neg{ background: var(--neg); }
 
+  /* ---------- filter bar ---------- */
+  .filter-bar{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 26px 0;
+  }
+  .filter-label{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .filter-seg{
+    display: flex;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .filter-btn{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border: none;
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .filter-btn + .filter-btn{ border-left: 1px solid var(--rule); }
+  .filter-btn:hover{ color: var(--ink); }
+  .filter-btn.active{ background: var(--accent); color: var(--page); }
+  .filter-count{
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
   /* ---------- chart ---------- */
   .chart{ padding: 10px 26px 22px; }
   .rs-row{
@@ -407,6 +447,16 @@
         <span><i class="neg"></i>Lagging</span>
       </div>
     </div>
+    <div class="filter-bar" role="group" aria-label="Filter by absolute percent change">
+      <span class="filter-label">Show</span>
+      <div class="filter-seg">
+        <button type="button" class="filter-btn" data-filter="10">Top 10</button>
+        <button type="button" class="filter-btn" data-filter="30">Top 30</button>
+        <button type="button" class="filter-btn" data-filter="50">Top 50</button>
+        <button type="button" class="filter-btn active" data-filter="all">All</button>
+      </div>
+      <span class="filter-count" id="filterCount"></span>
+    </div>
     <div class="chart" id="chart" role="list" aria-label="Relative strength score by theme"></div>
   </section>
 
@@ -449,7 +499,7 @@
   <div class="foot">
     <span>Source: <code>rs_hist/downloads/{l,m,s}_1d_3y.parquet</code></span>
     <span>14 ticker(s) dropped for insufficient history: <code>AKRO, APLS, ARCH, BLDE, CFLT, CIVI, CMA, CRNX, CTRA, ENDP, EXAS, GTLS, MASI, ZK</code></span>
-    <span>Generated 2026-09-21 18:01 Russia TZ 2 Standard Time &middot; <code>rs_hist/publish_rs_github_pages.py --n 5</code></span>
+    <span>Generated 2026-09-22 13:58 Russia TZ 2 Standard Time &middot; <code>rs_hist/publish_rs_github_pages.py --n 5</code></span>
   </div>
 
 </div>
@@ -460,9 +510,12 @@
 </div>
 
 <script>
-  const DATA = [{"sector": "Digital Infrastructure", "theme": "Cybersecurity", "score": 12.44183422618757, "n": 10}, {"sector": "Digital Assets & Blockchain", "theme": "Tokenization", "score": 11.51023856488371, "n": 3}, {"sector": "Digital Assets & Blockchain", "theme": "Crypto Mining/Staking", "score": 7.400303097043363, "n": 8}, {"sector": "Digital Infrastructure", "theme": "Networking", "score": 6.5750222627223405, "n": 10}, {"sector": "Semiconductors", "theme": "Foundries", "score": 6.429439411791369, "n": 4}, {"sector": "Digital Assets & Blockchain", "theme": "Crypto Platforms", "score": 6.232303165007686, "n": 5}, {"sector": "Digital Infrastructure", "theme": "Storage", "score": 5.674683731358766, "n": 7}, {"sector": "Semiconductors", "theme": "Memory", "score": 5.628737358263713, "n": 8}, {"sector": "Software", "theme": "Infrastructure Software", "score": 5.211599369177109, "n": 8}, {"sector": "Aerospace & Defense", "theme": "Cyber & Electronic Warfare", "score": 3.9561101780201806, "n": 4}, {"sector": "Consumer", "theme": "Health & Wellness Food", "score": 3.3893518062251586, "n": 2}, {"sector": "Transportation & Logistics", "theme": "Marine Shipping", "score": 2.843744530456925, "n": 3}, {"sector": "Semiconductors", "theme": "Processors", "score": 2.781091478662532, "n": 8}, {"sector": "Healthcare", "theme": "MedTech", "score": 2.0221745107072064, "n": 33}, {"sector": "Finance", "theme": "Capital Markets & Exchanges", "score": 1.9086144371705736, "n": 13}, {"sector": "Digital Infrastructure", "theme": "Data Center", "score": 1.8857367788410122, "n": 19}, {"sector": "Healthcare", "theme": "Remote Care Platforms", "score": 1.6539999726445813, "n": 3}, {"sector": "Digital Infrastructure", "theme": "Ambient IoT", "score": 1.6524789457268838, "n": 6}, {"sector": "Strategic Resources", "theme": "Industrial Systems", "score": 1.6155313831199145, "n": 6}, {"sector": "Strategic Resources", "theme": "Quantum", "score": 1.6151953839583506, "n": 8}, {"sector": "Digital Infrastructure", "theme": "Optics", "score": 1.4469087918728445, "n": 5}, {"sector": "Intelligence", "theme": "Robotics", "score": 1.3988542131549342, "n": 8}, {"sector": "Semiconductors", "theme": "Power Semis", "score": 1.1061243764488422, "n": 12}, {"sector": "Healthcare", "theme": "Biotech", "score": 0.9617564431578977, "n": 32}, {"sector": "Intelligence", "theme": "AV", "score": 0.6877256490347856, "n": 8}, {"sector": "Strategic Resources", "theme": "Energy Systems", "score": 0.5533955333244301, "n": 5}, {"sector": "Commodities", "theme": "Copper", "score": 0.4278384948977264, "n": 5}, {"sector": "Intelligence", "theme": "Spatial Computing", "score": 0.37568095080717506, "n": 8}, {"sector": "Commodities", "theme": "Biofuels", "score": 0.32650245739738243, "n": 4}, {"sector": "Healthcare", "theme": "Pharma", "score": 0.1780282430599742, "n": 19}, {"sector": "Strategic Resources", "theme": "Industrial Automation", "score": 0.08956477955426917, "n": 7}, {"sector": "Aerospace & Defense", "theme": "Precision Weapons", "score": 0.01958306200147142, "n": 4}, {"sector": "Consumer", "theme": "Retail", "score": -0.017032857157091963, "n": 9}, {"sector": "Transportation & Logistics", "theme": "Logistics/Warehousing", "score": -0.03279604954194393, "n": 3}, {"sector": "Digital Infrastructure", "theme": "Cloud", "score": -0.2535108409926433, "n": 10}, {"sector": "Strategic Resources", "theme": "Solar", "score": -0.297516775516634, "n": 7}, {"sector": "Strategic Resources", "theme": "Fuel Cell", "score": -0.4143031846743563, "n": 5}, {"sector": "Finance", "theme": "Life & Health Insurance", "score": -0.42551660611896247, "n": 14}, {"sector": "Strategic Resources", "theme": "Space", "score": -0.5485913519648181, "n": 10}, {"sector": "Intelligence", "theme": "Agentic AI", "score": -0.5790410691037655, "n": 12}, {"sector": "Digital Infrastructure", "theme": "Compute", "score": -0.6245533828850176, "n": 8}, {"sector": "Consumer", "theme": "AgTech & Food Innovation", "score": -0.6280583702224858, "n": 3}, {"sector": "Digital Infrastructure", "theme": "Edge Computing", "score": -0.6308889823236037, "n": 8}, {"sector": "Strategic Resources", "theme": "Clean Water", "score": -0.6652060152973043, "n": 6}, {"sector": "Aerospace & Defense", "theme": "Missile Defense", "score": -0.7331724995723132, "n": 3}, {"sector": "Software", "theme": "Application Software", "score": -0.7459720095715856, "n": 22}, {"sector": "Real Estate & REITs", "theme": "Office/Retail/Industrial RE", "score": -0.8644349700667415, "n": 3}, {"sector": "Intelligence", "theme": "Perception", "score": -0.9283058047095203, "n": 3}, {"sector": "Finance", "theme": "Property & Casualty Insurance & Brokerage", "score": -1.1531449294265181, "n": 11}, {"sector": "Telecommunications", "theme": "5G Semis", "score": -1.2423947943072406, "n": 5}, {"sector": "Finance", "theme": "Reinsurance", "score": -1.337693233257283, "n": 5}, {"sector": "Strategic Resources", "theme": "Engineered Materials", "score": -1.3955117268259014, "n": 7}, {"sector": "Aerospace & Defense", "theme": "Secure Supply Chains", "score": -1.398453175391371, "n": 3}, {"sector": "Transportation & Logistics", "theme": "Air Freight", "score": -1.4672512602799137, "n": 2}, {"sector": "Real Estate & REITs", "theme": "Healthcare & Senior Living RE", "score": -1.4953929510358615, "n": 3}, {"sector": "Strategic Resources", "theme": "Battery", "score": -1.5164659406847674, "n": 8}, {"sector": "Consumer", "theme": "Internet & Media", "score": -1.6029379239037589, "n": 9}, {"sector": "Consumer", "theme": "Consumer Brands", "score": -1.6572706101556156, "n": 11}, {"sector": "Strategic Resources", "theme": "Environmental Services", "score": -1.8309891147253492, "n": 7}, {"sector": "Semiconductors", "theme": "Semi Equipment", "score": -1.8584423574485747, "n": 15}, {"sector": "Commodities", "theme": "Uranium", "score": -1.8907872804640156, "n": 7}, {"sector": "Commodities", "theme": "Gold", "score": -1.929631194507301, "n": 8}, {"sector": "Strategic Resources", "theme": "Conventional Utilities", "score": -2.0667156647860967, "n": 6}, {"sector": "Finance", "theme": "FinTech", "score": -2.0739649169734546, "n": 14}, {"sector": "Semiconductors", "theme": "Analog", "score": -2.2256732330112494, "n": 7}, {"sector": "Software", "theme": "Gaming", "score": -2.270560439379521, "n": 6}, {"sector": "Commodities", "theme": "Natural Gas", "score": -2.28631414836665, "n": 9}, {"sector": "Consumer", "theme": "Smart Home Automation/Security/Voice", "score": -2.3132033584883565, "n": 3}, {"sector": "Real Estate & REITs", "theme": "Data Center/Digital Infra RE", "score": -2.3532552459946565, "n": 3}, {"sector": "Strategic Resources", "theme": "Nuclear", "score": -2.420143694155282, "n": 11}, {"sector": "Telecommunications", "theme": "Enterprise Unified Comms", "score": -2.6024308621494128, "n": 3}, {"sector": "Intelligence", "theme": "Drones", "score": -2.6698338219031186, "n": 3}, {"sector": "Commodities", "theme": "Oil", "score": -2.700386406096802, "n": 17}, {"sector": "Transportation & Logistics", "theme": "Trucking/LTL", "score": -2.842631003408168, "n": 4}, {"sector": "Aerospace & Defense", "theme": "Next-Gen Aircraft", "score": -2.894742242198227, "n": 5}, {"sector": "Commodities", "theme": "Rare Earths", "score": -3.011588620003573, "n": 4}, {"sector": "Consumer", "theme": "EV", "score": -3.1471450573978967, "n": 9}, {"sector": "Consumer", "theme": "Gaming & Wagering", "score": -3.2127131829613087, "n": 7}, {"sector": "Transportation & Logistics", "theme": "Rail", "score": -3.2476528086492484, "n": 3}, {"sector": "Commodities", "theme": "Silver", "score": -3.320345167530744, "n": 4}, {"sector": "Digital Infrastructure", "theme": "Connected Devices/Sensors", "score": -3.3244259849258504, "n": 1}, {"sector": "Finance", "theme": "Consumer & Specialty Finance", "score": -3.3684079292169495, "n": 9}, {"sector": "Digital Assets & Blockchain", "theme": "Enterprise Blockchain", "score": -3.4885974990284634, "n": 3}, {"sector": "Healthcare", "theme": "Longevity", "score": -3.6117351416296612, "n": 16}, {"sector": "Consumer", "theme": "Travel & Leisure", "score": -3.8628785631047187, "n": 9}, {"sector": "Finance", "theme": "Asset & Wealth Management", "score": -4.1272129269599, "n": 17}, {"sector": "Commodities", "theme": "Lithium", "score": -4.2455225047533505, "n": 2}, {"sector": "Consumer", "theme": "Food Services", "score": -4.539947182217741, "n": 9}, {"sector": "Finance", "theme": "Regional & Community Banks", "score": -4.544267772132933, "n": 11}, {"sector": "Consumer", "theme": "Big Ticket", "score": -4.780647125090641, "n": 7}, {"sector": "Intelligence", "theme": "eVTOL", "score": -4.900625592368031, "n": 2}, {"sector": "Telecommunications", "theme": "Wireless Networks & Carriers", "score": -5.137787260961429, "n": 5}, {"sector": "Real Estate & REITs", "theme": "Housing/Urban Living", "score": -5.156411374412321, "n": 4}, {"sector": "Finance", "theme": "Money Center & Global Banks", "score": -6.188809112307577, "n": 6}, {"sector": "Strategic Resources", "theme": "Coal/Thermal Generation", "score": -9.042686270154382, "n": 2}, {"sector": "Digital Infrastructure", "theme": "Biometrics", "score": -9.779780044715876, "n": 1}].sort((a,b) => b.score - a.score);
+  const DATA_ALL = [{"sector": "Digital Infrastructure", "theme": "Cybersecurity", "score": 12.430372734616745, "n": 10}, {"sector": "Digital Assets & Blockchain", "theme": "Tokenization", "score": 11.51023856488371, "n": 3}, {"sector": "Digital Assets & Blockchain", "theme": "Crypto Mining/Staking", "score": 7.354398604363637, "n": 8}, {"sector": "Digital Infrastructure", "theme": "Networking", "score": 6.851503417469814, "n": 10}, {"sector": "Semiconductors", "theme": "Foundries", "score": 6.6646107342949, "n": 4}, {"sector": "Digital Infrastructure", "theme": "Storage", "score": 6.39644595715918, "n": 7}, {"sector": "Digital Assets & Blockchain", "theme": "Crypto Platforms", "score": 6.232303165007686, "n": 5}, {"sector": "Semiconductors", "theme": "Memory", "score": 6.090738177153536, "n": 8}, {"sector": "Software", "theme": "Infrastructure Software", "score": 5.211599369177109, "n": 8}, {"sector": "Aerospace & Defense", "theme": "Cyber & Electronic Warfare", "score": 3.9561101780201806, "n": 4}, {"sector": "Semiconductors", "theme": "Processors", "score": 2.8321539961098434, "n": 8}, {"sector": "Transportation & Logistics", "theme": "Marine Shipping", "score": 2.5661686097685514, "n": 3}, {"sector": "Consumer", "theme": "Health & Wellness Food", "score": 2.4857997574999837, "n": 2}, {"sector": "Digital Infrastructure", "theme": "Ambient IoT", "score": 2.13795227404963, "n": 6}, {"sector": "Digital Infrastructure", "theme": "Data Center", "score": 2.042290980825169, "n": 19}, {"sector": "Healthcare", "theme": "MedTech", "score": 2.0325951251428926, "n": 33}, {"sector": "Finance", "theme": "Capital Markets & Exchanges", "score": 1.8953698802394792, "n": 13}, {"sector": "Strategic Resources", "theme": "Industrial Systems", "score": 1.743000791739869, "n": 6}, {"sector": "Healthcare", "theme": "Remote Care Platforms", "score": 1.6539999726445813, "n": 3}, {"sector": "Strategic Resources", "theme": "Quantum", "score": 1.6268593094085022, "n": 8}, {"sector": "Digital Infrastructure", "theme": "Optics", "score": 1.4661888565308294, "n": 5}, {"sector": "Intelligence", "theme": "Robotics", "score": 1.3993224342632253, "n": 8}, {"sector": "Semiconductors", "theme": "Power Semis", "score": 1.3693642630813363, "n": 12}, {"sector": "Healthcare", "theme": "Biotech", "score": 0.8643924537540002, "n": 32}, {"sector": "Strategic Resources", "theme": "Energy Systems", "score": 0.796560678568821, "n": 5}, {"sector": "Intelligence", "theme": "AV", "score": 0.6894508741443639, "n": 8}, {"sector": "Commodities", "theme": "Copper", "score": 0.6754386405537691, "n": 5}, {"sector": "Intelligence", "theme": "Spatial Computing", "score": 0.39024385462956834, "n": 8}, {"sector": "Commodities", "theme": "Biofuels", "score": 0.32650245739738243, "n": 4}, {"sector": "Healthcare", "theme": "Pharma", "score": 0.17956588723433065, "n": 19}, {"sector": "Strategic Resources", "theme": "Fuel Cell", "score": 0.10393341616492924, "n": 5}, {"sector": "Strategic Resources", "theme": "Industrial Automation", "score": 0.09633567401305215, "n": 7}, {"sector": "Aerospace & Defense", "theme": "Precision Weapons", "score": 0.01958306200147142, "n": 4}, {"sector": "Consumer", "theme": "Retail", "score": -0.017032857157091963, "n": 9}, {"sector": "Transportation & Logistics", "theme": "Logistics/Warehousing", "score": -0.03279604954194393, "n": 3}, {"sector": "Strategic Resources", "theme": "Solar", "score": -0.21564071111997546, "n": 7}, {"sector": "Digital Infrastructure", "theme": "Cloud", "score": -0.23575264583737807, "n": 10}, {"sector": "Intelligence", "theme": "Agentic AI", "score": -0.4228783189121754, "n": 12}, {"sector": "Finance", "theme": "Life & Health Insurance", "score": -0.42551660611896247, "n": 14}, {"sector": "Digital Infrastructure", "theme": "Compute", "score": -0.5274296882520928, "n": 8}, {"sector": "Strategic Resources", "theme": "Space", "score": -0.5485913519648181, "n": 10}, {"sector": "Digital Infrastructure", "theme": "Edge Computing", "score": -0.6308889823236037, "n": 8}, {"sector": "Strategic Resources", "theme": "Clean Water", "score": -0.6804677976788341, "n": 6}, {"sector": "Aerospace & Defense", "theme": "Missile Defense", "score": -0.7331724995723132, "n": 3}, {"sector": "Software", "theme": "Application Software", "score": -0.7809114538090522, "n": 22}, {"sector": "Commodities", "theme": "Uranium", "score": -0.8366321126701411, "n": 7}, {"sector": "Real Estate & REITs", "theme": "Office/Retail/Industrial RE", "score": -0.8644349700667415, "n": 3}, {"sector": "Intelligence", "theme": "Perception", "score": -0.933405082685953, "n": 3}, {"sector": "Telecommunications", "theme": "5G Semis", "score": -1.2423947943072406, "n": 5}, {"sector": "Finance", "theme": "Property & Casualty Insurance & Brokerage", "score": -1.2506658359857084, "n": 11}, {"sector": "Strategic Resources", "theme": "Battery", "score": -1.3090899950867363, "n": 8}, {"sector": "Finance", "theme": "FinTech", "score": -1.3662246568524041, "n": 14}, {"sector": "Strategic Resources", "theme": "Engineered Materials", "score": -1.3955117268259014, "n": 7}, {"sector": "Aerospace & Defense", "theme": "Secure Supply Chains", "score": -1.398453175391371, "n": 3}, {"sector": "Transportation & Logistics", "theme": "Air Freight", "score": -1.4672512602799137, "n": 2}, {"sector": "Real Estate & REITs", "theme": "Healthcare & Senior Living RE", "score": -1.4953929510358615, "n": 3}, {"sector": "Consumer", "theme": "Consumer Brands", "score": -1.541846999818963, "n": 11}, {"sector": "Strategic Resources", "theme": "Environmental Services", "score": -1.5610592863963406, "n": 7}, {"sector": "Consumer", "theme": "Internet & Media", "score": -1.5683102759807341, "n": 9}, {"sector": "Commodities", "theme": "Gold", "score": -1.5828271468974509, "n": 8}, {"sector": "Consumer", "theme": "AgTech & Food Innovation", "score": -1.6811658619062033, "n": 3}, {"sector": "Semiconductors", "theme": "Semi Equipment", "score": -1.7616532212997444, "n": 15}, {"sector": "Strategic Resources", "theme": "Nuclear", "score": -1.9215377479452593, "n": 11}, {"sector": "Semiconductors", "theme": "Analog", "score": -1.9980032555156058, "n": 7}, {"sector": "Strategic Resources", "theme": "Conventional Utilities", "score": -2.0667156647860967, "n": 6}, {"sector": "Finance", "theme": "Reinsurance", "score": -2.112347289745249, "n": 5}, {"sector": "Commodities", "theme": "Natural Gas", "score": -2.2069679511833358, "n": 9}, {"sector": "Software", "theme": "Gaming", "score": -2.2534138551746095, "n": 6}, {"sector": "Real Estate & REITs", "theme": "Data Center/Digital Infra RE", "score": -2.3532552459946565, "n": 3}, {"sector": "Consumer", "theme": "Smart Home Automation/Security/Voice", "score": -2.3726181675615234, "n": 3}, {"sector": "Commodities", "theme": "Oil", "score": -2.481977339457683, "n": 17}, {"sector": "Commodities", "theme": "Rare Earths", "score": -2.6002720447442003, "n": 4}, {"sector": "Telecommunications", "theme": "Enterprise Unified Comms", "score": -2.6024308621494128, "n": 3}, {"sector": "Intelligence", "theme": "Drones", "score": -2.6698338219031186, "n": 3}, {"sector": "Transportation & Logistics", "theme": "Trucking/LTL", "score": -2.842631003408168, "n": 4}, {"sector": "Aerospace & Defense", "theme": "Next-Gen Aircraft", "score": -2.894742242198227, "n": 5}, {"sector": "Consumer", "theme": "EV", "score": -2.986576183973349, "n": 9}, {"sector": "Commodities", "theme": "Silver", "score": -3.1023592585278394, "n": 4}, {"sector": "Consumer", "theme": "Gaming & Wagering", "score": -3.243979254548242, "n": 7}, {"sector": "Transportation & Logistics", "theme": "Rail", "score": -3.2476528086492484, "n": 3}, {"sector": "Digital Infrastructure", "theme": "Connected Devices/Sensors", "score": -3.3244259849258504, "n": 1}, {"sector": "Finance", "theme": "Consumer & Specialty Finance", "score": -3.380515098029777, "n": 9}, {"sector": "Digital Assets & Blockchain", "theme": "Enterprise Blockchain", "score": -3.4885974990284634, "n": 3}, {"sector": "Healthcare", "theme": "Longevity", "score": -3.7400379906299825, "n": 16}, {"sector": "Commodities", "theme": "Lithium", "score": -3.7904071117835634, "n": 2}, {"sector": "Consumer", "theme": "Travel & Leisure", "score": -3.8628785631047187, "n": 9}, {"sector": "Finance", "theme": "Asset & Wealth Management", "score": -4.1272129269599, "n": 17}, {"sector": "Consumer", "theme": "Food Services", "score": -4.506377505460445, "n": 9}, {"sector": "Finance", "theme": "Regional & Community Banks", "score": -4.544267772132933, "n": 11}, {"sector": "Consumer", "theme": "Big Ticket", "score": -4.733114400297202, "n": 7}, {"sector": "Intelligence", "theme": "eVTOL", "score": -4.900625592368031, "n": 2}, {"sector": "Real Estate & REITs", "theme": "Housing/Urban Living", "score": -5.073519025983604, "n": 4}, {"sector": "Telecommunications", "theme": "Wireless Networks & Carriers", "score": -5.137787260961429, "n": 5}, {"sector": "Finance", "theme": "Money Center & Global Banks", "score": -6.188809112307577, "n": 6}, {"sector": "Strategic Resources", "theme": "Coal/Thermal Generation", "score": -9.042686270154382, "n": 2}, {"sector": "Digital Infrastructure", "theme": "Biometrics", "score": -9.779780044715876, "n": 1}];
 
-  const maxAbs = Math.max(...DATA.map(d => Math.abs(d.score))) * 1.08;
+  // Max |score| across the whole universe stays constant no matter which
+  // filter is active - the single most extreme mover is always inside
+  // every "top N by |change|" cut, so the bar scale never has to rescale.
+  const maxAbs = Math.max(...DATA_ALL.map(d => Math.abs(d.score))) * 1.08;
   const fmt = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2) + "%";
 
   const chart = document.getElementById("chart");
@@ -470,6 +523,7 @@
   const tip = document.getElementById("tip");
   const tipVal = document.getElementById("tipVal");
   const tipMeta = document.getElementById("tipMeta");
+  const filterCount = document.getElementById("filterCount");
 
   const upArrow = '<svg viewBox="0 0 10 10"><polygon points="5,1 9,8 1,8" fill="currentColor"/></svg>';
   const downArrow = '<svg viewBox="0 0 10 10"><polygon points="1,2 9,2 5,9" fill="currentColor"/></svg>';
@@ -484,7 +538,22 @@
   }
   function hideTip(){ tip.classList.remove("show"); }
 
-  DATA.forEach((d, i) => {
+  // Top N by absolute percent change (biggest movers either way), then
+  // sorted back to high-to-low score for display, matching the unfiltered order.
+  function pickByFilter(n){
+    const bySize = DATA_ALL.slice().sort((a, b) => Math.abs(b.score) - Math.abs(a.score));
+    const picked = n ? bySize.slice(0, n) : bySize;
+    return picked.sort((a, b) => b.score - a.score);
+  }
+
+  function render(list){
+    chart.innerHTML = "";
+    tbody.innerHTML = "";
+    filterCount.textContent = list.length === DATA_ALL.length
+      ? `${DATA_ALL.length} themes`
+      : `${list.length} of ${DATA_ALL.length} themes, by absolute % change`;
+
+    list.forEach((d, i) => {
     const pct = (Math.abs(d.score) / maxAbs * 100).toFixed(2);
     const isPos = d.score >= 0;
 
@@ -560,7 +629,20 @@
 
     tr.append(tdRank, tdTheme, tdSector, tdN, tdScore);
     tbody.appendChild(tr);
+    });
+  }
+
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (btn.classList.contains("active")) return;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const n = btn.dataset.filter === "all" ? null : parseInt(btn.dataset.filter, 10);
+      render(pickByFilter(n));
+    });
   });
+
+  render(pickByFilter(null));
 </script>
 </body>
 </html>
