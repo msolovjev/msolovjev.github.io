@@ -1,6 +1,12 @@
-// Reusable Table1 (signal screener) widget -- used standalone on index.html
-// and embedded (with a second/third histogram widget) on the Overview page.
-// Needs sector_theme_filter.js loaded first.
+// Reusable Table1 (signal screener) widget -- used standalone on signals.html
+// and embedded (with two histogram widgets) on the Overview page. Needs
+// sector_theme_filter.js loaded first.
+//
+// Sector/Theme filtering: pass either `sectorSelId`/`themeSelId` (the widget
+// creates its own dropdown-based createSectorThemeFilter -- standalone page
+// use) or a pre-built `stFilter` object with a matches(row) method (Overview
+// page use, where one shared button/dropdown control drives all three
+// widgets at once -- see createSectorThemeControl).
 function createTable1Widget(opts){
   const ROWS = opts.rows;
   const tableId = opts.tableId;
@@ -10,7 +16,7 @@ function createTable1Widget(opts){
   const capMax = document.getElementById(opts.capMaxId);
   const rowCount = document.getElementById(opts.rowCountId);
   const headers = document.querySelectorAll("#" + tableId + " th.sortable");
-  const stFilter = createSectorThemeFilter(ROWS, opts.sectorSelId, opts.themeSelId);
+  const stFilter = opts.stFilter || createSectorThemeFilter(ROWS, opts.sectorSelId, opts.themeSelId);
 
   function fmtCap(v){
     if (v == null || isNaN(v)) return "—";
@@ -132,8 +138,12 @@ function createTable1Widget(opts){
   bothOnly.addEventListener("change", render);
   capMin.addEventListener("input", render);
   capMax.addEventListener("input", render);
-  document.getElementById(opts.sectorSelId).addEventListener("change", render);
-  document.getElementById(opts.themeSelId).addEventListener("change", render);
+  if (opts.stFilter){
+    opts.stFilter.onChange(render);
+  } else {
+    document.getElementById(opts.sectorSelId).addEventListener("change", render);
+    document.getElementById(opts.themeSelId).addEventListener("change", render);
+  }
   render();
 
   return { render };

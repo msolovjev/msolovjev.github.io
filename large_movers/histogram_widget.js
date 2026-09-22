@@ -1,6 +1,12 @@
 // Reusable diverging-histogram widget -- used standalone on pct5.html /
 // pct20.html and embedded twice (5-day + 20-day) on the Overview page.
 // Needs sector_theme_filter.js loaded first.
+//
+// Sector/Theme filtering: pass either `sectorSelId`/`themeSelId` (the widget
+// creates its own dropdown-based createSectorThemeFilter -- standalone page
+// use) or a pre-built `stFilter` object with a matches(row) method (Overview
+// page use, where one shared button/dropdown control drives all three
+// widgets at once -- see createSectorThemeControl).
 function createHistogramWidget(opts){
   const DATA = opts.data; // already sorted by |value| descending
   const chart = document.getElementById(opts.chartId);
@@ -9,7 +15,7 @@ function createHistogramWidget(opts){
   const tipMeta = document.getElementById(opts.tipMetaId);
   const topN = document.getElementById(opts.topNId);
   const rowCount = document.getElementById(opts.rowCountId);
-  const stFilter = createSectorThemeFilter(DATA, opts.sectorSelId, opts.themeSelId);
+  const stFilter = opts.stFilter || createSectorThemeFilter(DATA, opts.sectorSelId, opts.themeSelId);
 
   const fmtPct = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2) + "%";
   function fmtCap(v){
@@ -90,8 +96,12 @@ function createHistogramWidget(opts){
   }
 
   topN.addEventListener("change", render);
-  document.getElementById(opts.sectorSelId).addEventListener("change", render);
-  document.getElementById(opts.themeSelId).addEventListener("change", render);
+  if (opts.stFilter){
+    opts.stFilter.onChange(render);
+  } else {
+    document.getElementById(opts.sectorSelId).addEventListener("change", render);
+    document.getElementById(opts.themeSelId).addEventListener("change", render);
+  }
   render();
 
   return { render };
