@@ -40,12 +40,15 @@ function createSectorThemeFilter(rows, sectorSelId, themeSelId){
 
 // Shared Sector-button / Theme-dropdown control for the Overview page (see
 // rs_hist/build_habitat_pages.py's sector legend chips for the pattern this
-// borrows). One control drives several row sets (Table1 + both histograms)
-// at once -- register a callback with onChange() to re-render each widget
-// whenever the selection changes.
-function createSectorThemeControl(datasets, sectorBarId, themeSelId){
+// borrows, dot included). One control drives several row sets (Table1 +
+// both histograms) at once -- register a callback with onChange() to
+// re-render each widget whenever the selection changes. `sectorColors` is
+// the sector -> hex map from rs_hist/sector_colors.json (see
+// report_lib.load_sector_colors), used for each button's color dot.
+function createSectorThemeControl(datasets, sectorBarId, themeSelId, sectorColors){
   const sectorBar = document.getElementById(sectorBarId);
   const themeSel = document.getElementById(themeSelId);
+  const colors = sectorColors || {};
   const listeners = [];
   let sector = null;
 
@@ -67,7 +70,8 @@ function createSectorThemeControl(datasets, sectorBarId, themeSelId){
   function renderSectorButtons(){
     const sectors = sectorsFor();
     sectorBar.innerHTML = `<button type="button" class="sector-chip${sector ? "" : " active"}" data-sector="">All sectors</button>`
-      + sectors.map(s => `<button type="button" class="sector-chip${sector === s ? " active" : ""}" data-sector="${s}">${s}</button>`).join("");
+      + sectors.map(s => `<button type="button" class="sector-chip${sector === s ? " active" : ""}" data-sector="${s}">`
+        + `<span class="chip-dot" style="background:${colors[s] || "var(--accent)"}"></span>${s}</button>`).join("");
     sectorBar.querySelectorAll("button").forEach(btn => {
       btn.addEventListener("click", () => {
         const s = btn.dataset.sector || null;
