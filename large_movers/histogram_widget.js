@@ -17,7 +17,11 @@ function createHistogramWidget(opts){
   const rowCount = document.getElementById(opts.rowCountId);
   const stFilter = opts.stFilter || createSectorThemeFilter(DATA, opts.sectorSelId, opts.themeSelId);
 
-  const fmtPct = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2) + "%";
+  // Color already carries the sign, so the "+" is dropped when showPlus is
+  // false (Overview page) -- a plain space keeps the digits aligned in the
+  // monospace value column instead of "−" hanging one column further right.
+  const showPlus = opts.showPlus !== false;
+  const fmtPct = v => (v >= 0 ? (showPlus ? "+" : " ") : "−") + Math.abs(v).toFixed(2) + "%";
   function fmtCap(v){
     if (v == null || isNaN(v)) return "n/a mkt cap";
     const a = Math.abs(v);

@@ -39,9 +39,14 @@ function createTable1Widget(opts){
     return n * mult;
   }
 
+  // Color already carries the sign, so the "+" is dropped when showPlus is
+  // false (Overview page) -- a plain space keeps the digits aligned in the
+  // monospace column instead of "−" hanging one column further right.
+  const showPlus = opts.showPlus !== false;
   function fmtPct(v){
     if (v == null || isNaN(v)) return "—";
-    return (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2) + "%";
+    const sign = v >= 0 ? (showPlus ? "+" : " ") : "−";
+    return sign + Math.abs(v).toFixed(2) + "%";
   }
 
   const sortValue = {
