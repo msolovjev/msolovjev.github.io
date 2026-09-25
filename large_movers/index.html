@@ -481,35 +481,28 @@ code{
   <section class="card">
     <div class="card-head">
       <div>
-        <p class="card-title">DR/ATR &amp; RVOL signals</p>
-        <p class="card-sub">Daily range &gt; ATR(20) and / or volume &gt; 20-day average volume</p>
+        <p class="card-title">20-day % change &mdash; most extreme movers</p>
+        <p class="card-sub">Ranked by absolute value, high to low</p>
+      </div>
+      <div class="key">
+        <span><i class="pos"></i>Up</span>
+        <span><i class="neg"></i>Down</span>
       </div>
     </div>
     <div class="filters">
-      <label><input type="checkbox" id="bothOnly1" checked> Both signals only (DR/ATR+ &amp; RVOL+)</label>
-      <div class="range-group">
-        <span>Mkt cap</span>
-        <input type="text" id="capMin1" placeholder="min, e.g. 500M">
-        <span>&ndash;</span>
-        <input type="text" id="capMax1" placeholder="max, e.g. 10B">
-      </div>
-      <span class="hint">accepts K / M / B / T suffixes</span>
-      <span class="count" id="rowCount1"></span>
+      <label for="topN20">Show</label>
+      <select id="topN20">
+        <option value="10">Top 10</option>
+        <option value="20">Top 20</option>
+        <option value="30" selected>Top 30</option>
+        <option value="50">Top 50</option>
+        <option value="100">Top 100</option>
+        <option value="all">All</option>
+      </select>
+      <span class="hint">by absolute 20-day % change</span>
+      <span class="count" id="rowCount20"></span>
     </div>
-    <div class="table-wrap">
-      <table id="table1">
-        <thead>
-          <tr>
-            <th class="sortable" data-key="symbol">Symbol<span class="sort-arrow"></span></th>
-            <th class="num sortable" data-key="marketCap">Mkt Cap<span class="sort-arrow"></span></th>
-            <th class="num sortable" data-key="rvol">RVOL<span class="sort-arrow"></span></th>
-            <th class="num sortable" data-key="dr_atr">DR/ATR<span class="sort-arrow"></span></th>
-            <th class="num sortable" data-key="pct_change">% Chg<span class="sort-arrow"></span></th>
-          </tr>
-        </thead>
-        <tbody id="tbody1"></tbody>
-      </table>
-    </div>
+    <div class="chart" id="chart20" role="list" aria-label="20-day % change by symbol"></div>
   </section>
 
   <section class="card">
@@ -542,35 +535,42 @@ code{
   <section class="card">
     <div class="card-head">
       <div>
-        <p class="card-title">20-day % change &mdash; most extreme movers</p>
-        <p class="card-sub">Ranked by absolute value, high to low</p>
-      </div>
-      <div class="key">
-        <span><i class="pos"></i>Up</span>
-        <span><i class="neg"></i>Down</span>
+        <p class="card-title">DR/ATR &amp; RVOL signals</p>
+        <p class="card-sub">Daily range &gt; ATR(20) and / or volume &gt; 20-day average volume</p>
       </div>
     </div>
     <div class="filters">
-      <label for="topN20">Show</label>
-      <select id="topN20">
-        <option value="10">Top 10</option>
-        <option value="20">Top 20</option>
-        <option value="30" selected>Top 30</option>
-        <option value="50">Top 50</option>
-        <option value="100">Top 100</option>
-        <option value="all">All</option>
-      </select>
-      <span class="hint">by absolute 20-day % change</span>
-      <span class="count" id="rowCount20"></span>
+      <label><input type="checkbox" id="bothOnly1" checked> Both signals only (DR/ATR+ &amp; RVOL+)</label>
+      <div class="range-group">
+        <span>Mkt cap</span>
+        <input type="text" id="capMin1" placeholder="min, e.g. 500M">
+        <span>&ndash;</span>
+        <input type="text" id="capMax1" placeholder="max, e.g. 10B">
+      </div>
+      <span class="hint">accepts K / M / B / T suffixes</span>
+      <span class="count" id="rowCount1"></span>
     </div>
-    <div class="chart" id="chart20" role="list" aria-label="20-day % change by symbol"></div>
+    <div class="table-wrap">
+      <table id="table1">
+        <thead>
+          <tr>
+            <th class="sortable" data-key="symbol">Symbol<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-key="marketCap">Mkt Cap<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-key="rvol">RVOL<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-key="dr_atr">DR/ATR<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-key="pct_change">% Chg<span class="sort-arrow"></span></th>
+          </tr>
+        </thead>
+        <tbody id="tbody1"></tbody>
+      </table>
+    </div>
   </section>
 
   </div>
 
   <div class="foot">
     <span>Source: <code>finviz/last_day_movers.py</code></span>
-    <span>Generated 2026-09-22 13:21 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
+    <span>Generated 2026-09-25 11:33 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
   </div>
 
 </div>
