@@ -78,7 +78,15 @@ body{
   flex-direction: column;
   gap: 40px;
 }
-.page-wide{ max-width: 1880px; }
+.page-wide{ max-width: 1880px; padding-top: 28px; gap: 20px; }
+.page-wide .back-btn{ margin-bottom: 0; }
+
+.head-compact{ display: flex; flex-direction: column; gap: 10px; }
+.head-compact .eyebrow{ font-size: 10px; }
+.head-compact h1{ font-size: 26px; margin: 0; }
+.head-row{ display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
+.head-titles{ display: flex; flex-direction: column; gap: 4px; }
+.head-filters{ padding: 0; border: none; }
 
 .overview-grid{
   display: flex;
@@ -450,37 +458,29 @@ code{
     All projects
   </a>
 
-  <header class="head">
-    <div class="eyebrow">Finviz &middot; Last-Day Movers</div>
-    <h1>Overview</h1>
-    <div class="dateline">
-      <span>As of <b>Sep 17, 2026</b></span>
-      <span class="sep">&middot;</span>
-      <span>All four tables on one screen</span>
-    </div>
-    <nav class="nav">
-      <a href="index.html" class="active">Overview</a>
-      <a href="signals.html">Signals</a>
-      <a href="pct5.html">5-day % change</a>
-      <a href="pct20.html">20-day % change</a>
-    </nav>
-  </header>
-
-  <section class="card">
-    <div class="card-head">
-      <div>
-        <p class="card-title">Sector / Theme</p>
-        <p class="card-sub">Applies to all four tables below at once</p>
+  <header class="head-compact">
+    <div class="head-row">
+      <div class="head-titles">
+        <div class="eyebrow">Last-Day Movers</div>
+        <h1>Overview</h1>
+        <div class="dateline"><span>As of <b>Sep 17, 2026</b></span></div>
       </div>
+      <nav class="nav">
+        <a href="index.html" class="active">Overview</a>
+        <a href="signals.html">Signals</a>
+        <a href="pct5.html">5-day % change</a>
+        <a href="pct20.html">20-day % change</a>
+      </nav>
     </div>
-    <div class="filters">
+    <div class="filters head-filters">
+      <span>Sector</span>
       <div class="chip-row" id="sectorButtons"></div>
       <div class="range-group">
         <span>Theme</span>
         <select id="themeSelShared"></select>
       </div>
     </div>
-  </section>
+  </header>
 
   <div class="overview-grid">
 
@@ -616,7 +616,7 @@ code{
 
   <div class="foot">
     <span>Source: <code>finviz/last_day_movers.py</code></span>
-    <span>Generated 2026-09-28 17:13 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
+    <span>Generated 2026-09-28 17:23 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
   </div>
 
 </div>
