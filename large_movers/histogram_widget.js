@@ -16,6 +16,7 @@ function createHistogramWidget(opts){
   const topN = document.getElementById(opts.topNId);
   const rowCount = document.getElementById(opts.rowCountId);
   const stFilter = opts.stFilter || createSectorThemeFilter(DATA, opts.sectorSelId, opts.themeSelId);
+  const sectorColors = opts.sectorColors || {};
 
   // Color already carries the sign, so the "+" is dropped when showPlus is
   // false (Overview page) -- a plain space keeps the digits aligned in the
@@ -62,7 +63,7 @@ function createHistogramWidget(opts){
       label.className = "rs-label";
       const symEl = document.createElement("span");
       symEl.className = "rs-theme";
-      symEl.textContent = d.symbol;
+      symEl.innerHTML = d.symbol + sectorDotsHTML(d.themes, sectorColors);
       label.append(symEl);
 
       const track = document.createElement("div");

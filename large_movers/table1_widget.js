@@ -17,6 +17,7 @@ function createTable1Widget(opts){
   const rowCount = document.getElementById(opts.rowCountId);
   const headers = document.querySelectorAll("#" + tableId + " th.sortable");
   const stFilter = opts.stFilter || createSectorThemeFilter(ROWS, opts.sectorSelId, opts.themeSelId);
+  const sectorColors = opts.sectorColors || {};
 
   function fmtCap(v){
     if (v == null || isNaN(v)) return "—";
@@ -52,6 +53,7 @@ function createTable1Widget(opts){
   const sortValue = {
     symbol: r => r.symbol,
     marketCap: r => r.marketCap,
+    close: r => r.close,
     rvol: r => r.rvol,
     dr_atr: r => r.dr_atr,
     pct_change: r => r.pct_change,
@@ -114,11 +116,15 @@ function createTable1Widget(opts){
 
       const tdSym = document.createElement("td");
       tdSym.className = "sym";
-      tdSym.textContent = r.symbol;
+      tdSym.innerHTML = r.symbol + sectorDotsHTML(r.themes, sectorColors);
 
       const tdCap = document.createElement("td");
       tdCap.className = "num n";
       tdCap.textContent = fmtCap(r.marketCap);
+
+      const tdLast = document.createElement("td");
+      tdLast.className = "num n";
+      tdLast.textContent = r.close != null ? r.close.toFixed(2) : "—";
 
       const tdRvol = document.createElement("td");
       tdRvol.className = "num n";
@@ -133,7 +139,7 @@ function createTable1Widget(opts){
       tdPct.textContent = fmtPct(r.pct_change);
       if (r.pct_change != null) tdPct.style.color = r.pct_change >= 0 ? "var(--pos)" : "var(--neg)";
 
-      tr.append(tdSym, tdCap, tdRvol, tdDrAtr, tdPct);
+      tr.append(tdSym, tdCap, tdLast, tdRvol, tdDrAtr, tdPct);
       tbody.appendChild(tr);
     }
 

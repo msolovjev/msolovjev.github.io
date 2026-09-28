@@ -4,6 +4,19 @@
 // -- the same source rs_hist/build_habitat_pages.py builds its card views
 // from). A row can belong to more than one theme, so filtering matches if
 // ANY membership satisfies the current sector/theme selection.
+
+// One small color dot per distinct Sector a row belongs to (a symbol spanning
+// several sectors gets several dots), for the ticker label in every table.
+// `colors` is the sector -> hex map from rs_hist/sector_colors.json.
+function sectorDotsHTML(themes, colors){
+  colors = colors || {};
+  const sectors = Array.from(new Set((themes || []).map(t => t.sector)));
+  if (!sectors.length) return "";
+  return '<span class="sym-dots">' + sectors.map(s =>
+    `<span class="chip-dot" style="background:${colors[s] || "var(--accent)"}" title="${s}"></span>`
+  ).join("") + "</span>";
+}
+
 function createSectorThemeFilter(rows, sectorSelId, themeSelId){
   const sectorSel = document.getElementById(sectorSelId);
   const themeSel = document.getElementById(themeSelId);
