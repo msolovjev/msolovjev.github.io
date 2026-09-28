@@ -14,6 +14,7 @@ function createTable1Widget(opts){
   const bothOnly = document.getElementById(opts.bothOnlyId);
   const capMin = document.getElementById(opts.capMinId);
   const capMax = document.getElementById(opts.capMaxId);
+  const minRvol = document.getElementById(opts.minRvolId);
   const rowCount = document.getElementById(opts.rowCountId);
   const headers = document.querySelectorAll("#" + tableId + " th.sortable");
   const stFilter = opts.stFilter || createSectorThemeFilter(ROWS, opts.sectorSelId, opts.themeSelId);
@@ -99,11 +100,13 @@ function createTable1Widget(opts){
     const both = bothOnly.checked;
     const min = parseCap(capMin.value);
     const max = parseCap(capMax.value);
+    const minRvolVal = minRvol.value.trim() === "" ? null : parseFloat(minRvol.value);
 
     const filtered = ROWS.filter(r => {
       if (both && !(r.dr_atr_plus === 1 && r.rvol_plus === 1)) return false;
       if (min != null && (r.marketCap == null || r.marketCap < min)) return false;
       if (max != null && (r.marketCap == null || r.marketCap > max)) return false;
+      if (minRvolVal != null && !isNaN(minRvolVal) && (r.rvol == null || r.rvol <= minRvolVal)) return false;
       if (!stFilter.matches(r)) return false;
       return true;
     }).sort(compareRows);
@@ -149,6 +152,7 @@ function createTable1Widget(opts){
   bothOnly.addEventListener("change", render);
   capMin.addEventListener("input", render);
   capMax.addEventListener("input", render);
+  minRvol.addEventListener("input", render);
   if (opts.stFilter){
     opts.stFilter.onChange(render);
   } else {
