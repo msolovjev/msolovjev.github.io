@@ -81,19 +81,14 @@ body{
 .page-wide{ max-width: 1880px; }
 
 .overview-grid{
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   align-items: start;
   gap: 24px;
 }
-.overview-grid .card{ min-width: 0; }
+.overview-grid .card{ flex: 2 1 380px; min-width: 0; }
+.overview-grid .card.card-narrow{ flex: 1 1 260px; }
 .overview-grid .rs-row{ grid-template-columns: 96px 1fr; }
-@media (max-width: 1700px){
-  .overview-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 900px){
-  .overview-grid{ grid-template-columns: 1fr; }
-}
 
 .head{ display:flex; flex-direction:column; gap:10px; }
 .eyebrow{
@@ -546,41 +541,6 @@ code{
   <section class="card">
     <div class="card-head">
       <div>
-        <p class="card-title">xATR</p>
-        <p class="card-sub">n-day high/low range relative to previous ATR</p>
-      </div>
-    </div>
-    <div class="filters">
-      <div class="range-group">
-        <span>Mkt cap</span>
-        <input type="text" id="capMinX" placeholder="min, e.g. 500M">
-        <span>&ndash;</span>
-        <input type="text" id="capMaxX" placeholder="max, e.g. 10B">
-      </div>
-      <span class="hint">accepts K / M / B / T suffixes</span>
-      <div class="range-group">
-        <span>Min xATR</span>
-        <input type="text" id="minXatrX" placeholder="e.g. 1.5">
-      </div>
-      <span class="count" id="rowCountX"></span>
-    </div>
-    <div class="table-wrap">
-      <table id="tableX">
-        <thead>
-          <tr>
-            <th class="sortable" data-key="symbol">Symbol<span class="sort-arrow"></span></th>
-            <th class="num sortable" data-key="marketCap">Mkt Cap<span class="sort-arrow"></span></th>
-            <th class="num sortable" data-key="xatr">xATR<span class="sort-arrow"></span></th>
-          </tr>
-        </thead>
-        <tbody id="tbodyX"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="card-head">
-      <div>
         <p class="card-title">DR/ATR &amp; RVOL signals</p>
         <p class="card-sub">Daily range &gt; ATR(20) and / or volume &gt; 20-day average volume</p>
       </div>
@@ -617,11 +577,46 @@ code{
     </div>
   </section>
 
+  <section class="card card-narrow">
+    <div class="card-head">
+      <div>
+        <p class="card-title">xATR</p>
+        <p class="card-sub">n-day high/low range relative to previous ATR</p>
+      </div>
+    </div>
+    <div class="filters">
+      <div class="range-group">
+        <span>Mkt cap</span>
+        <input type="text" id="capMinX" placeholder="min, e.g. 500M">
+        <span>&ndash;</span>
+        <input type="text" id="capMaxX" placeholder="max, e.g. 10B">
+      </div>
+      <span class="hint">accepts K / M / B / T suffixes</span>
+      <div class="range-group">
+        <span>Min xATR</span>
+        <input type="text" id="minXatrX" placeholder="e.g. 1.5">
+      </div>
+      <span class="count" id="rowCountX"></span>
+    </div>
+    <div class="table-wrap">
+      <table id="tableX">
+        <thead>
+          <tr>
+            <th class="sortable" data-key="symbol">Symbol<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-key="marketCap">Mkt Cap<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-key="xatr">xATR<span class="sort-arrow"></span></th>
+          </tr>
+        </thead>
+        <tbody id="tbodyX"></tbody>
+      </table>
+    </div>
+  </section>
+
   </div>
 
   <div class="foot">
     <span>Source: <code>finviz/last_day_movers.py</code></span>
-    <span>Generated 2026-09-28 12:18 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
+    <span>Generated 2026-09-28 17:13 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
   </div>
 
 </div>
