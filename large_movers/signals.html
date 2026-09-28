@@ -87,7 +87,7 @@ body{
   gap: 24px;
 }
 .overview-grid .card{ min-width: 0; }
-.overview-grid .rs-row{ grid-template-columns: 64px 1fr; }
+.overview-grid .rs-row{ grid-template-columns: 96px 1fr; }
 @media (max-width: 1300px){
   .overview-grid{ grid-template-columns: 1fr; }
 }
@@ -263,7 +263,7 @@ h1{
 .chart{ padding: 10px 26px 22px; }
 .rs-row{
   display: grid;
-  grid-template-columns: 90px 1fr;
+  grid-template-columns: 128px 1fr;
   align-items: center;
   gap: 16px;
   padding: 7px 0;
@@ -273,12 +273,19 @@ h1{
 .rs-row:focus-visible{ box-shadow: 0 0 0 2px var(--accent); }
 .rs-label{ display:flex; flex-direction:column; gap: 1px; min-width:0; }
 .rs-theme{
+  display: flex;
+  align-items: center;
+  min-width: 0;
   font-size: 14px;
   font-weight: 600;
+}
+.rs-theme .sym-text{
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.rs-theme .sym-dots{ flex: none; }
 .rs-sector{
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 10.5px;
@@ -431,7 +438,7 @@ code{
 
 @media (max-width: 620px){
   h1{ font-size: 27px; }
-  .rs-row{ grid-template-columns: 64px 1fr; }
+  .rs-row{ grid-template-columns: 96px 1fr; }
   .filters{ gap: 12px; }
 }
 
@@ -508,7 +515,7 @@ code{
 
   <div class="foot">
     <span>Source: <code>finviz/last_day_movers.py</code></span>
-    <span>Generated 2026-09-28 11:43 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
+    <span>Generated 2026-09-28 11:50 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
   </div>
 
 </div>

@@ -63,7 +63,7 @@ function createHistogramWidget(opts){
       label.className = "rs-label";
       const symEl = document.createElement("span");
       symEl.className = "rs-theme";
-      symEl.innerHTML = d.symbol + sectorDotsHTML(d.themes, sectorColors);
+      symEl.innerHTML = `<span class="sym-text">${d.symbol}</span>` + sectorDotsHTML(d.themes, sectorColors);
       label.append(symEl);
 
       const track = document.createElement("div");
