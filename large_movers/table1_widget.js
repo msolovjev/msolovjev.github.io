@@ -15,6 +15,7 @@ function createTable1Widget(opts){
   const capMin = document.getElementById(opts.capMinId);
   const capMax = document.getElementById(opts.capMaxId);
   const minRvol = document.getElementById(opts.minRvolId);
+  const day1Only = document.getElementById(opts.day1Id);
   const rowCount = document.getElementById(opts.rowCountId);
   const headers = document.querySelectorAll("#" + tableId + " th.sortable");
   const stFilter = opts.stFilter || createSectorThemeFilter(ROWS, opts.sectorSelId, opts.themeSelId);
@@ -101,12 +102,14 @@ function createTable1Widget(opts){
     const min = parseCap(capMin.value);
     const max = parseCap(capMax.value);
     const minRvolVal = minRvol.value.trim() === "" ? null : parseFloat(minRvol.value);
+    const day1 = day1Only.checked;
 
     const filtered = ROWS.filter(r => {
       if (both && !(r.dr_atr_plus === 1 && r.rvol_plus === 1)) return false;
       if (min != null && (r.marketCap == null || r.marketCap < min)) return false;
       if (max != null && (r.marketCap == null || r.marketCap > max)) return false;
       if (minRvolVal != null && !isNaN(minRvolVal) && (r.rvol == null || r.rvol <= minRvolVal)) return false;
+      if (day1 && r.day1_signal == null) return false;
       if (!stFilter.matches(r)) return false;
       return true;
     }).sort(compareRows);
@@ -153,6 +156,7 @@ function createTable1Widget(opts){
   capMin.addEventListener("input", render);
   capMax.addEventListener("input", render);
   minRvol.addEventListener("input", render);
+  day1Only.addEventListener("change", render);
   if (opts.stFilter){
     opts.stFilter.onChange(render);
   } else {
