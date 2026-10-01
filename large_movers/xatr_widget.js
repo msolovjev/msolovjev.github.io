@@ -1,7 +1,7 @@
-// Reusable xATR table widget -- Symbol / Mkt Cap / xATR only. Same shape as
-// table1_widget.js (mkt-cap range + Day1 checkbox + Sector/Theme + sortable
-// columns) but with a "Min xATR" filter instead of "Both signals only" /
-// "Min RVOL". Needs sector_theme_filter.js loaded first.
+// Reusable xATR table widget -- Symbol / Mkt Cap / xATR only, no signal
+// checkbox. Same shape as table1_widget.js (mkt-cap range + Sector/Theme +
+// sortable columns) but with a "Min xATR" filter instead of "Both signals
+// only" / "Min RVOL". Needs sector_theme_filter.js loaded first.
 //
 // Sector/Theme filtering: pass either `sectorSelId`/`themeSelId` (the widget
 // creates its own dropdown-based createSectorThemeFilter -- standalone page
@@ -15,7 +15,6 @@ function createXatrWidget(opts){
   const capMin = document.getElementById(opts.capMinId);
   const capMax = document.getElementById(opts.capMaxId);
   const minXatr = document.getElementById(opts.minXatrId);
-  const day1Only = document.getElementById(opts.day1Id);
   const rowCount = document.getElementById(opts.rowCountId);
   const headers = document.querySelectorAll("#" + tableId + " th.sortable");
   const stFilter = opts.stFilter || createSectorThemeFilter(ROWS, opts.sectorSelId, opts.themeSelId);
@@ -88,13 +87,11 @@ function createXatrWidget(opts){
     const min = parseCap(capMin.value);
     const max = parseCap(capMax.value);
     const minXatrVal = minXatr.value.trim() === "" ? null : parseFloat(minXatr.value);
-    const day1 = day1Only.checked;
 
     const filtered = ROWS.filter(r => {
       if (min != null && (r.marketCap == null || r.marketCap < min)) return false;
       if (max != null && (r.marketCap == null || r.marketCap > max)) return false;
       if (minXatrVal != null && !isNaN(minXatrVal) && (r.xatr == null || r.xatr <= minXatrVal)) return false;
-      if (day1 && r.day1_signal == null) return false;
       if (!stFilter.matches(r)) return false;
       return true;
     }).sort(compareRows);
@@ -127,7 +124,6 @@ function createXatrWidget(opts){
   capMin.addEventListener("input", render);
   capMax.addEventListener("input", render);
   minXatr.addEventListener("input", render);
-  day1Only.addEventListener("change", render);
   if (opts.stFilter){
     opts.stFilter.onChange(render);
   } else {
