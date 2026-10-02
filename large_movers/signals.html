@@ -84,7 +84,13 @@ body{
 .head-compact{ display: flex; flex-direction: column; gap: 10px; }
 .head-compact .eyebrow{ font-size: 10px; }
 .head-compact h1{ font-size: 26px; margin: 0; }
-.head-row{ display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
+.head-row{ display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 12px; }
+.head-row .nav{ justify-self: center; }
+.head-row .back-btn{ justify-self: end; align-self: end; }
+@media (max-width: 900px){
+  .head-row{ grid-template-columns: 1fr; }
+  .head-row .nav, .head-row .back-btn{ justify-self: start; }
+}
 .head-titles{ display: flex; align-items: baseline; gap: 12px; }
 .head-filters{ padding: 0; border: none; }
 
@@ -522,7 +528,7 @@ code{
 
   <div class="foot">
     <span>Source: <code>finviz/last_day_movers.py</code></span>
-    <span>Generated 2026-10-02 10:25 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
+    <span>Generated 2026-10-02 10:32 Russia TZ 2 Standard Time &middot; <code>finviz/publish_tables.py</code></span>
   </div>
 
 </div>
