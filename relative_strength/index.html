@@ -190,6 +190,44 @@
     font-size: 12.5px;
     color: var(--muted);
   }
+  .etf-toggle{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px 6px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink-2);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color .15s ease, color .15s ease;
+  }
+  .etf-toggle:hover{ border-color: var(--accent); color: var(--ink); }
+  .etf-toggle input{ position: absolute; opacity: 0; pointer-events: none; }
+  .etf-toggle .box{
+    width: 14px; height: 14px;
+    border: 1.5px solid var(--rule-strong);
+    border-radius: 4px;
+    display: inline-grid; place-items: center;
+    background: var(--surface);
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .etf-toggle input:checked + .box{ background: var(--accent); border-color: var(--accent); }
+  .etf-toggle input:checked + .box::after{
+    content: "";
+    width: 4px; height: 8px;
+    border: solid var(--page);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+  .etf-toggle input:focus-visible + .box{ outline: 2px solid var(--accent); outline-offset: 2px; }
+  .etf-toggle:has(input:checked){ border-color: var(--accent); color: var(--ink); }
+  .basis{ font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .basis b{ color: var(--accent); font-weight: 500; }
 
   /* ---------- chart ---------- */
   .chart{ padding: 10px 26px 22px; }
@@ -440,7 +478,7 @@
     <div class="card-head">
       <div>
         <p class="card-title">RS score by theme</p>
-        <p class="card-sub">Liquidity-weighted 5-day % change, ranked high to low</p>
+        <p class="card-sub" id="cardSub">Liquidity-weighted 5-day % change, ranked high to low</p>
       </div>
       <div class="key">
         <span><i class="pos"></i>Outperforming</span>
@@ -455,6 +493,11 @@
         <button type="button" class="filter-btn" data-filter="50">Top 50</button>
         <button type="button" class="filter-btn active" data-filter="all">All</button>
       </div>
+      <label class="etf-toggle" id="etfToggle" hidden title="Score each theme by its ETF instead of by all of its tickers. Themes without an ETF keep the basket method.">
+        <input type="checkbox" id="etfCheck">
+        <span class="box" aria-hidden="true"></span>
+        <span>ETF</span>
+      </label>
       <span class="filter-count" id="filterCount"></span>
     </div>
     <div class="chart" id="chart" role="list" aria-label="Relative strength score by theme"></div>
@@ -475,6 +518,7 @@
             <th>Theme</th>
             <th>Sector</th>
             <th class="num">Tickers</th>
+            <th>Basis</th>
             <th class="num">5-day RS</th>
           </tr>
         </thead>
@@ -487,19 +531,20 @@
     <h2>How the score is built</h2>
     <p class="lede">Each theme's score is a liquidity-weighted average of its constituents' 5-day return &mdash; tickers that trade more dollar volume per unit of volatility carry more weight.</p>
     <ol class="steps">
-      <li><span class="n">01</span><span><b>Universe.</b> Themes and their tickers are parsed from <code>themes.md</code>; only those symbols are scanned out of the large/mid/small-cap daily parquet files, in lazy mode, to keep memory low.</span></li>
+      <li><span class="n">01</span><span><b>Universe.</b> Themes and their tickers are parsed from <code>themes_classification.md</code>; only those symbols are scanned out of the large/mid/small-cap daily parquet files (missing ones are backfilled from Yahoo Finance), in lazy mode, to keep memory low.</span></li>
       <li><span class="n">02</span><span><b>Dollar volume.</b> <code>close &times; volume</code> per bar, then a 20-day rolling mean per ticker.</span></li>
       <li><span class="n">03</span><span><b>ATR20.</b> True range &mdash; <code>max(high&minus;low, |high&minus;prev_close|, |low&minus;prev_close|)</code> &mdash; rolled over 20 days per ticker.</span></li>
       <li><span class="n">04</span><span><b>Liquidity weight.</b> 20-day dollar volume divided by ATR20, then normalized within each theme so its members' weights sum to 1.</span></li>
       <li><span class="n">05</span><span><b>5-day return.</b> Percent change of adjusted close vs. adjusted close 5 trading days prior, per ticker.</span></li>
       <li><span class="n">06</span><span><b>Theme score.</b> Weighted sum of member returns &mdash; the number plotted above.</span></li>
+      <li><span class="n">07</span><span><b>ETF option.</b> Tick <b>ETF</b> above the chart to score each theme by its ETF instead (that fund's 5-day % change of adjusted close, taken from <code>theme_etf_summary.md</code>). Themes with no ETF assigned, or whose ETF has no price data, keep the basket score above; the <i>Basis</i> column shows which method each row uses.</span></li>
     </ol>
   </section>
 
   <div class="foot">
-    <span>Source: <code>rs_hist/downloads/{l,m,s}_1d_3y.parquet</code></span>
+    <span>Source: <code>dnld_data/downloads/{l,m,s}_1d_3y.parquet</code> + Yahoo Finance backfill &middot; ETF map: <code>theme_etf_summary.md</code></span>
     <span>11 ticker(s) dropped for insufficient history: <code>AKRO, APLS, CIVI, CMA, CRNX, CTRA, ENDP, EXAS, GTLS, MASI, ZK</code></span>
-    <span>Generated 2026-10-05 20:29 Russia TZ 2 Standard Time &middot; <code>rs_hist/publish_rs_github_pages.py --n 5</code></span>
+    <span>Generated 2026-10-06 14:51 Russia TZ 2 Standard Time &middot; <code>rs_hist/publish_rs_github_pages.py --n 5</code></span>
   </div>
 
 </div>
@@ -510,12 +555,21 @@
 </div>
 
 <script>
-  const DATA_ALL = [{"sector": "Digital Infrastructure", "theme": "Optics", "score": 13.552088502770687, "n": 5}, {"sector": "Semiconductors", "theme": "Semi Equipment", "score": 9.586341558349543, "n": 15}, {"sector": "Digital Infrastructure", "theme": "Cybersecurity", "score": 7.105359422134822, "n": 10}, {"sector": "Semiconductors", "theme": "Power Semis", "score": 6.661926904937726, "n": 12}, {"sector": "Consumer", "theme": "Travel & Leisure", "score": 5.863031832541817, "n": 9}, {"sector": "Semiconductors", "theme": "Analog", "score": 5.583131478109932, "n": 7}, {"sector": "Finance", "theme": "FinTech", "score": 5.420999420339697, "n": 14}, {"sector": "Strategic Resources", "theme": "Trucking/LTL", "score": 5.163234835222308, "n": 4}, {"sector": "Strategic Resources", "theme": "Robotics", "score": 3.022179988201727, "n": 8}, {"sector": "Digital Infrastructure", "theme": "Ambient IoT", "score": 2.3368842294282604, "n": 6}, {"sector": "Digital Infrastructure", "theme": "Networking", "score": 2.1596818903598205, "n": 10}, {"sector": "Digital Infrastructure", "theme": "Storage", "score": 1.922332465933801, "n": 7}, {"sector": "Software", "theme": "Agentic AI", "score": 1.674790046704965, "n": 12}, {"sector": "Software", "theme": "Application Software", "score": 1.5433892752134077, "n": 22}, {"sector": "Semiconductors", "theme": "Processors", "score": 1.5332456608359792, "n": 8}, {"sector": "Strategic Resources", "theme": "AV", "score": 1.1857694303490556, "n": 8}, {"sector": "Strategic Resources", "theme": "Energy Systems", "score": 1.1609796004895514, "n": 5}, {"sector": "Commodities", "theme": "Biofuels", "score": 1.0810297979504946, "n": 4}, {"sector": "Digital Infrastructure", "theme": "Compute", "score": 1.0574598410138647, "n": 8}, {"sector": "Commodities", "theme": "Copper", "score": 1.0563477688776248, "n": 5}, {"sector": "Consumer", "theme": "Food Services", "score": 1.0389305899723251, "n": 9}, {"sector": "Strategic Resources", "theme": "Conventional Utilities", "score": 0.9608599811212908, "n": 6}, {"sector": "Digital Infrastructure", "theme": "Cloud", "score": 0.9592262624420327, "n": 10}, {"sector": "Digital Infrastructure", "theme": "Edge Computing", "score": 0.9204839060301393, "n": 8}, {"sector": "Commodities", "theme": "Uranium", "score": 0.9109854313137231, "n": 7}, {"sector": "Consumer", "theme": "Agriculture Producers", "score": 0.8468972245198789, "n": 3}, {"sector": "Commodities", "theme": "Oil", "score": 0.7409616243305197, "n": 17}, {"sector": "Strategic Resources", "theme": "Fuel Cell", "score": 0.7329300627059081, "n": 5}, {"sector": "Healthcare", "theme": "Remote Care Platforms", "score": 0.6030956549296869, "n": 3}, {"sector": "Strategic Resources", "theme": "Solar", "score": 0.5670142481943845, "n": 7}, {"sector": "Finance", "theme": "Property & Casualty Insurance & Brokerage", "score": 0.3997048303500129, "n": 11}, {"sector": "Strategic Resources", "theme": "Industrial Systems", "score": 0.1648738063744587, "n": 6}, {"sector": "Commodities", "theme": "Natural Gas", "score": 0.16122413586185388, "n": 9}, {"sector": "Strategic Resources", "theme": "Battery", "score": -0.0023276686852709005, "n": 8}, {"sector": "Semiconductors", "theme": "Memory", "score": -0.021049433096369002, "n": 8}, {"sector": "Strategic Resources", "theme": "Transportation", "score": -0.35255853353128247, "n": 2}, {"sector": "Strategic Resources", "theme": "Environmental Services", "score": -0.425281215647304, "n": 7}, {"sector": "Strategic Resources", "theme": "Clean Water", "score": -0.7377713731239547, "n": 6}, {"sector": "Strategic Resources", "theme": "Engineered Materials", "score": -0.7510265699320422, "n": 7}, {"sector": "Software", "theme": "Spatial Computing", "score": -0.8593584342991247, "n": 8}, {"sector": "Digital Infrastructure", "theme": "Data Center", "score": -0.8983271153067809, "n": 19}, {"sector": "Semiconductors", "theme": "Foundries", "score": -0.976212462638419, "n": 4}, {"sector": "Consumer", "theme": "Internet & Media", "score": -0.9985103879756383, "n": 9}, {"sector": "Real Estate & REITs", "theme": "Office and Commercial REIT", "score": -1.3824958428476988, "n": 2}, {"sector": "Strategic Resources", "theme": "Space", "score": -1.4820850944701045, "n": 10}, {"sector": "Real Estate & REITs", "theme": "Data Center/Digital Infra RE", "score": -1.4925574199609, "n": 3}, {"sector": "Strategic Resources", "theme": "5G", "score": -1.6258567613824475, "n": 5}, {"sector": "Strategic Resources", "theme": "Quantum", "score": -1.907366806753046, "n": 8}, {"sector": "Consumer", "theme": "Retail", "score": -1.932541839827441, "n": 9}, {"sector": "Commodities", "theme": "Gold", "score": -1.9762151047919148, "n": 8}, {"sector": "Healthcare", "theme": "MedTech", "score": -1.984817580110486, "n": 33}, {"sector": "Finance", "theme": "Life & Health Insurance", "score": -2.036950986490249, "n": 14}, {"sector": "Aerospace & Defense", "theme": "Missile Defense", "score": -2.0728044969599697, "n": 3}, {"sector": "Finance", "theme": "Regional & Community Banks", "score": -2.078971770233128, "n": 11}, {"sector": "Strategic Resources", "theme": "Nuclear", "score": -2.102214721464105, "n": 11}, {"sector": "Software", "theme": "Gaming", "score": -2.112350147229736, "n": 6}, {"sector": "Finance", "theme": "Capital Markets & Exchanges", "score": -2.2383044754019354, "n": 13}, {"sector": "Digital Assets & Blockchain", "theme": "Crypto Platforms", "score": -2.2823263581723694, "n": 5}, {"sector": "Real Estate & REITs", "theme": "Residential & Multisector RE", "score": -2.2852936615211266, "n": 4}, {"sector": "Consumer", "theme": "Gaming & Wagering", "score": -2.404498526394349, "n": 7}, {"sector": "Finance", "theme": "Asset & Wealth Management", "score": -2.5208877489655888, "n": 17}, {"sector": "Healthcare", "theme": "Pharma", "score": -2.662355535687654, "n": 19}, {"sector": "Commodities", "theme": "Lithium", "score": -2.8292516100852585, "n": 2}, {"sector": "Strategic Resources", "theme": "Telecommunications", "score": -2.889665038552283, "n": 5}, {"sector": "Healthcare", "theme": "Biotech", "score": -2.9292091346750584, "n": 32}, {"sector": "Aerospace & Defense", "theme": "Precision Weapons", "score": -2.9402597091856526, "n": 4}, {"sector": "Real Estate & REITs", "theme": "Industrial RE", "score": -3.111611645764439, "n": 1}, {"sector": "Digital Assets & Blockchain", "theme": "Enterprise Blockchain", "score": -3.1231337719265104, "n": 3}, {"sector": "Consumer", "theme": "Food & Beverage", "score": -3.3018849355810813, "n": 10}, {"sector": "Digital Assets & Blockchain", "theme": "Tokenization", "score": -3.3218176928982937, "n": 3}, {"sector": "Consumer", "theme": "Housing", "score": -3.472740038030664, "n": 5}, {"sector": "Consumer", "theme": "EV", "score": -3.903135330793036, "n": 9}, {"sector": "Aerospace & Defense", "theme": "Next-Gen Aircraft", "score": -3.9283095437437385, "n": 5}, {"sector": "Healthcare", "theme": "Longevity", "score": -3.9726429547367257, "n": 16}, {"sector": "Finance", "theme": "Money Center & Global Banks", "score": -4.310627466464929, "n": 6}, {"sector": "Consumer", "theme": "Autos", "score": -4.863256661566452, "n": 2}, {"sector": "Consumer", "theme": "Airlines", "score": -5.3704802993635745, "n": 5}, {"sector": "Commodities", "theme": "Steel", "score": -5.642394791903237, "n": 6}, {"sector": "Commodities", "theme": "Silver", "score": -6.099453351048454, "n": 4}, {"sector": "Commodities", "theme": "Rare Earths", "score": -7.079073653889207, "n": 4}, {"sector": "Digital Assets & Blockchain", "theme": "Crypto Mining/Staking", "score": -7.589592888882813, "n": 8}];
+  const DATA_ALL = [{"sector": "Digital Infrastructure", "theme": "Optics", "score": 13.530363437193587, "n": 5, "etf": null, "fit": null, "etfScore": null}, {"sector": "Semiconductors", "theme": "Semi Equipment", "score": 9.557007846141477, "n": 15, "etf": null, "fit": null, "etfScore": null}, {"sector": "Digital Infrastructure", "theme": "Cybersecurity", "score": 7.112766150211884, "n": 10, "etf": "BUG", "fit": "High", "etfScore": 5.132154048561598}, {"sector": "Semiconductors", "theme": "Power Semis", "score": 6.7940385881960275, "n": 12, "etf": null, "fit": null, "etfScore": null}, {"sector": "Consumer", "theme": "Travel & Leisure", "score": 5.863031832541817, "n": 9, "etf": "PEJ", "fit": "High", "etfScore": -0.255101792567082}, {"sector": "Finance", "theme": "FinTech", "score": 5.7562249631415225, "n": 14, "etf": "FINX", "fit": "High", "etfScore": 0.7877261514187538}, {"sector": "Semiconductors", "theme": "Analog", "score": 5.61811073404289, "n": 7, "etf": null, "fit": null, "etfScore": null}, {"sector": "Strategic Resources", "theme": "Trucking/LTL", "score": 5.163234835222308, "n": 4, "etf": "XTN", "fit": "High", "etfScore": 1.7527896762152884}, {"sector": "Strategic Resources", "theme": "Robotics", "score": 3.022300600383778, "n": 8, "etf": "ROBO", "fit": "High", "etfScore": 3.682507073420918}, {"sector": "Digital Infrastructure", "theme": "Ambient IoT", "score": 2.3262754402853347, "n": 6, "etf": "SNSR", "fit": "High", "etfScore": 2.9375736704647886}, {"sector": "Digital Infrastructure", "theme": "Storage", "score": 2.2393601346470193, "n": 7, "etf": null, "fit": null, "etfScore": null}, {"sector": "Digital Infrastructure", "theme": "Networking", "score": 2.1227534227534472, "n": 10, "etf": "IDGT", "fit": "Medium", "etfScore": 2.4418482186305313}, {"sector": "Software", "theme": "Application Software", "score": 1.5988356898581255, "n": 22, "etf": "IGV", "fit": "High", "etfScore": 4.06905141146693}, {"sector": "Software", "theme": "Agentic AI", "score": 1.5505140133043773, "n": 12, "etf": "IGV", "fit": "High", "etfScore": 4.06905141146693}, {"sector": "Semiconductors", "theme": "Processors", "score": 1.5410773508055877, "n": 8, "etf": null, "fit": null, "etfScore": null}, {"sector": "Strategic Resources", "theme": "Battery", "score": 1.3523058965009993, "n": 8, "etf": "BATT", "fit": "Medium", "etfScore": 2.1557681743762305}, {"sector": "Strategic Resources", "theme": "Fuel Cell", "score": 1.2782075095756635, "n": 5, "etf": "HYDR", "fit": "Medium", "etfScore": 4.071031438607533}, {"sector": "Strategic Resources", "theme": "AV", "score": 1.1786694487930764, "n": 8, "etf": "DRIV", "fit": "High", "etfScore": 1.8177462094052017}, {"sector": "Commodities", "theme": "Uranium", "score": 1.1349790081057696, "n": 7, "etf": "URA", "fit": "High", "etfScore": 0.14950799151964209}, {"sector": "Commodities", "theme": "Copper", "score": 1.1102508401954436, "n": 5, "etf": "CPER", "fit": "Medium", "etfScore": 0.4536297978614238}, {"sector": "Commodities", "theme": "Biofuels", "score": 1.0810297979504946, "n": 4, "etf": null, "fit": null, "etfScore": null}, {"sector": "Consumer", "theme": "Food Services", "score": 1.0587427643448883, "n": 9, "etf": null, "fit": null, "etfScore": null}, {"sector": "Digital Infrastructure", "theme": "Compute", "score": 1.0584398075370771, "n": 8, "etf": "SKYY", "fit": "Low", "etfScore": 4.542650079426286}, {"sector": "Strategic Resources", "theme": "Conventional Utilities", "score": 0.9608599811212908, "n": 6, "etf": "XLU", "fit": "High", "etfScore": 1.8343980145302548}, {"sector": "Digital Infrastructure", "theme": "Cloud", "score": 0.9566602483834633, "n": 10, "etf": "WCLD", "fit": "Medium", "etfScore": 5.431785050072794}, {"sector": "Digital Infrastructure", "theme": "Edge Computing", "score": 0.9204839060301393, "n": 8, "etf": "NXTG", "fit": "Medium", "etfScore": 1.99275483935425}, {"sector": "Strategic Resources", "theme": "Energy Systems", "score": 0.9132649746267791, "n": 5, "etf": "GRID", "fit": "Medium", "etfScore": 2.5798467090333785}, {"sector": "Commodities", "theme": "Oil", "score": 0.7109313753693228, "n": 17, "etf": "USO", "fit": "Medium", "etfScore": -4.013058618835923}, {"sector": "Healthcare", "theme": "Remote Care Platforms", "score": 0.6030956549296869, "n": 3, "etf": "HEAL", "fit": "Medium", "etfScore": 1.5809158041735907}, {"sector": "Strategic Resources", "theme": "Solar", "score": 0.5653461133455467, "n": 7, "etf": "TAN", "fit": "High", "etfScore": 1.5581352766170058}, {"sector": "Finance", "theme": "Property & Casualty Insurance & Brokerage", "score": 0.36205876500872347, "n": 11, "etf": "IAK", "fit": "High", "etfScore": 0.23234395857515056}, {"sector": "Semiconductors", "theme": "Memory", "score": 0.18338908705809615, "n": 8, "etf": null, "fit": null, "etfScore": null}, {"sector": "Commodities", "theme": "Natural Gas", "score": 0.15175546308023313, "n": 9, "etf": "UNG", "fit": "Low", "etfScore": -2.224279628977381}, {"sector": "Consumer", "theme": "Agriculture Producers", "score": 0.06237007400234762, "n": 3, "etf": "VEGI", "fit": "Medium", "etfScore": 0.30395003359600303}, {"sector": "Strategic Resources", "theme": "Industrial Systems", "score": 0.03339303349960876, "n": 6, "etf": "XLI", "fit": "High", "etfScore": 0.7820875303742844}, {"sector": "Strategic Resources", "theme": "Transportation", "score": -0.35255853353128247, "n": 2, "etf": "IYT", "fit": "High", "etfScore": 0.9864661468411924}, {"sector": "Strategic Resources", "theme": "Environmental Services", "score": -0.4382218660560697, "n": 7, "etf": "EVX", "fit": "High", "etfScore": 0.7413111540015366}, {"sector": "Strategic Resources", "theme": "Clean Water", "score": -0.6865421198632539, "n": 6, "etf": "FIW", "fit": "High", "etfScore": 0.743564125787404}, {"sector": "Strategic Resources", "theme": "Engineered Materials", "score": -0.7510265699320422, "n": 7, "etf": "XLB", "fit": "Medium", "etfScore": 0.06064034476781164}, {"sector": "Software", "theme": "Spatial Computing", "score": -0.8429188402615534, "n": 8, "etf": null, "fit": null, "etfScore": null}, {"sector": "Semiconductors", "theme": "Foundries", "score": -0.8635394992991178, "n": 4, "etf": null, "fit": null, "etfScore": null}, {"sector": "Digital Infrastructure", "theme": "Data Center", "score": -0.8706327552761379, "n": 19, "etf": "DTCR", "fit": "Medium", "etfScore": 0.21945671399970168}, {"sector": "Consumer", "theme": "Internet & Media", "score": -0.9942142606483427, "n": 9, "etf": "SOCL", "fit": "Medium", "etfScore": 0.9657350028415064}, {"sector": "Real Estate & REITs", "theme": "Office and Commercial REIT", "score": -1.3824958428476988, "n": 2, "etf": null, "fit": null, "etfScore": null}, {"sector": "Strategic Resources", "theme": "Space", "score": -1.4820850944701045, "n": 10, "etf": "ROKT", "fit": "High", "etfScore": -0.028394490169057703}, {"sector": "Real Estate & REITs", "theme": "Data Center/Digital Infra RE", "score": -1.4925574199609, "n": 3, "etf": "SRVR", "fit": "High", "etfScore": -0.8376955473428236}, {"sector": "Real Estate & REITs", "theme": "Residential & Multisector RE", "score": -1.5168382840633088, "n": 4, "etf": "REZ", "fit": "Medium", "etfScore": -2.2429068532789627}, {"sector": "Strategic Resources", "theme": "5G", "score": -1.6258567613824475, "n": 5, "etf": "NXTG", "fit": "Medium", "etfScore": 1.99275483935425}, {"sector": "Commodities", "theme": "Gold", "score": -1.8238532479490743, "n": 8, "etf": "GLD", "fit": "Medium", "etfScore": 0.43396155565272904}, {"sector": "Strategic Resources", "theme": "Quantum", "score": -1.8515151438120405, "n": 8, "etf": "QTUM", "fit": "High", "etfScore": 3.3298052760367955}, {"sector": "Healthcare", "theme": "MedTech", "score": -1.92770713785476, "n": 33, "etf": "XHE", "fit": "Medium", "etfScore": -0.6555211210784011}, {"sector": "Consumer", "theme": "Retail", "score": -1.932541839827441, "n": 9, "etf": "XRT", "fit": "High", "etfScore": 0.4482072725733489}, {"sector": "Strategic Resources", "theme": "Nuclear", "score": -1.97613197924492, "n": 11, "etf": "NUKZ", "fit": "High", "etfScore": 1.0731410420238943}, {"sector": "Finance", "theme": "Life & Health Insurance", "score": -2.036950986490249, "n": 14, "etf": "KIE", "fit": "Medium", "etfScore": 0.28624681830222265}, {"sector": "Aerospace & Defense", "theme": "Missile Defense", "score": -2.0728044969599697, "n": 3, "etf": "PPA", "fit": "High", "etfScore": -0.49923115199263235}, {"sector": "Software", "theme": "Gaming", "score": -2.072919695436785, "n": 6, "etf": "ESPO", "fit": "High", "etfScore": 2.3018425531715385}, {"sector": "Finance", "theme": "Regional & Community Banks", "score": -2.078971770233128, "n": 11, "etf": "KRE", "fit": "High", "etfScore": -0.2267946919746992}, {"sector": "Finance", "theme": "Capital Markets & Exchanges", "score": -2.2142214894188226, "n": 13, "etf": "IAI", "fit": "High", "etfScore": -0.39242750749509503}, {"sector": "Digital Assets & Blockchain", "theme": "Crypto Platforms", "score": -2.2823263581723694, "n": 5, "etf": "BKCH", "fit": "Medium", "etfScore": -3.08692662442266}, {"sector": "Consumer", "theme": "Gaming & Wagering", "score": -2.450770299631238, "n": 7, "etf": "GENZ", "fit": "Low", "etfScore": 2.369147736712742}, {"sector": "Finance", "theme": "Asset & Wealth Management", "score": -2.5208877489655888, "n": 17, "etf": "KCE", "fit": "Medium", "etfScore": 0.9492452634052638}, {"sector": "Healthcare", "theme": "Pharma", "score": -2.5785888195823063, "n": 19, "etf": "PPH", "fit": "High", "etfScore": -3.1529907431789175}, {"sector": "Healthcare", "theme": "Biotech", "score": -2.6385644248030875, "n": 32, "etf": "XBI", "fit": "High", "etfScore": -0.26818093819581507}, {"sector": "Commodities", "theme": "Lithium", "score": -2.836957135370206, "n": 2, "etf": "LITP", "fit": "High", "etfScore": -2.693965594759313}, {"sector": "Strategic Resources", "theme": "Telecommunications", "score": -2.889665038552283, "n": 5, "etf": "IYZ", "fit": "High", "etfScore": 4.274962872254983}, {"sector": "Aerospace & Defense", "theme": "Precision Weapons", "score": -2.9402597091856526, "n": 4, "etf": "XAR", "fit": "High", "etfScore": -1.2425823612335674}, {"sector": "Real Estate & REITs", "theme": "Industrial RE", "score": -3.111611645764439, "n": 1, "etf": "INDS", "fit": "High", "etfScore": -1.8551653614933432}, {"sector": "Digital Assets & Blockchain", "theme": "Enterprise Blockchain", "score": -3.1231337719265104, "n": 3, "etf": "LEGR", "fit": "Low", "etfScore": -0.5027450245630707}, {"sector": "Consumer", "theme": "Food & Beverage", "score": -3.3018849355810813, "n": 10, "etf": "PBJ", "fit": "Medium", "etfScore": 0.13219073385733385}, {"sector": "Digital Assets & Blockchain", "theme": "Tokenization", "score": -3.3218176928982937, "n": 3, "etf": "BITQ", "fit": "Medium", "etfScore": -2.893034699804241}, {"sector": "Consumer", "theme": "Housing", "score": -3.5774895140117717, "n": 5, "etf": "XHB", "fit": "High", "etfScore": -1.0277491969533232}, {"sector": "Healthcare", "theme": "Longevity", "score": -3.7610068170335946, "n": 16, "etf": "OZEM", "fit": "Low", "etfScore": -3.0359908341575914}, {"sector": "Consumer", "theme": "EV", "score": -3.7737448408405734, "n": 9, "etf": "KARS", "fit": "High", "etfScore": -0.703648624371538}, {"sector": "Aerospace & Defense", "theme": "Next-Gen Aircraft", "score": -3.9283095437437385, "n": 5, "etf": "ITA", "fit": "High", "etfScore": -1.0895531105552017}, {"sector": "Finance", "theme": "Money Center & Global Banks", "score": -4.310627466464929, "n": 6, "etf": "KBWB", "fit": "High", "etfScore": -1.2407016220164386}, {"sector": "Consumer", "theme": "Autos", "score": -4.863256661566452, "n": 2, "etf": null, "fit": null, "etfScore": null}, {"sector": "Consumer", "theme": "Airlines", "score": -5.3704802993635745, "n": 5, "etf": "JETS", "fit": "High", "etfScore": -2.1060034618813126}, {"sector": "Commodities", "theme": "Steel", "score": -5.6734049657821135, "n": 6, "etf": "SLX", "fit": "High", "etfScore": 1.0088349384040756}, {"sector": "Commodities", "theme": "Silver", "score": -6.00543587341119, "n": 4, "etf": "SLV", "fit": "Medium", "etfScore": 0.32757106947518166}, {"sector": "Commodities", "theme": "Rare Earths", "score": -6.773280520335069, "n": 4, "etf": "EART", "fit": "Medium", "etfScore": 1.2631799901581444}, {"sector": "Digital Assets & Blockchain", "theme": "Crypto Mining/Staking", "score": -7.473047922004541, "n": 8, "etf": "WGMI", "fit": "High", "etfScore": -4.12883682817394}];
+  const ETF_ENABLED = true;
+  const N_DAYS = "5";
 
-  // Max |score| across the whole universe stays constant no matter which
-  // filter is active - the single most extreme mover is always inside
-  // every "top N by |change|" cut, so the bar scale never has to rescale.
-  const maxAbs = Math.max(...DATA_ALL.map(d => Math.abs(d.score))) * 1.08;
+  // Calculation method: basket (all tickers of the theme, default) or ETF
+  // (the theme's ETF; themes with no ETF / no ETF data keep the basket score).
+  let useEtf = false;
+  let activeN = null;   // active top-N filter (null = all)
+  const usesEtf = d => useEtf && d.etfScore !== null && d.etfScore !== undefined;
+  const scoreOf = d => usesEtf(d) ? d.etfScore : d.score;
+
+  // Max |score| over the whole universe for the ACTIVE method stays constant no
+  // matter which top-N filter is active - the single most extreme mover is
+  // always inside every cut, so the bar scale only changes when the method does.
+  const maxAbsFor = () => Math.max(...DATA_ALL.map(d => Math.abs(scoreOf(d)))) * 1.08;
   const fmt = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2) + "%";
 
   const chart = document.getElementById("chart");
@@ -524,6 +578,7 @@
   const tipVal = document.getElementById("tipVal");
   const tipMeta = document.getElementById("tipMeta");
   const filterCount = document.getElementById("filterCount");
+  const cardSub = document.getElementById("cardSub");
 
   const upArrow = '<svg viewBox="0 0 10 10"><polygon points="5,1 9,8 1,8" fill="currentColor"/></svg>';
   const downArrow = '<svg viewBox="0 0 10 10"><polygon points="1,2 9,2 5,9" fill="currentColor"/></svg>';
@@ -532,8 +587,9 @@
     const r = el.getBoundingClientRect();
     tip.style.left = (r.left + r.width / 2) + "px";
     tip.style.top = r.top + "px";
-    tipVal.textContent = fmt(d.score);
-    tipMeta.textContent = d.theme + " — " + d.sector + " · " + d.n + " tickers";
+    tipVal.textContent = fmt(scoreOf(d));
+    tipMeta.textContent = d.theme + " — " + d.sector + " · " +
+      (usesEtf(d) ? "ETF " + d.etf + (d.fit ? " (" + d.fit + " fit)" : "") : d.n + " tickers (basket)");
     tip.classList.add("show");
   }
   function hideTip(){ tip.classList.remove("show"); }
@@ -541,21 +597,28 @@
   // Top N by absolute percent change (biggest movers either way), then
   // sorted back to high-to-low score for display, matching the unfiltered order.
   function pickByFilter(n){
-    const bySize = DATA_ALL.slice().sort((a, b) => Math.abs(b.score) - Math.abs(a.score));
+    const bySize = DATA_ALL.slice().sort((a, b) => Math.abs(scoreOf(b)) - Math.abs(scoreOf(a)));
     const picked = n ? bySize.slice(0, n) : bySize;
-    return picked.sort((a, b) => b.score - a.score);
+    return picked.sort((a, b) => scoreOf(b) - scoreOf(a));
   }
 
   function render(list){
     chart.innerHTML = "";
     tbody.innerHTML = "";
-    filterCount.textContent = list.length === DATA_ALL.length
+    const maxAbs = maxAbsFor();
+    const nEtf = list.filter(usesEtf).length;
+    filterCount.textContent = (list.length === DATA_ALL.length
       ? `${DATA_ALL.length} themes`
-      : `${list.length} of ${DATA_ALL.length} themes, by absolute % change`;
+      : `${list.length} of ${DATA_ALL.length} themes, by absolute % change`) +
+      (useEtf ? ` · ${nEtf} by ETF, ${list.length - nEtf} by basket (no ETF)` : "");
+    cardSub.textContent = useEtf
+      ? `Theme ETF ${N_DAYS}-day % change (liquidity-weighted basket where no ETF), ranked high to low`
+      : `Liquidity-weighted ${N_DAYS}-day % change, ranked high to low`;
 
     list.forEach((d, i) => {
-    const pct = (Math.abs(d.score) / maxAbs * 100).toFixed(2);
-    const isPos = d.score >= 0;
+    const score = scoreOf(d);
+    const pct = (Math.abs(score) / maxAbs * 100).toFixed(2);
+    const isPos = score >= 0;
 
     // -- chart row --
     const row = document.createElement("div");
@@ -570,7 +633,7 @@
     themeEl.textContent = d.theme;
     const sectorEl = document.createElement("span");
     sectorEl.className = "rs-sector";
-    sectorEl.textContent = d.sector;
+    sectorEl.textContent = useEtf ? d.sector + " · " + (usesEtf(d) ? d.etf : "basket") : d.sector;
     label.append(themeEl, sectorEl);
 
     const track = document.createElement("div");
@@ -585,7 +648,7 @@
     bar.style.width = pct + "%";
     const val = document.createElement("span");
     val.className = "rs-value";
-    val.textContent = fmt(d.score);
+    val.textContent = fmt(score);
 
     if (isPos){
       posHalf.append(bar, val);
@@ -623,11 +686,14 @@
     pill.className = "pill " + (isPos ? "pos" : "neg");
     pill.innerHTML = (isPos ? upArrow : downArrow);
     const pillText = document.createElement("span");
-    pillText.textContent = fmt(d.score);
+    pillText.textContent = fmt(score);
     pill.appendChild(pillText);
     tdScore.appendChild(pill);
+    const tdBasis = document.createElement("td");
+    tdBasis.className = "basis";
+    tdBasis.innerHTML = usesEtf(d) ? "<b>ETF</b> " + d.etf + (d.fit ? " · " + d.fit : "") : "Basket";
 
-    tr.append(tdRank, tdTheme, tdSector, tdN, tdScore);
+    tr.append(tdRank, tdTheme, tdSector, tdN, tdBasis, tdScore);
     tbody.appendChild(tr);
     });
   }
@@ -637,10 +703,18 @@
       if (btn.classList.contains("active")) return;
       document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      const n = btn.dataset.filter === "all" ? null : parseInt(btn.dataset.filter, 10);
-      render(pickByFilter(n));
+      activeN = btn.dataset.filter === "all" ? null : parseInt(btn.dataset.filter, 10);
+      render(pickByFilter(activeN));
     });
   });
+
+  if (ETF_ENABLED){
+    document.getElementById("etfToggle").hidden = false;
+    document.getElementById("etfCheck").addEventListener("change", e => {
+      useEtf = e.target.checked;
+      render(pickByFilter(activeN));
+    });
+  }
 
   render(pickByFilter(null));
 </script>
